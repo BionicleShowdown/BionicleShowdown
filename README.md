@@ -1,4 +1,5 @@
 BionicleShowdown
 ================
 
-Official repository for BionicleShodown
+
+This is the Bionicle Showdown dev team's official repository
