@@ -9,16 +9,20 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 import com.jme3.ui.Picture;
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.screen.Screen;
+import de.lessvoid.nifty.screen.ScreenController;
 
 /**
  *
  * @author CotA
  */
-public class StartState extends AbstractAppState{
+public class StartState extends AbstractAppState implements ScreenController{
     
     private Node guiNode;
     private AssetManager assetManager;
@@ -26,6 +30,9 @@ public class StartState extends AbstractAppState{
     private Node localGuiNode = new Node("Start Screen GuiNode");
     private Picture startPic;
     private AppSettings settings;
+    private NiftyJmeDisplay niftyDisplay;
+    private Nifty nifty;
+    private Screen screen;
     
     public StartState(SimpleApplication app){
         this.app = (SimpleApplication) app;
@@ -39,12 +46,7 @@ public class StartState extends AbstractAppState{
     @Override
     public void initialize(AppStateManager stateManager, Application app){
         super.initialize(stateManager,app);
-        
-        startPic = new Picture("Start Image");
-        startPic.setImage(assetManager,"Textures/Menu/StartScreen.png", true);
-        startPic.setWidth(settings.getWidth());
-        startPic.setHeight(settings.getHeight());
-        localGuiNode.attachChild(startPic);
+
     }
     
     @Override
@@ -54,13 +56,28 @@ public class StartState extends AbstractAppState{
     
     @Override
     public void stateAttached(AppStateManager stateManager){
-        guiNode.attachChild(localGuiNode);
+        
+        System.out.println("attached");
     }
     
     @Override
     public void stateDetached(AppStateManager stateManager) {
-        guiNode.detachChild(localGuiNode);
+        
+        System.out.println("detached");
 
+    }
+
+    public void bind(Nifty nifty, Screen screen) {
+        this.nifty = nifty;
+        this.screen = screen;
+    }
+
+    public void onStartScreen() {
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void onEndScreen() {
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
     
     
