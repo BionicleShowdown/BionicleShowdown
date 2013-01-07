@@ -11,7 +11,6 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 import com.jme3.ui.Picture;
 import de.lessvoid.nifty.Nifty;
@@ -47,25 +46,29 @@ public class StartState extends AbstractAppState implements ScreenController{
     public void initialize(AppStateManager stateManager, Application app){
         super.initialize(stateManager,app);
 
+        
     }
+    
+    
     
     @Override
     public void update(float tpf) {
         /* Nothing Yet*/
     }
     
+    
     @Override
-    public void stateAttached(AppStateManager stateManager){
+    public void cleanup(){
         
-        System.out.println("attached");
     }
     
     @Override
-    public void stateDetached(AppStateManager stateManager) {
+    public void setEnabled(boolean enabled){
+        super.setEnabled(enabled);
         
-        System.out.println("detached");
-
+       
     }
+    
 
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;

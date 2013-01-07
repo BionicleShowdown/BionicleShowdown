@@ -4,7 +4,7 @@
     <!-- start screen -->
     <!-- +++++++++++++++++++++++++++++++++++++++ -->
     <screen id="inGameHud" controller="bs.InGameState">
-        <layer id="layer" backgroundColor="#f03f" childLayout="center">
+        <layer id="layer" childLayout="center">
             
         </layer>
     </screen>
