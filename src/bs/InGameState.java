@@ -57,9 +57,9 @@ public class InGameState extends AbstractAppState implements ScreenController{
         rootNode.attachChild(localRootNode);
         guiNode.attachChild(localGuiNode);
         
-        Stage stage = new Stage(7,7,3,2,bulletAppState);
+        Stage loadStage = new Stage(5,20,4,2,bulletAppState);
         
-        rootNode.attachChild(stage.getBoundingBoxes());
+        rootNode.attachChild(loadStage.getBoundingBoxes());
         
         bulletAppState.getPhysicsSpace().enableDebug(assetManager);
         

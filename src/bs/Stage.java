@@ -22,12 +22,12 @@ public class Stage implements PhysicsCollisionListener {
     private static final Logger logger = Logger.getLogger(Stage.class.getName());
     
    // private Spatial stage;
-    private int height;
-    private int width;
-    private int top = -1;
-    private int bottom = -1;
-    private int left = -1;
-    private int right = -1;
+    private float height;
+    private float width;
+    private float top = -1;
+    private float bottom = -1;
+    private float left = -1;
+    private float right = -1;
     private Node boundingBoxNodes;
     private BulletAppState bulletAppState;
     
@@ -38,7 +38,7 @@ public class Stage implements PhysicsCollisionListener {
      * from the AppState. Then, blast barriers
      * are applied to the stage
      */
-    public Stage(int h, int w, BulletAppState bas){
+    public Stage(float h, float w, BulletAppState bas){
        // stage = s;
         height = h;
         width = w;
@@ -54,10 +54,10 @@ public class Stage implements PhysicsCollisionListener {
      * can cover the entire stage accordingly.
      * Then, the blast barriers are applied to the stage     * 
      */
-    public Stage(int t, int r, int b, int l, BulletAppState bas){
+    public Stage(float t, float r, float b, float l, BulletAppState bas){
         // stage = s;
-        height = t+b;
-        width = r+l;
+        height = (t+b)/2;
+        width = (r+l)/2;
         top = t;
         bottom  = b;
         left = l;
@@ -75,13 +75,13 @@ public class Stage implements PhysicsCollisionListener {
     /* Getter for the height of 
      * the stage
      */
-    public int getHeight(){
+    public float getHeight(){
         return(height);
     }
     /* Getter for the width of
      * the stage
      */
-    public int getWidth(){
+    public float getWidth(){
         return(width);
     }
     
@@ -116,8 +116,15 @@ public class Stage implements PhysicsCollisionListener {
         
         } else {
             
-            boundingBoxTopNode.setLocalTranslation(new Vector3f(0,top,0));
-            boundingBoxBotNode.setLocalTranslation(new Vector3f(0,-bottom,0));
+            if(left > right){
+                        
+                boundingBoxTopNode.setLocalTranslation(new Vector3f(-(-left+right)/2,top,0));
+                boundingBoxBotNode.setLocalTranslation(new Vector3f(-(-left+right)/2,-bottom,0));
+            } else {
+                boundingBoxTopNode.setLocalTranslation(new Vector3f((-left+right)/2,top,0));
+                boundingBoxBotNode.setLocalTranslation(new Vector3f((-left+right)/2,-bottom,0));
+            }
+            
             boundingBoxLeftNode.setLocalTranslation(new Vector3f(-left,0,0));
             boundingBoxRightNode.setLocalTranslation(new Vector3f(right,0,0));
         }
