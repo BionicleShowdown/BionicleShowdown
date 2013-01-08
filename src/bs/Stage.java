@@ -21,14 +21,14 @@ public class Stage implements PhysicsCollisionListener {
     
     private static final Logger logger = Logger.getLogger(Stage.class.getName());
     
-   // private Spatial stage;
+    private Spatial stage;
     private float height;
     private float width;
     private float top = -1;
     private float bottom = -1;
     private float left = -1;
     private float right = -1;
-    private Node boundingBoxNodes;
+    private Node stageNode;
     private BulletAppState bulletAppState;
     
     
@@ -38,8 +38,8 @@ public class Stage implements PhysicsCollisionListener {
      * from the AppState. Then, blast barriers
      * are applied to the stage
      */
-    public Stage(float h, float w, BulletAppState bas){
-       // stage = s;
+    public Stage(Spatial s, float h, float w, BulletAppState bas){
+        stage = s;
         height = h;
         width = w;
         bulletAppState = bas;
@@ -54,8 +54,8 @@ public class Stage implements PhysicsCollisionListener {
      * can cover the entire stage accordingly.
      * Then, the blast barriers are applied to the stage     * 
      */
-    public Stage(float t, float r, float b, float l, BulletAppState bas){
-        // stage = s;
+    public Stage(Spatial s, float t, float r, float b, float l, BulletAppState bas){
+        stage = s;
         height = (t+b)/2;
         width = (r+l)/2;
         top = t;
@@ -69,8 +69,8 @@ public class Stage implements PhysicsCollisionListener {
     /* Getter for the Node containing
      * all the blast barriers
      */
-    public Node getBoundingBoxes(){
-        return(boundingBoxNodes);
+    public Node getStageNode(){
+        return(stageNode);
     }
     /* Getter for the height of 
      * the stage
@@ -90,7 +90,10 @@ public class Stage implements PhysicsCollisionListener {
      * the constructor
      */
     private void setupStage(){
-        boundingBoxNodes = new Node("Gather all blast barriers");
+        Node boundingBoxNodes = new Node("Gather all blast barriers");
+        stageNode = new Node("Full Stage Scene");
+        
+        stageNode.attachChild(stage);
         
         GhostControl boundingBoxBot = new GhostControl(new BoxCollisionShape(new Vector3f(width,1,1)));
         GhostControl boundingBoxTop = new GhostControl(new BoxCollisionShape(new Vector3f(width,1,1)));
@@ -124,9 +127,13 @@ public class Stage implements PhysicsCollisionListener {
                 boundingBoxTopNode.setLocalTranslation(new Vector3f((-left+right)/2,top,0));
                 boundingBoxBotNode.setLocalTranslation(new Vector3f((-left+right)/2,-bottom,0));
             }
-            
-            boundingBoxLeftNode.setLocalTranslation(new Vector3f(-left,0,0));
-            boundingBoxRightNode.setLocalTranslation(new Vector3f(right,0,0));
+            if(top > bottom){
+                boundingBoxLeftNode.setLocalTranslation(new Vector3f(-left,(top+(-bottom))/2,0));
+                boundingBoxRightNode.setLocalTranslation(new Vector3f(right,(top+(-bottom))/2,0));
+            } else {
+                boundingBoxLeftNode.setLocalTranslation(new Vector3f(-left,-(top+(-bottom))/2,0));
+                boundingBoxRightNode.setLocalTranslation(new Vector3f(right,-(top+(-bottom))/2,0));
+            }
         }
        
         if(top != 0){
@@ -141,6 +148,8 @@ public class Stage implements PhysicsCollisionListener {
         if(left != 0) {
             boundingBoxNodes.attachChild(boundingBoxLeftNode);
         }
+        
+        stageNode.attachChild(boundingBoxNodes);
         
         bulletAppState.getPhysicsSpace().add(boundingBoxBot);
         bulletAppState.getPhysicsSpace().add(boundingBoxTop);

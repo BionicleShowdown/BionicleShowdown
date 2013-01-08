@@ -10,10 +10,14 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
@@ -57,9 +61,17 @@ public class InGameState extends AbstractAppState implements ScreenController{
         rootNode.attachChild(localRootNode);
         guiNode.attachChild(localGuiNode);
         
-        Stage loadStage = new Stage(5,20,4,2,bulletAppState);
+        //Test spatial for stage
+        Box b = new Box(Vector3f.ZERO, 1, 1, 1);
+        Geometry geom = new Geometry("Box", b);
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Blue);
+        geom.setMaterial(mat);
+                
         
-        rootNode.attachChild(loadStage.getBoundingBoxes());
+        Stage loadStage = new Stage(geom,10,8,10,3,bulletAppState);
+        
+        localRootNode.attachChild(loadStage.getStageNode());
         
         bulletAppState.getPhysicsSpace().enableDebug(assetManager);
         
