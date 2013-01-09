@@ -4,6 +4,7 @@
  */
 package bs;
 
+import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
@@ -29,6 +30,10 @@ public class Stage implements PhysicsCollisionListener {
     private float left = -1;
     private float right = -1;
     private Node stageNode;
+    private Node p1SpawnNode = new Node("pl spawn point");
+    private Node p2SpawnNode = new Node("p2 spawn point");
+    private Node p3SpawnNode = new Node("p3 spawn point");
+    private Node p4SpawnNode = new Node("p4 spawn point");
     private BulletAppState bulletAppState;
     
     
@@ -49,6 +54,7 @@ public class Stage implements PhysicsCollisionListener {
      * be implemented), then distances from center for each blast
      * barrier, starting from top and moving clockwise (top, right,
      * bottom, left) as well as the BulletAppState from the AppState.
+     * Specifying 0 for a certain side will make it not appear
      * The height and the width here become the entire stage from
      * top to bottom and left to right so that the blast barriers
      * can cover the entire stage accordingly.
@@ -85,7 +91,8 @@ public class Stage implements PhysicsCollisionListener {
         return(width);
     }
     
-    /* Sets up spatial for stage and all
+    /* Sets up spatial for stage, spawn
+     * nodes for the players, and all
      * the blast barriers provided in 
      * the constructor
      */
@@ -93,7 +100,20 @@ public class Stage implements PhysicsCollisionListener {
         Node boundingBoxNodes = new Node("Gather all blast barriers");
         stageNode = new Node("Full Stage Scene");
         
+        BoundingBox stageSize = (BoundingBox) stage.getWorldBound();
+        float stageLength = stageSize.getXExtent()/4;
+        float stageHeight = stageSize.getYExtent();
+       
+        p1SpawnNode.setLocalTranslation(-(2*stageLength),stageHeight+1,0);
+        p2SpawnNode.setLocalTranslation(stageLength,stageHeight+1,0);
+        p3SpawnNode.setLocalTranslation(-stageLength,stageHeight+1,0);
+        p4SpawnNode.setLocalTranslation((2*stageLength),stageHeight+1,0);
+        
         stageNode.attachChild(stage);
+        stageNode.attachChild(p1SpawnNode);
+        stageNode.attachChild(p2SpawnNode);
+        stageNode.attachChild(p3SpawnNode);
+        stageNode.attachChild(p4SpawnNode);
         
         GhostControl boundingBoxBot = new GhostControl(new BoxCollisionShape(new Vector3f(width,1,1)));
         GhostControl boundingBoxTop = new GhostControl(new BoxCollisionShape(new Vector3f(width,1,1)));
@@ -119,20 +139,19 @@ public class Stage implements PhysicsCollisionListener {
         
         } else {
             
-            if(left > right){
-                        
-                boundingBoxTopNode.setLocalTranslation(new Vector3f(-(-left+right)/2,top,0));
-                boundingBoxBotNode.setLocalTranslation(new Vector3f(-(-left+right)/2,-bottom,0));
+            if(left == right){      
+                boundingBoxTopNode.setLocalTranslation(new Vector3f(0,top,0));
+                boundingBoxBotNode.setLocalTranslation(new Vector3f(0,-bottom,0));
             } else {
                 boundingBoxTopNode.setLocalTranslation(new Vector3f((-left+right)/2,top,0));
-                boundingBoxBotNode.setLocalTranslation(new Vector3f((-left+right)/2,-bottom,0));
+                boundingBoxBotNode.setLocalTranslation(new Vector3f((-left+right)/2,-bottom,0));  
             }
-            if(top > bottom){
+            if(top == bottom){
+                boundingBoxLeftNode.setLocalTranslation(new Vector3f(-left,0,0));
+                boundingBoxRightNode.setLocalTranslation(new Vector3f(right,0,0));  
+            } else {
                 boundingBoxLeftNode.setLocalTranslation(new Vector3f(-left,(top+(-bottom))/2,0));
                 boundingBoxRightNode.setLocalTranslation(new Vector3f(right,(top+(-bottom))/2,0));
-            } else {
-                boundingBoxLeftNode.setLocalTranslation(new Vector3f(-left,-(top+(-bottom))/2,0));
-                boundingBoxRightNode.setLocalTranslation(new Vector3f(right,-(top+(-bottom))/2,0));
             }
         }
        

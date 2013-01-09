@@ -69,7 +69,7 @@ public class InGameState extends AbstractAppState implements ScreenController{
         geom.setMaterial(mat);
                 
         
-        Stage loadStage = new Stage(geom,10,8,10,3,bulletAppState);
+        Stage loadStage = new Stage(geom,7,6,0,6,bulletAppState);
         
         localRootNode.attachChild(loadStage.getStageNode());
         
