@@ -9,9 +9,14 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
+import com.jme3.bullet.collision.shapes.MeshCollisionShape;
+import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.scene.Spatial;
 import java.util.logging.*;
 /**
@@ -23,18 +28,28 @@ public class Stage implements PhysicsCollisionListener {
     private static final Logger logger = Logger.getLogger(Stage.class.getName());
     
     private Spatial stage;
-    private float height;
-    private float width;
-    private float top = -1;
-    private float bottom = -1;
-    private float left = -1;
-    private float right = -1;
-    private Node stageNode;
-    private Node p1SpawnNode = new Node("pl spawn point");
-    private Node p2SpawnNode = new Node("p2 spawn point");
-    private Node p3SpawnNode = new Node("p3 spawn point");
-    private Node p4SpawnNode = new Node("p4 spawn point");
+    private float top;
+    private float bot;
+    private float left;
+    private float right;
+    private Node stageNode = new Node("Full Stage Scene");
+    private Node p1SpawnNode;
+    private Node p2SpawnNode;
+    private Node p3SpawnNode;
+    private Node p4SpawnNode;
+    private Node respawnNode;
     private BulletAppState bulletAppState;
+    private Node rightLedgeNode = new Node("Right ledge node");
+    private Node leftLedgeNode = new Node("Left ledge node");
+    private boolean leftLedgeGrabbed = false;
+    private boolean rightLedgeGrabbed= false;
+    private GhostControl boundingBoxBot;
+    private GhostControl boundingBoxTop;
+    private GhostControl boundingBoxRight;
+    private GhostControl boundingBoxLeft;
+    private int ledgeCount = 0;
+    
+    
     
     
     /*Constructor accepts a spatial (yet to be implemented) for the stage
@@ -43,13 +58,6 @@ public class Stage implements PhysicsCollisionListener {
      * from the AppState. Then, blast barriers
      * are applied to the stage
      */
-    public Stage(Spatial s, float h, float w, BulletAppState bas){
-        stage = s;
-        height = h;
-        width = w;
-        bulletAppState = bas;
-        setupStage();
-    }
     /* Overloaded constructor accepts spatial for the stage (yet to
      * be implemented), then distances from center for each blast
      * barrier, starting from top and moving clockwise (top, right,
@@ -59,17 +67,15 @@ public class Stage implements PhysicsCollisionListener {
      * top to bottom and left to right so that the blast barriers
      * can cover the entire stage accordingly.
      * Then, the blast barriers are applied to the stage     * 
-     */
-    public Stage(Spatial s, float t, float r, float b, float l, BulletAppState bas){
-        stage = s;
-        height = (t+b)/2;
-        width = (r+l)/2;
-        top = t;
-        bottom  = b;
-        left = l;
-        right = r;
+     */    
+    public Stage(Spatial s, BulletAppState bas){
         bulletAppState = bas;
+        stage = s;
+        stage.breadthFirstTraversal(getDimensions);
         setupStage();
+        stage.breadthFirstTraversal(assignControls);
+        stage.depthFirstTraversal(translateBounds);
+        bulletAppState.getPhysicsSpace().addCollisionListener(this);
     }
     
     /* Getter for the Node containing
@@ -78,17 +84,18 @@ public class Stage implements PhysicsCollisionListener {
     public Node getStageNode(){
         return(stageNode);
     }
-    /* Getter for the height of 
-     * the stage
-     */
-    public float getHeight(){
-        return(height);
+    
+    public Node getp1Spawn(){
+        return(p1SpawnNode);
     }
-    /* Getter for the width of
-     * the stage
-     */
-    public float getWidth(){
-        return(width);
+    public Node getp2Spawn(){
+        return(p2SpawnNode);
+    }
+    public Node getp3Spawn(){
+        return(p3SpawnNode);
+    }
+    public Node getp4Spawn(){
+        return(p4SpawnNode);
     }
     
     /* Sets up spatial for stage, spawn
@@ -96,93 +103,243 @@ public class Stage implements PhysicsCollisionListener {
      * the blast barriers provided in 
      * the constructor
      */
-    private void setupStage(){
-        Node boundingBoxNodes = new Node("Gather all blast barriers");
-        stageNode = new Node("Full Stage Scene");
-        
-        BoundingBox stageSize = (BoundingBox) stage.getWorldBound();
-        float stageLength = stageSize.getXExtent()/4;
-        float stageHeight = stageSize.getYExtent();
-       
-        p1SpawnNode.setLocalTranslation(-(2*stageLength),stageHeight+1,0);
-        p2SpawnNode.setLocalTranslation(stageLength,stageHeight+1,0);
-        p3SpawnNode.setLocalTranslation(-stageLength,stageHeight+1,0);
-        p4SpawnNode.setLocalTranslation((2*stageLength),stageHeight+1,0);
-        
+    private void setupStage(){    
         stageNode.attachChild(stage);
-        stageNode.attachChild(p1SpawnNode);
-        stageNode.attachChild(p2SpawnNode);
-        stageNode.attachChild(p3SpawnNode);
-        stageNode.attachChild(p4SpawnNode);
-        
-        GhostControl boundingBoxBot = new GhostControl(new BoxCollisionShape(new Vector3f(width,1,1)));
-        GhostControl boundingBoxTop = new GhostControl(new BoxCollisionShape(new Vector3f(width,1,1)));
-        GhostControl boundingBoxRight = new GhostControl(new BoxCollisionShape(new Vector3f(1,height,1)));
-        GhostControl boundingBoxLeft = new GhostControl(new BoxCollisionShape(new Vector3f(1,height,1)));
-        
-        Node boundingBoxRightNode = new Node("Right blast barrier");
-        Node boundingBoxLeftNode = new Node("Left blast barrier");
-        Node boundingBoxTopNode = new Node("Top blast barrier");
-        Node boundingBoxBotNode = new Node("Bottom blast barrier");
-        
-        boundingBoxTopNode.addControl(boundingBoxTop);
-        boundingBoxBotNode.addControl(boundingBoxBot);
-        boundingBoxRightNode.addControl(boundingBoxRight);
-        boundingBoxLeftNode.addControl(boundingBoxLeft);
-        
-        if(top == -1 && bottom == -1 && right == -1 && left == -1) {
-        
-            boundingBoxTopNode.setLocalTranslation(new Vector3f(0,height,0));
-            boundingBoxBotNode.setLocalTranslation(new Vector3f(0,-height,0));
-            boundingBoxLeftNode.setLocalTranslation(new Vector3f(-width,0,0));
-            boundingBoxRightNode.setLocalTranslation(new Vector3f(width,0,0));
-        
-        } else {
-            
-            if(left == right){      
-                boundingBoxTopNode.setLocalTranslation(new Vector3f(0,top,0));
-                boundingBoxBotNode.setLocalTranslation(new Vector3f(0,-bottom,0));
-            } else {
-                boundingBoxTopNode.setLocalTranslation(new Vector3f((-left+right)/2,top,0));
-                boundingBoxBotNode.setLocalTranslation(new Vector3f((-left+right)/2,-bottom,0));  
+    }
+    
+    /* Detects only stage necessary collisions
+     * which are of the ledges and the blast
+     * barriers.
+     */
+    public void collision(PhysicsCollisionEvent event) {
+        for(int i = 0; i < ledgeCount; i++){
+            if(event.getNodeA().getName().equals("ledgeNode") && (Integer)event.getNodeA().getUserData("Number") == i){
+                if((Boolean)event.getNodeA().getUserData("ledgeGrabbed") == false){
+                    logger.log(Level.WARNING,"Ledge {0} hit", new Object[]{i});
+                    event.getNodeA().setUserData("ledgeGrabbed", true);
+                    
+                }
             }
-            if(top == bottom){
-                boundingBoxLeftNode.setLocalTranslation(new Vector3f(-left,0,0));
-                boundingBoxRightNode.setLocalTranslation(new Vector3f(right,0,0));  
-            } else {
-                boundingBoxLeftNode.setLocalTranslation(new Vector3f(-left,(top+(-bottom))/2,0));
-                boundingBoxRightNode.setLocalTranslation(new Vector3f(right,(top+(-bottom))/2,0));
+            else if(event.getNodeB().getName().equals("ledgeNode") && (Integer)event.getNodeB().getUserData("Number") == i){
+                if((Boolean)event.getNodeB().getUserData("ledgeGrabbed") == false){
+                    logger.log(Level.WARNING,"Ledge {0} hit", new Object[]{i});
+                    event.getNodeB().setUserData("ledgeGrabbed", true);
+                }
+            }
+            else{
+                for(int j = 0; j < ledgeCount; j++){
+                    if(((Integer)((Node)stage).getChild("ledgeNode").getUserData("Number")==i) && ((Boolean)((Node)stage).getChild("ledgeNode").getUserData("ledgeGrabbed")==false)){
+                        ((Node)stage).getChild("ledgeNode").setUserData("ledgeGrabbed",true);
+                        logger.log(Level.WARNING,"Set to true");
+                        break;
+                    }
+                }
+            }
+                
+        }
+        if(event.getNodeA().getName().equals("bottomBoundingBoxNode")){
+            if(!event.getNodeB().getName().equals("rightBoundingBoxNode") && !event.getNodeB().getName().equals("leftBoundingBoxNode")){
+                logger.log(Level.WARNING,"Item Destroyed");
+                event.getNodeB().removeFromParent();
+                /*Call player life loss+respawn. Probably one function defined in player */
             }
         }
-       
-        if(top != 0){
-            boundingBoxNodes.attachChild(boundingBoxTopNode);
+        else if(event.getNodeB().getName().equals("bottomBoundingBoxNode")){
+            if(!event.getNodeA().getName().equals("rightBoundingBoxNode") && !event.getNodeA().getName().equals("leftBoundingBoxNode")){
+                logger.log(Level.WARNING,"Item Destroyed");
+                event.getNodeA().removeFromParent();
+                /*Call player life loss+respawn. Probably one function defined in player */
+            }
         }
-        if(bottom != 0){
-            boundingBoxNodes.attachChild(boundingBoxBotNode);
+        if(event.getNodeA().getName().equals("topBoundingBoxNode")){
+            if(!event.getNodeB().getName().equals("rightBoundingBoxNode") && !event.getNodeB().getName().equals("leftBoundingBoxNode")){
+                logger.log(Level.WARNING,"Item Destroyed");
+                event.getNodeB().removeFromParent();
+                /*Call player life loss+respawn. Probably one function defined in player */
+            }
         }
-        if(right != 0) {
-            boundingBoxNodes.attachChild(boundingBoxRightNode);
+        else if(event.getNodeB().getName().equals("topBoundingBoxNode")){
+            if(!event.getNodeA().getName().equals("rightBoundingBoxNode") && !event.getNodeA().getName().equals("leftBoundingBoxNode")){
+                logger.log(Level.WARNING,"Item Destroyed");
+                event.getNodeA().removeFromParent();
+                /*Call player life loss+respawn. Probably one function defined in player */
+            }
         }
-        if(left != 0) {
-            boundingBoxNodes.attachChild(boundingBoxLeftNode);
+        if(event.getNodeA().getName().equals("rightBoundingBoxNode")){
+            if(!event.getNodeB().getName().equals("topBoundingBoxNode") && !event.getNodeB().getName().equals("bottomBoundingBoxNode")){
+                logger.log(Level.WARNING,"Item Destroyed");
+                event.getNodeB().removeFromParent();
+                /*Call player life loss+respawn. Probably one function defined in player */
+            }
+        }
+        else if(event.getNodeB().getName().equals("rightBoundingBoxNode")){
+            if(!event.getNodeA().getName().equals("topBoundingBoxNode") && !event.getNodeA().getName().equals("bottomBoundingBoxNode")){
+                logger.log(Level.WARNING,"Item Destroyed");
+                event.getNodeA().removeFromParent();
+                /*Call player life loss+respawn. Probably one function defined in player */
+            }
+        }
+        if(event.getNodeA().getName().equals("rightBoundingBoxNode")){
+            if(!event.getNodeB().getName().equals("topBoundingBoxNode") && !event.getNodeB().getName().equals("bottomBoundingBoxNode")){
+                logger.log(Level.WARNING,"Item Destroyed");
+                event.getNodeB().removeFromParent();
+                /*Call player life loss+respawn. Probably one function defined in player */
+            }
+        }
+        else if(event.getNodeB().getName().equals("rightBoundingBoxNode")){
+            if(!event.getNodeA().getName().equals("topBoundingBoxNode") && !event.getNodeA().getName().equals("bottomBoundingBoxNode")){
+                logger.log(Level.WARNING,"Item Destroyed");
+                event.getNodeA().removeFromParent();
+                /*Call player life loss+respawn. Probably one function defined in player */
+            }
         }
         
-        stageNode.attachChild(boundingBoxNodes);
-        
-        bulletAppState.getPhysicsSpace().add(boundingBoxBot);
-        bulletAppState.getPhysicsSpace().add(boundingBoxTop);
-        bulletAppState.getPhysicsSpace().add(boundingBoxLeft);
-        bulletAppState.getPhysicsSpace().add(boundingBoxRight);
         
     }
     
-    /* Detects collisions for players, which will
-     * then call a method which would destroy the player
-     * subtract one from health, and respawn him (yet
-     * to be created).
+    /*Gets dimensions of stage as well as simple details that don't 
+     * require said dimensions
      */
-    public void collision(PhysicsCollisionEvent event) {
-        //throw new UnsupportedOperationException("Not supported yet.");
-    }
+    SceneGraphVisitorAdapter getDimensions = new SceneGraphVisitorAdapter() {
+        
+        
+        @Override
+        public void visit(Geometry geom){
+            super.visit(geom);
+            
+        }
+        
+        @Override
+        public void visit(Node node){
+            super.visit(node);
+            findRespawn(node);
+            findDimensions(node);
+            checkSpawnPoints(node);
+            countLedges(node);
+        }
+        
+        private void findRespawn(Spatial spatial){
+            if(spatial.getName().equals("respawnNode")){
+              respawnNode = (Node)spatial;
+          }
+        }
+        private void findDimensions(Spatial spatial){
+          if(spatial.getName().equals("bottomBoundingBoxNode")){
+              bot = -(((Node)spatial).getLocalTranslation().getY());
+          }
+          if(spatial.getName().equals("topBoundingBoxNode")){
+              top = ((Node)spatial).getLocalTranslation().getY();
+          }
+          if(spatial.getName().equals("rightBoundingBoxNode")){
+              right = ((Node)spatial).getLocalTranslation().getX();
+              System.out.println("Right is " + right);
+          }
+          if(spatial.getName().equals("leftBoundingBoxNode")){
+              left = -(((Node)spatial).getLocalTranslation().getX());
+          }
+        }
+              
+        private void checkSpawnPoints(Spatial spatial){
+            if(spatial.getName().equals("p1SpawnNode")){
+                p1SpawnNode = (Node)spatial;
+            }
+            if(spatial.getName().equals("p2SpawnNode")){
+                p2SpawnNode = (Node)spatial;
+            }
+            if(spatial.getName().equals("p3SpawnNode")){
+                p3SpawnNode = (Node)spatial;
+            }
+            if(spatial.getName().equals("p4SpawnNode")){
+                p4SpawnNode = (Node)spatial;
+            }
+        }
+        
+        private void countLedges(Spatial spatial){
+            if(spatial.getName().equals("ledgeNode")){
+                ledgeCount++;
+                spatial.addControl(new GhostControl(new CapsuleCollisionShape(0.5f,2,2)));
+                bulletAppState.getPhysicsSpace().add(spatial);
+            }
+        }
+        
+    };
+    
+    
+    /*Assigns controls to blast barriers.
+     */
+    SceneGraphVisitorAdapter assignControls = new SceneGraphVisitorAdapter() {
+        
+        @Override
+        public void visit(Geometry geom){
+            super.visit(geom);
+            checkForMySpatial(geom);
+        }
+        
+        @Override
+        public void visit(Node node){
+            super.visit(node);
+            checkForMySpatial(node);
+        }
+        
+       
+        private void checkForMySpatial(Spatial spatial) {
+          if(spatial.getName().equals("bottomBoundingBoxNode")){
+            boundingBoxBot = new GhostControl(new BoxCollisionShape(new Vector3f((right+left)/2,1,1)));
+            ((Node) spatial).addControl(boundingBoxBot);
+            bulletAppState.getPhysicsSpace().add(boundingBoxBot);
+          }
+          if(spatial.getName().equals("topBoundingBoxNode")){
+            boundingBoxTop = new GhostControl(new BoxCollisionShape(new Vector3f((right+left)/2,1,1)));
+            ((Node) spatial).addControl(boundingBoxTop);
+            bulletAppState.getPhysicsSpace().add(boundingBoxTop);
+          }
+          if(spatial.getName().equals("rightBoundingBoxNode")){
+            boundingBoxRight = new GhostControl(new BoxCollisionShape(new Vector3f(1,(top+bot)/2,1)));
+            ((Node) spatial).addControl(boundingBoxRight);
+            bulletAppState.getPhysicsSpace().add(boundingBoxRight);
+          }
+          if(spatial.getName().equals("leftBoundingBoxNode")){
+            boundingBoxLeft = new GhostControl(new BoxCollisionShape(new Vector3f(1,(top+bot)/2,1)));
+            ((Node) spatial).addControl(boundingBoxLeft);
+            bulletAppState.getPhysicsSpace().add(boundingBoxLeft);
+          }
+            System.out.println("Instance of " + spatial.getName());
+        }
+    };
+    
+    
+    /*Adjust bounds to differening dimensions 
+     * so the stage is uniform in terms of
+     * the blast barriers
+     */
+    SceneGraphVisitorAdapter translateBounds = new SceneGraphVisitorAdapter() {
+        
+        @Override
+        public void visit(Geometry geom){
+            super.visit(geom);
+            setTranslations(geom);
+        }
+        
+        @Override
+        public void visit(Node node){
+            super.visit(node);
+            setTranslations(node);
+        }
+        
+       
+        private void setTranslations(Spatial spatial) {
+          if(spatial.getName().equals("bottomBoundingBoxNode")){
+            ((Node)spatial).getLocalTranslation().setX((-left+right)/2);
+          }
+          if(spatial.getName().equals("topBoundingBoxNode")){
+            ((Node)spatial).getLocalTranslation().setX((-left+right)/2);
+          }
+          if(spatial.getName().equals("rightBoundingBoxNode")){
+            ((Node)spatial).getLocalTranslation().setY((top+(-bot))/2);
+          }
+          if(spatial.getName().equals("leftBoundingBoxNode")){
+            ((Node)spatial).getLocalTranslation().setY((top+(-bot))/2);
+          }
+        }
+    };
 }

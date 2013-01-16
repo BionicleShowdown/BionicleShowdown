@@ -9,7 +9,10 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
+import com.jme3.bullet.control.CharacterControl;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -42,6 +45,7 @@ public class InGameState extends AbstractAppState implements ScreenController{
     private BulletAppState bulletAppState;
     private Screen screen;
     
+    
     public InGameState(SimpleApplication app){
         this.app = (SimpleApplication) app;
         this.rootNode = app.getRootNode();
@@ -62,17 +66,49 @@ public class InGameState extends AbstractAppState implements ScreenController{
         guiNode.attachChild(localGuiNode);
         
         //Test spatial for stage
-        Box b = new Box(Vector3f.ZERO, 1, 1, 1);
+        Box b = new Box(Vector3f.ZERO, 4, 0.2f, 1);
         Geometry geom = new Geometry("Box", b);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Blue);
         geom.setMaterial(mat);
+        
+        Box q = new Box(Vector3f.ZERO, 0.3f, 0.3f, 0.3f);
+        Geometry geomq = new Geometry("Box", q);
+        Material matq = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        matq.setColor("Color", ColorRGBA.Blue);
+        geomq.setMaterial(matq);
+        
+        Geometry geoms = geomq.clone();
+        Geometry geomp = geomq.clone();
+        Geometry geoma = geomq.clone();
+        
+        Stage loadStage = new Stage(assetManager.loadModel("Scenes/TestScene.j3o"),bulletAppState);
+        
+        Node p1SpawnNode = loadStage.getp1Spawn();
+        Node p2SpawnNode = loadStage.getp2Spawn();
+        Node p3SpawnNode = loadStage.getp3Spawn();
+        Node p4SpawnNode = loadStage.getp4Spawn();
                 
+        p1SpawnNode.attachChild(geomq);
+        p2SpawnNode.attachChild(geoms);
+        p3SpawnNode.attachChild(geoma);
+        p4SpawnNode.attachChild(geomp);
         
-        Stage loadStage = new Stage(geom,7,6,0,6,bulletAppState);
+        CapsuleCollisionShape character = new CapsuleCollisionShape(.6f,.6f,1);
+        CharacterControl player = new CharacterControl(character,0.1f);
+        player.setGravity(3f);
+        Node p1 = new Node("p1");
+        Spatial playerModel = geomq.clone();
+        playerModel.setLocalScale(1f);
+        p1.attachChild(playerModel);
+        p1.addControl(player);
+        BoundingBox stageBox = (BoundingBox) geom.getWorldBound();
+        float stageLength = stageBox.getXExtent();
+        player.setPhysicsLocation(new Vector3f(-6f,4f,0f));
         
+        localRootNode.attachChild(p1);
         localRootNode.attachChild(loadStage.getStageNode());
-        
+        bulletAppState.getPhysicsSpace().add(p1);
         bulletAppState.getPhysicsSpace().enableDebug(assetManager);
         
 
