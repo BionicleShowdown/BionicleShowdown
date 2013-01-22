@@ -32,6 +32,7 @@ public class Main extends SimpleApplication {
         settings.setUseInput(true);
         settings.setTitle("Bionicle Showdown");
         settings.setSettingsDialogImage("Textures/Menu/FullVoidLogo.png");
+        //settings.setRenderer(AppSettings.LWJGL_OPENGL1);
         Main app = new Main();
         app.setSettings(settings);
         app.start();

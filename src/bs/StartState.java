@@ -65,6 +65,7 @@ public class StartState extends AbstractAppState implements ScreenController{
     
     @Override
     public void cleanup(){
+        nifty.exit();
         guiViewPort.removeProcessor(niftyDisplay);
     }
     

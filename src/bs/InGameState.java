@@ -125,6 +125,7 @@ public class InGameState extends AbstractAppState implements ScreenController{
     public void cleanup(){
         rootNode.detachChild(localRootNode);
         guiNode.detachChild(localRootNode);
+        nifty.exit();
         guiViewPort.removeProcessor(niftyDisplay);
     }
     

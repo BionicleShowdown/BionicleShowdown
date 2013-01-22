@@ -56,7 +56,7 @@ public class Player implements PhysicsCollisionListener{
         //player.setApplyPhysicsLocal(true);
         playerNode.addControl(player);
         bulletAppState.getPhysicsSpace().add(player);
-        player.setFallSpeed(300f);
+        player.setFallSpeed(0.05f);
         
     }
     
