@@ -52,17 +52,10 @@ public class Main extends SimpleApplication {
         niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         nifty = niftyDisplay.getNifty();            //Create and assign display
         
-        nifty.addXml("Interface/GUIS/StartScreenPulse.xml");        //Add all the xml files for the game
-        nifty.addXml("Interface/GUIS/InGameHUD.xml");
-        
-        nifty.gotoScreen("start");          //Just for the first one, got to the start screen
-        
-        nifty.getScreen("start").getScreenController();    //Make sure nifty knows the controllers of the screens
-        nifty.getScreen("inGameHud").getScreenController();
         
         stateManager.attach(startState);               //Attach the first start
         
-        guiViewPort.addProcessor(niftyDisplay);     //Put nifty gui into action
+        //guiViewPort.addProcessor(niftyDisplay);     //Put nifty gui into action
         flyCam.setDragToRotate(true);               //Required whne nifty gui is in use
     }
     
@@ -73,7 +66,7 @@ public class Main extends SimpleApplication {
                 if(!isRunning){
                     stateManager.detach(startState);    
                     stateManager.attach(inGameState);   //This will become the menuState for the menu 
-                    nifty.gotoScreen("inGameHud");      //Nifty is separate from the actual state, so switch screens too.
+                    //nifty.gotoScreen("inGameHud");      //Nifty is separate from the actual state, so switch screens too.
                     isRunning = !isRunning;
                 }
                 

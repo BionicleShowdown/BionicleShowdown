@@ -9,13 +9,16 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioRenderer;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
+import com.jme3.input.InputManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -42,8 +45,12 @@ public class InGameState extends AbstractAppState implements ScreenController{
     private ViewPort viewPort;
     Spatial stage;
     private Nifty nifty;
+    private NiftyJmeDisplay niftyDisplay;
     private BulletAppState bulletAppState;
     private Screen screen;
+    private InputManager inputManager;
+    private AudioRenderer audioRenderer;
+    private ViewPort guiViewPort;
     
     
     public InGameState(SimpleApplication app){
@@ -53,6 +60,9 @@ public class InGameState extends AbstractAppState implements ScreenController{
         this.assetManager = app.getAssetManager();  
         this.settings = app.getContext().getSettings();
         this.viewPort = app.getViewPort();
+        this.inputManager = app.getInputManager();
+        this.audioRenderer = app.getAudioRenderer();
+        this.guiViewPort = app.getViewPort();
         
     }
     
@@ -60,6 +70,7 @@ public class InGameState extends AbstractAppState implements ScreenController{
     public void initialize(AppStateManager stateManager, Application app){
         this.app = (SimpleApplication) app;
         bulletAppState = new BulletAppState();
+        
         stateManager.attach(bulletAppState);
        
         rootNode.attachChild(localRootNode);
@@ -84,32 +95,23 @@ public class InGameState extends AbstractAppState implements ScreenController{
         
         Stage loadStage = new Stage(assetManager.loadModel("Scenes/TestScene.j3o"),bulletAppState);
         
-        Node p1SpawnNode = loadStage.getp1Spawn();
-        Node p2SpawnNode = loadStage.getp2Spawn();
-        Node p3SpawnNode = loadStage.getp3Spawn();
-        Node p4SpawnNode = loadStage.getp4Spawn();
-                
-        p1SpawnNode.attachChild(geomq);
-        p2SpawnNode.attachChild(geoms);
-        p3SpawnNode.attachChild(geoma);
-        p4SpawnNode.attachChild(geomp);
+        Player one = new Player(geoms, bulletAppState);
+        loadStage.getp1Spawn().attachChild(one.getPlayer());
         
-        CapsuleCollisionShape character = new CapsuleCollisionShape(.6f,.6f,1);
-        CharacterControl player = new CharacterControl(character,0.1f);
-        player.setGravity(3f);
-        Node p1 = new Node("p1");
-        Spatial playerModel = geomq.clone();
-        playerModel.setLocalScale(1f);
-        p1.attachChild(playerModel);
-        p1.addControl(player);
-        BoundingBox stageBox = (BoundingBox) geom.getWorldBound();
-        float stageLength = stageBox.getXExtent();
-        player.setPhysicsLocation(new Vector3f(-6f,4f,0f));
+        one.getPlayerControl().setPhysicsLocation((((Spatial)loadStage.getp1Spawn()).getWorldTranslation()));
         
-        localRootNode.attachChild(p1);
+        loadStage.getStageNode().attachChild(geom);
+        
         localRootNode.attachChild(loadStage.getStageNode());
-        bulletAppState.getPhysicsSpace().add(p1);
         bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+        
+        niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
+        nifty = niftyDisplay.getNifty();            //Create and assign display
+        nifty.addXml("Interface/GUIS/InGameHUD.xml");
+        nifty.getScreen("inGameHud").getScreenController();
+        nifty.gotoScreen("inGameHud");          //Just for the first one, got to the start screen
+        
+        guiViewPort.addProcessor(niftyDisplay); 
         
 
     }
@@ -123,6 +125,7 @@ public class InGameState extends AbstractAppState implements ScreenController{
     public void cleanup(){
         rootNode.detachChild(localRootNode);
         guiNode.detachChild(localRootNode);
+        guiViewPort.removeProcessor(niftyDisplay);
     }
     
     @Override
@@ -137,12 +140,6 @@ public class InGameState extends AbstractAppState implements ScreenController{
        
     }
    
-    @Override
-    public void stateAttached(AppStateManager stateManager){
-        
-        
-    }
-
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
         this.screen = screen;

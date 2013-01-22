@@ -9,10 +9,10 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioRenderer;
+import com.jme3.input.InputManager;
 import com.jme3.niftygui.NiftyJmeDisplay;
-import com.jme3.scene.Node;
-import com.jme3.system.AppSettings;
-import com.jme3.ui.Picture;
+import com.jme3.renderer.ViewPort;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
@@ -23,21 +23,21 @@ import de.lessvoid.nifty.screen.ScreenController;
  */
 public class StartState extends AbstractAppState implements ScreenController{
     
-    private Node guiNode;
     private AssetManager assetManager;
     private SimpleApplication app;
-    private Node localGuiNode = new Node("Start Screen GuiNode");
-    private Picture startPic;
-    private AppSettings settings;
     private NiftyJmeDisplay niftyDisplay;
     private Nifty nifty;
+    private InputManager inputManager;
+    private AudioRenderer audioRenderer;
+    private ViewPort guiViewPort;
     private Screen screen;
     
     public StartState(SimpleApplication app){
         this.app = (SimpleApplication) app;
-        this.guiNode = app.getGuiNode();
         this.assetManager = app.getAssetManager();  
-        this.settings = app.getContext().getSettings();
+        this.inputManager = app.getInputManager();
+        this.audioRenderer = app.getAudioRenderer();
+        this.guiViewPort = app.getViewPort();
        
         
     }
@@ -45,8 +45,14 @@ public class StartState extends AbstractAppState implements ScreenController{
     @Override
     public void initialize(AppStateManager stateManager, Application app){
         super.initialize(stateManager,app);
-
         
+        niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
+        nifty = niftyDisplay.getNifty();            //Create and assign display
+        nifty.addXml("Interface/GUIS/StartScreenPulse.xml"); 
+        nifty.getScreen("start").getScreenController();
+        nifty.gotoScreen("start");          //Just for the first one, got to the start screen
+        
+        guiViewPort.addProcessor(niftyDisplay); 
     }
     
     
@@ -59,7 +65,7 @@ public class StartState extends AbstractAppState implements ScreenController{
     
     @Override
     public void cleanup(){
-        
+        guiViewPort.removeProcessor(niftyDisplay);
     }
     
     @Override

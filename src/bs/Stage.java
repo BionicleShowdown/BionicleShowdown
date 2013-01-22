@@ -4,14 +4,11 @@
  */
 package bs;
 
-import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.collision.shapes.MeshCollisionShape;
-import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -39,10 +36,6 @@ public class Stage implements PhysicsCollisionListener {
     private Node p4SpawnNode;
     private Node respawnNode;
     private BulletAppState bulletAppState;
-    private Node rightLedgeNode = new Node("Right ledge node");
-    private Node leftLedgeNode = new Node("Left ledge node");
-    private boolean leftLedgeGrabbed = false;
-    private boolean rightLedgeGrabbed= false;
     private GhostControl boundingBoxBot;
     private GhostControl boundingBoxTop;
     private GhostControl boundingBoxRight;
@@ -97,6 +90,9 @@ public class Stage implements PhysicsCollisionListener {
     public Node getp4Spawn(){
         return(p4SpawnNode);
     }
+    public Node getRespawnNode(){
+        return(respawnNode);
+    }
     
     /* Sets up spatial for stage, spawn
      * nodes for the players, and all
@@ -141,6 +137,7 @@ public class Stage implements PhysicsCollisionListener {
             if(!event.getNodeB().getName().equals("rightBoundingBoxNode") && !event.getNodeB().getName().equals("leftBoundingBoxNode")){
                 logger.log(Level.WARNING,"Item Destroyed");
                 event.getNodeB().removeFromParent();
+                bulletAppState.getPhysicsSpace().remove(event.getNodeB());
                 /*Call player life loss+respawn. Probably one function defined in player */
             }
         }
@@ -148,6 +145,7 @@ public class Stage implements PhysicsCollisionListener {
             if(!event.getNodeA().getName().equals("rightBoundingBoxNode") && !event.getNodeA().getName().equals("leftBoundingBoxNode")){
                 logger.log(Level.WARNING,"Item Destroyed");
                 event.getNodeA().removeFromParent();
+                bulletAppState.getPhysicsSpace().remove(event.getNodeA());
                 /*Call player life loss+respawn. Probably one function defined in player */
             }
         }
@@ -155,6 +153,8 @@ public class Stage implements PhysicsCollisionListener {
             if(!event.getNodeB().getName().equals("rightBoundingBoxNode") && !event.getNodeB().getName().equals("leftBoundingBoxNode")){
                 logger.log(Level.WARNING,"Item Destroyed");
                 event.getNodeB().removeFromParent();
+                bulletAppState.getPhysicsSpace().remove(event.getNodeB());
+                
                 /*Call player life loss+respawn. Probably one function defined in player */
             }
         }
@@ -162,6 +162,7 @@ public class Stage implements PhysicsCollisionListener {
             if(!event.getNodeA().getName().equals("rightBoundingBoxNode") && !event.getNodeA().getName().equals("leftBoundingBoxNode")){
                 logger.log(Level.WARNING,"Item Destroyed");
                 event.getNodeA().removeFromParent();
+                bulletAppState.getPhysicsSpace().remove(event.getNodeA());
                 /*Call player life loss+respawn. Probably one function defined in player */
             }
         }
@@ -169,6 +170,7 @@ public class Stage implements PhysicsCollisionListener {
             if(!event.getNodeB().getName().equals("topBoundingBoxNode") && !event.getNodeB().getName().equals("bottomBoundingBoxNode")){
                 logger.log(Level.WARNING,"Item Destroyed");
                 event.getNodeB().removeFromParent();
+                bulletAppState.getPhysicsSpace().remove(event.getNodeB());
                 /*Call player life loss+respawn. Probably one function defined in player */
             }
         }
@@ -176,6 +178,7 @@ public class Stage implements PhysicsCollisionListener {
             if(!event.getNodeA().getName().equals("topBoundingBoxNode") && !event.getNodeA().getName().equals("bottomBoundingBoxNode")){
                 logger.log(Level.WARNING,"Item Destroyed");
                 event.getNodeA().removeFromParent();
+                bulletAppState.getPhysicsSpace().remove(event.getNodeA());
                 /*Call player life loss+respawn. Probably one function defined in player */
             }
         }
@@ -183,6 +186,7 @@ public class Stage implements PhysicsCollisionListener {
             if(!event.getNodeB().getName().equals("topBoundingBoxNode") && !event.getNodeB().getName().equals("bottomBoundingBoxNode")){
                 logger.log(Level.WARNING,"Item Destroyed");
                 event.getNodeB().removeFromParent();
+                bulletAppState.getPhysicsSpace().remove(event.getNodeB());
                 /*Call player life loss+respawn. Probably one function defined in player */
             }
         }
@@ -190,6 +194,7 @@ public class Stage implements PhysicsCollisionListener {
             if(!event.getNodeA().getName().equals("topBoundingBoxNode") && !event.getNodeA().getName().equals("bottomBoundingBoxNode")){
                 logger.log(Level.WARNING,"Item Destroyed");
                 event.getNodeA().removeFromParent();
+                bulletAppState.getPhysicsSpace().remove(event.getNodeA());
                 /*Call player life loss+respawn. Probably one function defined in player */
             }
         }
