@@ -9,7 +9,11 @@ import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.light.DirectionalLight;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -40,6 +44,7 @@ public class Stage implements PhysicsCollisionListener {
     private GhostControl boundingBoxTop;
     private GhostControl boundingBoxRight;
     private GhostControl boundingBoxLeft;
+    //private Spatial;
     private int ledgeCount = 0;
     
     
@@ -99,7 +104,20 @@ public class Stage implements PhysicsCollisionListener {
      * the blast barriers provided in 
      * the constructor
      */
-    private void setupStage(){    
+    private void setupStage(){
+        DirectionalLight sun = new DirectionalLight();
+        sun.setDirection(new Vector3f(0f, -30f, 100f).normalizeLocal());
+        DirectionalLight sun2 = new DirectionalLight();
+        sun2.setDirection(new Vector3f(0f, -40f, -100f).normalizeLocal());
+        DirectionalLight sun3 = new DirectionalLight();
+        sun3.setDirection(new Vector3f(100f, 20f, 0f).normalizeLocal());
+        DirectionalLight sun4 = new DirectionalLight();
+        sun4.setDirection(new Vector3f(-100f, 40f, 0f).normalizeLocal());
+        
+        stageNode.addLight(sun);
+        stageNode.addLight(sun2);
+        stageNode.addLight(sun3);
+        stageNode.addLight(sun4);
         stageNode.attachChild(stage);
     }
     
@@ -277,15 +295,27 @@ public class Stage implements PhysicsCollisionListener {
         @Override
         public void visit(Geometry geom){
             super.visit(geom);
-            checkForMySpatial(geom);
+            findPlatforms(geom);
         }
         
         @Override
         public void visit(Node node){
             super.visit(node);
             checkForMySpatial(node);
+            findPlatforms(node);
         }
         
+        
+        private void findPlatforms(Spatial spatial){
+            if(spatial.getName().equals("platform")){
+                CollisionShape platformShape = CollisionShapeFactory.createMeshShape((Node) spatial);
+                RigidBodyControl platform = new RigidBodyControl(platformShape, 1);
+                platform.setKinematic(true);
+                spatial.addControl(platform);
+                bulletAppState.getPhysicsSpace().add(platform);
+                logger.log(Level.WARNING, "Found {0}", new Object[]{spatial.getName()});
+            }
+        }
        
         private void checkForMySpatial(Spatial spatial) {
           if(spatial.getName().equals("bottomBoundingBoxNode")){

@@ -17,8 +17,10 @@ import com.jme3.bullet.control.CharacterControl;
 import com.jme3.input.InputManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
+import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -51,6 +53,7 @@ public class InGameState extends AbstractAppState implements ScreenController{
     private InputManager inputManager;
     private AudioRenderer audioRenderer;
     private ViewPort guiViewPort;
+    private Camera cam;
     
     
     public InGameState(SimpleApplication app){
@@ -63,6 +66,7 @@ public class InGameState extends AbstractAppState implements ScreenController{
         this.inputManager = app.getInputManager();
         this.audioRenderer = app.getAudioRenderer();
         this.guiViewPort = app.getViewPort();
+        this.cam  = app.getCamera();
         
     }
     
@@ -77,12 +81,7 @@ public class InGameState extends AbstractAppState implements ScreenController{
         guiNode.attachChild(localGuiNode);
         
         //Test spatial for stage
-        Box b = new Box(Vector3f.ZERO, 4, 0.2f, 1);
-        Geometry geom = new Geometry("Box", b);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Blue);
-        geom.setMaterial(mat);
-        
+                
         Box q = new Box(Vector3f.ZERO, 0.3f, 0.3f, 0.3f);
         Geometry geomq = new Geometry("Box", q);
         Material matq = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -92,18 +91,16 @@ public class InGameState extends AbstractAppState implements ScreenController{
         Geometry geoms = geomq.clone();
         Geometry geomp = geomq.clone();
         Geometry geoma = geomq.clone();
-        
-        Stage loadStage = new Stage(assetManager.loadModel("Scenes/TestScene.j3o"),bulletAppState);
+        //viewPort.setBackgroundColor(ColorRGBA.LightGray);
+        Stage loadStage = new Stage(assetManager.loadModel("Scenes/StageScenes/ShowdownScene.j3o"),bulletAppState);
         
         Player one = new Player(geoms, bulletAppState);
         loadStage.getp1Spawn().attachChild(one.getPlayer());
         
         one.getPlayerControl().setPhysicsLocation((((Spatial)loadStage.getp1Spawn()).getWorldTranslation()));
         
-        loadStage.getStageNode().attachChild(geom);
-        
         localRootNode.attachChild(loadStage.getStageNode());
-        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+        //bulletAppState.getPhysicsSpace().enableDebug(assetManager);
         
         niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         nifty = niftyDisplay.getNifty();            //Create and assign display
@@ -113,7 +110,8 @@ public class InGameState extends AbstractAppState implements ScreenController{
         
         guiViewPort.addProcessor(niftyDisplay); 
         
-
+        cam.setLocation(new Vector3f(0,10,70));
+        //cam.setRotation(new Quaternion(0f,-1f,0f,0f));
     }
     
     @Override

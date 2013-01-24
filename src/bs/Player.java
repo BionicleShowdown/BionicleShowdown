@@ -31,11 +31,13 @@ public class Player implements PhysicsCollisionListener{
     private CapsuleCollisionShape character;
     private CharacterControl player;
     private BulletAppState bulletAppState;
+    private int[] userData;
     
     Player(Spatial s, BulletAppState bas){
         logger.log(Level.WARNING, "Player created");
         bulletAppState = bas;
         model = s;
+        //userData = ud;
         playerNode.attachChild(model);
         extent = ((BoundingBox) model.getWorldBound()).getExtent(new Vector3f());
         logger.log(Level.WARNING, "X: {0} Y: {1} Z: {2}", new Object[]{extent.getX(), extent.getY(), extent.getZ()});

@@ -1,0 +1,57 @@
+<scene exported_by="JSC" formatVersion="1.0.1" previous_export_time="1358909075.358" export_time="1358909970.034" >
+  <nodes >
+    <node name="Camera" >
+      <position y="0.805438" x="-0.408546" z="14.900463" />
+      <rotation qy="0.000000" qx="0.707107" qz="-0.000000" qw="0.707107" />
+      <scale y="1.000000" x="1.000000" z="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <camera projectionType="perspective" fov="0.5033799435163735" name="Camera.003" >
+        <clipping far="100.0" nearPlaneDist="0.10000000149011612" near="0.10000000149011612" farPlaneDist="100.0" />
+      </camera>
+    </node>
+    <node name="Point" >
+      <position y="4.113403" x="0.018521" z="7.935395" />
+      <rotation qy="0.000000" qx="0.000000" qz="-0.000000" qw="1.000000" />
+      <scale y="0.347888" x="0.347888" z="0.347888" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <light type="point" name="Point" powerScale="1.0" >
+        <position y="4.113403" x="0.018521" z="7.935395" />
+        <lightAttenuation range="5000" quadratic="0.0" constant="1.0" linear="0.04" />
+        <colourDiffuse r="1.0" b="1.0" g="1.0" />
+        <colourSpecular r="1.0" b="1.0" g="1.0" />
+      </light>
+    </node>
+    <node name="Mangaia" >
+      <position y="1.272382" x="0.005050" z="0.454126" />
+      <rotation qy="0.000000" qx="0.000000" qz="-0.000000" qw="1.000000" />
+      <scale y="0.347888" x="3.478882" z="1.739441" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity anisotropic_friction="False" lock_trans_y="False" damping_trans="0.02539999969303608" damping_rot="0.1589999943971634" inertia_tensor="0.4000000059604645" actor="False" velocity_min="0.0" lock_trans_z="False" physics_type="STATIC" lock_trans_x="False" meshFile="Mangaia.mesh" friction_y="1.0" friction_x="1.0" friction_z="1.0" velocity_max="0.0" ghost="False" name="Mangaia" mass_radius="1.0" mass="1.0" lock_rot_x="False" lock_rot_y="False" lock_rot_z="False" />
+    </node>
+  </nodes>
+  <externals >
+    <item type="material" >
+      <file name="C:\Users\JSC\Documents\JMonk\Bionicle Showdown\assets\Textures\Stages\Mangaia\Mangaia.material" />
+    </item>
+    <item type="material" >
+      <file name="C:\Users\JSC\Documents\JMonk\Bionicle Showdown\assets\Textures\Stages\Mangaia\Material.003.material" />
+    </item>
+    <item type="material" >
+      <file name="C:\Users\JSC\Documents\JMonk\Bionicle Showdown\assets\Textures\Stages\Mangaia\Material.002.material" />
+    </item>
+  </externals>
+  <environment >
+    <colourBackground r="0.05087608844041824" b="0.05087608844041824" g="0.05087608844041824" />
+    <colourAmbient r="0.0" b="0.0" g="0.0" />
+    <colourDiffuse r="0.05087608844041824" b="0.05087608844041824" g="0.05087608844041824" />
+  </environment>
+</scene>
