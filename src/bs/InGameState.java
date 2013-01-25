@@ -110,8 +110,8 @@ public class InGameState extends AbstractAppState implements ScreenController{
         
         guiViewPort.addProcessor(niftyDisplay); 
         
-        cam.setLocation(new Vector3f(0,10,70));
-        //cam.setRotation(new Quaternion(0f,-1f,0f,0f));
+        cam.setLocation(new Vector3f(0,15,70));
+        cam.setRotation(new Quaternion(0f,-1f,0f,0f));
     }
     
     @Override

@@ -4,6 +4,8 @@
  */
 package bs;
 
+import com.jme3.bounding.BoundingBox;
+import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
@@ -44,6 +46,7 @@ public class Stage implements PhysicsCollisionListener {
     private GhostControl boundingBoxTop;
     private GhostControl boundingBoxRight;
     private GhostControl boundingBoxLeft;
+    private float zExtent;
     //private Spatial;
     private int ledgeCount = 0;
     
@@ -105,19 +108,7 @@ public class Stage implements PhysicsCollisionListener {
      * the constructor
      */
     private void setupStage(){
-        DirectionalLight sun = new DirectionalLight();
-        sun.setDirection(new Vector3f(0f, -30f, 100f).normalizeLocal());
-        DirectionalLight sun2 = new DirectionalLight();
-        sun2.setDirection(new Vector3f(0f, -40f, -100f).normalizeLocal());
-        DirectionalLight sun3 = new DirectionalLight();
-        sun3.setDirection(new Vector3f(100f, 20f, 0f).normalizeLocal());
-        DirectionalLight sun4 = new DirectionalLight();
-        sun4.setDirection(new Vector3f(-100f, 40f, 0f).normalizeLocal());
         
-        stageNode.addLight(sun);
-        stageNode.addLight(sun2);
-        stageNode.addLight(sun3);
-        stageNode.addLight(sun4);
         stageNode.attachChild(stage);
     }
     
@@ -229,6 +220,7 @@ public class Stage implements PhysicsCollisionListener {
         @Override
         public void visit(Geometry geom){
             super.visit(geom);
+            findPlatforms(geom);
             
         }
         
@@ -238,7 +230,7 @@ public class Stage implements PhysicsCollisionListener {
             findRespawn(node);
             findDimensions(node);
             checkSpawnPoints(node);
-            countLedges(node);
+            findPlatforms(node);
         }
         
         private void findRespawn(Spatial spatial){
@@ -277,13 +269,21 @@ public class Stage implements PhysicsCollisionListener {
             }
         }
         
-        private void countLedges(Spatial spatial){
-            if(spatial.getName().equals("ledgeNode")){
-                ledgeCount++;
-                spatial.addControl(new GhostControl(new CapsuleCollisionShape(0.5f,2,2)));
-                bulletAppState.getPhysicsSpace().add(spatial);
+        private void findPlatforms(Spatial spatial){
+            if(spatial.getName().equals("platform")){
+                if(spatial.getUserData("name").equals("main")){
+                    zExtent = ((BoundingBox)spatial.getWorldBound()).getZExtent();
+                    logger.log(Level.WARNING, "Z extent is {0}", new Object[]{zExtent});
+                }
+                CollisionShape platformShape = CollisionShapeFactory.createMeshShape((Node) spatial);
+                RigidBodyControl platform = new RigidBodyControl(platformShape, 1);
+                platform.setKinematic(true);
+                spatial.addControl(platform);
+                bulletAppState.getPhysicsSpace().add(platform);
+                logger.log(Level.WARNING, "Found {0}", new Object[]{spatial.getName()});
             }
         }
+        
         
     };
     
@@ -295,50 +295,47 @@ public class Stage implements PhysicsCollisionListener {
         @Override
         public void visit(Geometry geom){
             super.visit(geom);
-            findPlatforms(geom);
         }
         
         @Override
         public void visit(Node node){
             super.visit(node);
             checkForMySpatial(node);
-            findPlatforms(node);
+            createLedges(node);
         }
         
         
-        private void findPlatforms(Spatial spatial){
-            if(spatial.getName().equals("platform")){
-                CollisionShape platformShape = CollisionShapeFactory.createMeshShape((Node) spatial);
-                RigidBodyControl platform = new RigidBodyControl(platformShape, 1);
-                platform.setKinematic(true);
-                spatial.addControl(platform);
-                bulletAppState.getPhysicsSpace().add(platform);
-                logger.log(Level.WARNING, "Found {0}", new Object[]{spatial.getName()});
-            }
-        }
        
         private void checkForMySpatial(Spatial spatial) {
           if(spatial.getName().equals("bottomBoundingBoxNode")){
-            boundingBoxBot = new GhostControl(new BoxCollisionShape(new Vector3f((right+left)/2,1,1)));
+            boundingBoxBot = new GhostControl(new BoxCollisionShape(new Vector3f((right+left)/2,1,zExtent)));
             ((Node) spatial).addControl(boundingBoxBot);
             bulletAppState.getPhysicsSpace().add(boundingBoxBot);
           }
           if(spatial.getName().equals("topBoundingBoxNode")){
-            boundingBoxTop = new GhostControl(new BoxCollisionShape(new Vector3f((right+left)/2,1,1)));
+            boundingBoxTop = new GhostControl(new BoxCollisionShape(new Vector3f((right+left)/2,1,zExtent)));
             ((Node) spatial).addControl(boundingBoxTop);
             bulletAppState.getPhysicsSpace().add(boundingBoxTop);
           }
           if(spatial.getName().equals("rightBoundingBoxNode")){
-            boundingBoxRight = new GhostControl(new BoxCollisionShape(new Vector3f(1,(top+bot)/2,1)));
+            boundingBoxRight = new GhostControl(new BoxCollisionShape(new Vector3f(1,(top+bot)/2,zExtent)));
             ((Node) spatial).addControl(boundingBoxRight);
             bulletAppState.getPhysicsSpace().add(boundingBoxRight);
           }
           if(spatial.getName().equals("leftBoundingBoxNode")){
-            boundingBoxLeft = new GhostControl(new BoxCollisionShape(new Vector3f(1,(top+bot)/2,1)));
+            boundingBoxLeft = new GhostControl(new BoxCollisionShape(new Vector3f(1,(top+bot)/2,zExtent)));
             ((Node) spatial).addControl(boundingBoxLeft);
             bulletAppState.getPhysicsSpace().add(boundingBoxLeft);
           }
             System.out.println("Instance of " + spatial.getName());
+        }
+        
+        private void createLedges(Spatial spatial){
+            if(spatial.getName().equals("ledgeNode")){
+                ledgeCount++;
+                spatial.addControl(new GhostControl(new CapsuleCollisionShape(zExtent/8,zExtent,2)));
+                bulletAppState.getPhysicsSpace().add(spatial);
+            }
         }
     };
     
@@ -359,7 +356,9 @@ public class Stage implements PhysicsCollisionListener {
         public void visit(Node node){
             super.visit(node);
             setTranslations(node);
+            
         }
+        
         
        
         private void setTranslations(Spatial spatial) {
