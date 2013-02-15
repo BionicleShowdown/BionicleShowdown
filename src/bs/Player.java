@@ -11,65 +11,99 @@ import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
+import com.jme3.input.InputManager;
+import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.AnalogListener;
+import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.input.KeyInput;
+import com.jme3.renderer.Camera;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
+import com.jme3.scene.control.AbstractControl;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mygame.Main;
 
 /**
  *
  * @author JSC
  */
-public class Player implements PhysicsCollisionListener{
-    
-    private static final Logger logger = Logger.getLogger(Stage.class.getName());
+public class Player implements PhysicsCollisionListener {
 
+    private static final Logger logger = Logger.getLogger(Stage.class.getName());
     private Spatial model;
+    private InputManager im;
+    private PlayerControl pc;
     private Node playerNode = new Node("Player");
     private Vector3f extent;
     private CapsuleCollisionShape character;
     private CharacterControl player;
     private BulletAppState bulletAppState;
-    private int[] userData;
-    
-    Player(Spatial s, BulletAppState bas){
-        logger.log(Level.WARNING, "Player created");
+    private Camera cam;
+    private int row;
+
+    /* Player class builds player with proper inputs, name, etc.
+     * Haven't worked out the passing of data nor the inputs, 
+     * but online docs should help. Look at PlayerControl for
+     * logic, this is merely setup
+     */
+    Player(int r, BulletAppState bas, InputManager ipm, Camera cm, boolean exists) {
+
         bulletAppState = bas;
-        model = s;
-        //userData = ud;
-        playerNode.attachChild(model);
+        im = ipm;
+        cam = cm;
+        row = r;
+        if(exists){
+            model = Main.getCharList().getModel(0).clone();
+        } else {
+            model = Main.getCharList().getModel(0);
+        }
+        
         extent = ((BoundingBox) model.getWorldBound()).getExtent(new Vector3f());
-        logger.log(Level.WARNING, "X: {0} Y: {1} Z: {2}", new Object[]{extent.getX(), extent.getY(), extent.getZ()});
+        model.setLocalTranslation(new Vector3f(0f,-extent.getY(),0f));
+        playerNode.attachChild(model);
         setupCharacterControl();
+        pc = new PlayerControl(im, player, cam);
+        playerNode.addControl(pc);
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
     }
     
-    public Node getPlayer(){
-        return(playerNode);
-    }
-    public CharacterControl getPlayerControl(){
-        return(player);
+    /* Return the node of the player*/
+    public Node getPlayer() {
+        return (playerNode);
     }
     
-    private void setupCharacterControl(){
-        character = new CapsuleCollisionShape(extent.getZ()+0.2f, extent.getY()+0.1f, 1);
-        player = new CharacterControl(character,0.1f);
-        //player.setApplyPhysicsLocal(true);
+    /*Return CharacterControl */
+    public CharacterControl getCharacterControl() {
+        return (player);
+    }
+
+    /* Setup CharacterControl */
+    private void setupCharacterControl() {
+        character = new CapsuleCollisionShape(extent.getZ() + 0.7f, extent.getY(), 1);
+        player = new CharacterControl(character, 1f);
+       
         playerNode.addControl(player);
         bulletAppState.getPhysicsSpace().add(player);
-        player.setFallSpeed(0.05f);
-        
+        player.setGravity(Main.getCharList().getGravity(row));
+        player.setJumpSpeed(Main.getCharList().getJumpSpeed(row));
+        player.setFallSpeed(Main.getCharList().getJumpSpeed(row));
+
     }
-    
-    public void setupFeatures(float gravity, float fallSpeed, float jumpSpeed){
+
+    /* Setup specifc features of player */
+    public void setupFeatures(float gravity, float fallSpeed, float jumpSpeed) {
         player.setGravity(gravity);
         player.setJumpSpeed(jumpSpeed);
         player.setFallSpeed(fallSpeed);
     }
-    
+
     public void collision(PhysicsCollisionEvent event) {
-        
     }
-    
 }

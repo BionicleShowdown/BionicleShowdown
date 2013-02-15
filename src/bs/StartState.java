@@ -16,13 +16,16 @@ import com.jme3.renderer.ViewPort;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import java.util.logging.Logger;
+import mygame.Main;
 
 /**
  *
  * @author CotA
  */
-public class StartState extends AbstractAppState implements ScreenController{
-    
+public class StartState extends AbstractAppState implements ScreenController {
+
+    private static final Logger logger = Logger.getLogger(InGameState.class.getName());
     private AssetManager assetManager;
     private SimpleApplication app;
     private NiftyJmeDisplay niftyDisplay;
@@ -31,51 +34,46 @@ public class StartState extends AbstractAppState implements ScreenController{
     private AudioRenderer audioRenderer;
     private ViewPort guiViewPort;
     private Screen screen;
-    
-    public StartState(SimpleApplication app){
+
+    public StartState() {
+    }
+
+    public StartState(SimpleApplication app) {
         this.app = (SimpleApplication) app;
-        this.assetManager = app.getAssetManager();  
+        this.assetManager = app.getAssetManager();
         this.inputManager = app.getInputManager();
         this.audioRenderer = app.getAudioRenderer();
         this.guiViewPort = app.getViewPort();
-       
-        
+
+
     }
-    
+
     @Override
-    public void initialize(AppStateManager stateManager, Application app){
-        super.initialize(stateManager,app);
-        
-        niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
-        nifty = niftyDisplay.getNifty();            //Create and assign display
-        nifty.addXml("Interface/GUIS/StartScreenPulse.xml"); 
-        nifty.getScreen("start").getScreenController();
+    public void initialize(AppStateManager stateManager, Application app) {
+        super.initialize(stateManager, app);
+        nifty = Main.getNifty();
+        nifty.addXml("Interface/GUIS/StartScreenPulse.xml");
+        //stateManager.attach((StartState)nifty.getScreen("start").getScreenController());
         nifty.gotoScreen("start");          //Just for the first one, got to the start screen
-        
-        guiViewPort.addProcessor(niftyDisplay); 
+
+
     }
-    
-    
-    
+
     @Override
     public void update(float tpf) {
         /* Nothing Yet*/
     }
-    
-    
+
     @Override
-    public void cleanup(){
-        nifty.exit();
-        guiViewPort.removeProcessor(niftyDisplay);
+    public void cleanup() {
     }
-    
+
     @Override
-    public void setEnabled(boolean enabled){
+    public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        
-       
+
+
     }
-    
 
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
@@ -89,6 +87,4 @@ public class StartState extends AbstractAppState implements ScreenController{
     public void onEndScreen() {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-    
 }
