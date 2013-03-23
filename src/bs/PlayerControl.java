@@ -4,6 +4,10 @@
  */
 package bs;
 
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.AnimEventListener;
+import com.jme3.animation.LoopMode;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
@@ -16,9 +20,14 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import mygame.Main;
 
-public class PlayerControl extends AbstractControl implements ActionListener, AnalogListener {
+public class PlayerControl extends AbstractControl implements ActionListener, AnalogListener, AnimEventListener {
 
     private InputManager inputManager;
     private boolean left = false, right = false;
@@ -26,15 +35,39 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private CharacterControl character;
     private int health;
     private int stock;
+    private Spatial model;
     private Camera cam;
+    private AnimChannel animationChannel;
+    private AnimControl animationControl;
+    
+    //ComboMoves
+    private ComboMove upTilt;
+    private ComboMoveExecution upTiltExec;
+    private ComboMove groundA;
+    private ComboMoveExecution groundAExec;
+    private ComboMove groundAA;
+    private ComboMoveExecution groundAAExec;
+    
+    private HashSet<String> pressedMappings = new HashSet<String>();
+    private List<ComboMove> invokedMoves = new ArrayList<ComboMove>();
+    private ComboMove currentMove = null;
+    private float currentMoveCastTime = 0;
+    private float time = 0;
+    private float airTime = 0;
 
     /* PlayerControl will manage input and collision logic */
-    PlayerControl(InputManager input, CharacterControl cc, Camera cm) {
+    PlayerControl(Spatial s,InputManager input, CharacterControl cc, Camera cm) {
+        model = s;
         character = cc;
         inputManager = input;
         initKeys();
         health = 0;
         cam = cm;
+        
+        animationControl = model.getControl(AnimControl.class);
+        animationControl.addListener(this);
+        animationChannel = animationControl.createChannel();
+        
     }
 
     @Override
@@ -44,25 +77,54 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         camDir.y = 0;
         camLeft.y = 0;
         walkDirection.set(0, 0, 0);
+        walkDirection.set(1,2,3);
+        time += tpf;
+        upTiltExec.updateExpiration(time);
+        groundAExec.updateExpiration(time);
+        groundAAExec.updateExpiration(time);
 
-        if (left) {
-            walkDirection.addLocal(camLeft);
-        }
-        if (right) {
-            walkDirection.addLocal(camLeft.negate());
-        }
 
         if (!character.onGround()) {
-            // airTime = airTime + tpf;
+            airTime = airTime + tpf;
         } else {
-            // airTime = 0;
+            airTime = 0;
         }
+        if (currentMove != null){
+            currentMoveCastTime -= tpf;
+            if (currentMoveCastTime <= 0){
+                System.out.println("THIS COMBO WAS TRIGGERED: " + currentMove.getMoveName());
 
-        if (walkDirection.length() == 0) {
-        } else {
+                currentMoveCastTime = 0;
+                
+                currentMove = null;
+            }
+            
+        }     
+        else if(left){
+            walkDirection.addLocal(camLeft);
             character.setViewDirection(walkDirection);
+               
+            if (!"Run".equals(animationChannel.getAnimationName())) {
+                animationChannel.setAnim("Run");
+            }
+         
+        } else if (right){
+            walkDirection.addLocal(camLeft.negate());
+            character.setViewDirection(walkDirection);
+               
+            if (!"Run".equals(animationChannel.getAnimationName())) {
+                animationChannel.setAnim("Run");
+            }
+        } else if (walkDirection.length() == 0 && character.onGround()) {
+            if (!"Idle".equals(animationChannel.getAnimationName())) {
+                animationChannel.setAnim("Idle");
+             }
         }
         character.setWalkDirection(walkDirection); // THIS IS WHERE THE WALKING HAPPENS
+        
+        
+        // ... update more ComboExecs here....
+
     }
 
     @Override
@@ -71,26 +133,99 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     }
 
     public void onAction(String name, boolean pressed, float tpf) {
-        health++;
-        if (name.equals("Right")) {
+         // Record pressed mappings
+        if (pressed){
+            pressedMappings.add(name);
+        }else{
+            pressedMappings.remove(name);
+        }
+
+        // The pressed mappings have changed: Update ComboExecution objects
+        if (upTiltExec.updateState(pressedMappings, time)){
+            invokedMoves.add(upTilt);
+        }
+        if (groundAExec.updateState(pressedMappings, time)){
+            invokedMoves.add(groundA);
+        }
+        if (groundAAExec.updateState(pressedMappings, time)){
+            invokedMoves.add(groundAA);
+        }
+        
+        // If any ComboMoves have been sucessfully triggered:
+        if (invokedMoves.size() > 0){
+            // identify the move with highest priorityd
+            float priority = 0;
+            ComboMove toExec = null;
+            for (ComboMove move : invokedMoves){
+                if (move.getPriority() > priority){
+                    priority = move.getPriority();
+                    toExec = move;
+                }
+            }
+            if (currentMove != null && currentMove.getPriority() > toExec.getPriority()){
+                return; // skip lower-priority moves
+            }
+
+            // If a ComboMove has been identified, store it in currentMove
+            currentMove = toExec;
+            currentMoveCastTime = currentMove.getCastTime();
+            if(checkCombo(currentMove.getMoveName())!=-1){
+                checkMove(currentMove.getMoveName());
+            }
+            if (currentMove != null && !(currentMove.getMoveName()).equals(animationChannel.getAnimationName())) {
+                System.out.println(currentMove.getMoveName());
+                animationChannel.setAnim(currentMove.getMoveName());
+                invokedMoves.remove(currentMove);
+            }
+        }
+        
+        else if (name.equals("Right") && currentMove == null) {
             if (pressed) {
                 right = true;
             } else {
                 right = false;
             }
         }
-        if (name.equals("Left")) {
+        else if (name.equals("Left") && currentMove == null) {
             if (pressed) {
                 left = true;
             } else {
                 left = false;
             }
         }
-        if (name.equals("Jump")){
+        else if (name.equals("Jump") && currentMove == null){
             character.jump();
         }
+        
+        
     }
+    private int checkCombo(String move)
+    {
+        if(move.equals("Second A") && time>3f){
+            invokedMoves.remove(currentMove);
+            currentMove = null;  
+            return(-1);
+        }
+        return(1);
+    }
+            
     
+    
+    private void checkMove(String move)
+    {
+        System.out.println(currentMoveCastTime);
+        System.out.println(move);
+        if (!character.onGround()){
+            if(move.equals("Up Tilt")){
+               invokedMoves.remove(currentMove);
+               currentMove = null;  
+            }
+            if(move.equals("First A") || move.equals("Second A")){
+               invokedMoves.remove(currentMove);
+               currentMove = null;  
+            }
+        }
+    }
 
     public int getHealth() {
         return health;
@@ -118,9 +253,38 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
 
     private void initKeys() {
 
-        inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
-        inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
-        inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_W));
-        inputManager.addListener(this, "Right","Left","Jump");
+        inputManager.addMapping("Right", new KeyTrigger(Main.player1Mappings[2]));
+        inputManager.addMapping("Left", new KeyTrigger(Main.player1Mappings[1]));
+        inputManager.addMapping("Jump", new KeyTrigger(Main.player1Mappings[0]));
+        inputManager.addMapping("Normal Attack",new KeyTrigger(Main.player1Mappings[3]));
+        inputManager.addListener(this, "Right","Left","Jump","Normal Attack");
+        
+        upTilt = new ComboMove("Up Tilt");
+        upTilt.press("Normal Attack", "Jump").done();
+        upTilt.setUseFinalState(true);
+        upTilt.setPriority(0.3f);
+        upTiltExec = new ComboMoveExecution(upTilt);
+        
+        groundA = new ComboMove("First A");
+        groundA.press("Normal Attack").done();
+        //groundA.notPress("Normal Attack").done();
+        groundA.setUseFinalState(false);
+        groundA.setPriority(0.1f);
+        groundAExec = new ComboMoveExecution(groundA);
+        
+        groundAA = new ComboMove("Second A");
+        groundAA.press("Normal Attack").done();
+        groundAA.press("Normal Attack").done();
+        groundAA.setUseFinalState(true);
+        groundAA.setPriority(0.1f);
+        groundAAExec = new ComboMoveExecution(groundAA);
+    }
+
+    public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
+
+    }
+
+    public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
 }
