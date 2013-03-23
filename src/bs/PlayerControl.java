@@ -77,7 +77,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         camDir.y = 0;
         camLeft.y = 0;
         walkDirection.set(0, 0, 0);
-        walkDirection.set(1,2,4);
+        walkDirection.set(1,2,3);
         time += tpf;
         upTiltExec.updateExpiration(time);
         groundAExec.updateExpiration(time);
