@@ -12,7 +12,7 @@ import com.jme3.scene.Spatial;
  *
  * @author JSC
  */
-public class Characters {
+public final class Characters {
     
     private AssetManager assetManager;
     Object[][] characters;

@@ -25,7 +25,7 @@ import mygame.Main;
  */
 public class StartState extends AbstractAppState implements ScreenController {
 
-    private static final Logger logger = Logger.getLogger(InGameState.class.getName());
+    private static final Logger logger = Logger.getLogger(StartState.class.getName());
     private AssetManager assetManager;
     private SimpleApplication app;
     private NiftyJmeDisplay niftyDisplay;

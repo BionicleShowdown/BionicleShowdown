@@ -71,7 +71,7 @@ public class InGameState extends AbstractAppState implements ScreenController {
         this.guiViewPort = app.getViewPort();
         this.cam = app.getCamera();
 
-
+        
     }
 
     @Override
@@ -102,40 +102,43 @@ public class InGameState extends AbstractAppState implements ScreenController {
     public void createPlayers()
     {
         int[] characters;
-        characters = new int[]{0,0,0};
+        characters = new int[]{0};
         Player one = null;
         Player two = null;
         Player three = null;
         Player four = null;
         one = new Player(characters[0], bulletAppState, inputManager, cam,false);
-        for(int i = 0; i < characters.length; i++){
-            if(characters[i] == characters[1] && i!=1){
-                two = new Player(characters[1], bulletAppState, inputManager, cam,true);
-                break;
-            }
-            if(i == characters.length-1){
-                two = new Player(characters[1], bulletAppState, inputManager, cam,false);
+        if(characters.length > 1) {
+            for(int i = 0; i < characters.length; i++){
+                if(characters[i] == characters[1] && i!=1){
+                    two = new Player(characters[1], bulletAppState, inputManager, cam,true);
+                    break;
+                }
+                if(i == characters.length-1){
+                    two = new Player(characters[1], bulletAppState, inputManager, cam,false);
+                }
             }
         }
-        
-        for(int i = 0; i < characters.length; i++){
-            if(characters[i] == characters[2] && i!=2){
-                three = new Player(characters[1], bulletAppState, inputManager, cam,true);
-                break;
-            }
-            if(i == characters.length-1){
-                three = new Player(0, bulletAppState, inputManager, cam,false);
+        if(characters.length > 2){
+            for(int i = 0; i < characters.length; i++){
+                if(characters[i] == characters[2] && i!=2){
+                    three = new Player(characters[1], bulletAppState, inputManager, cam,true);
+                    break;
+                }
+                if(i == characters.length-1){
+                    three = new Player(0, bulletAppState, inputManager, cam,false);
+                }
             }
         }
         
         
         loadStage.getp1Spawn().attachChild(one.getPlayer());
-        loadStage.getp2Spawn().attachChild(two.getPlayer());
-        loadStage.getp3Spawn().attachChild(three.getPlayer());
+        //loadStage.getp2Spawn().attachChild(two.getPlayer());
+        //loadStage.getp3Spawn().attachChild(three.getPlayer());
 
         one.getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp1Spawn()).getWorldTranslation()));
-        two.getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp2Spawn()).getWorldTranslation()));
-        three.getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp3Spawn()).getWorldTranslation()));   
+        //two.getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp2Spawn()).getWorldTranslation()));
+        //three.getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp3Spawn()).getWorldTranslation()));   
     }
     
     @Override

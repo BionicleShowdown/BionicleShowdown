@@ -28,6 +28,7 @@ public class Main extends SimpleApplication {
     private Trigger enterTrigger = new KeyTrigger(KeyInput.KEY_RETURN);
     private static Nifty nifty;
     private NiftyJmeDisplay niftyDisplay;
+    public static int[] player1Mappings = new int[]{KeyInput.KEY_W,KeyInput.KEY_A,KeyInput.KEY_D,KeyInput.KEY_O};
 
     public static void main(String[] args) {
         AppSettings settings = new AppSettings(true);
@@ -36,13 +37,14 @@ public class Main extends SimpleApplication {
         settings.setTitle("Bionicle Showdown");
         settings.setSettingsDialogImage("Textures/Menu/FullVoidLogo.png");
         Main app = new Main();
+        
         app.setSettings(settings);
         app.start();
     }
 
     @Override
     public void simpleInitApp() {
-        stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
+        //stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
         
         setDisplayStatView(true);  //For now, leave this own to ensure quality play
         setDisplayFps(true);
@@ -56,7 +58,7 @@ public class Main extends SimpleApplication {
         nifty = niftyDisplay.getNifty();
         guiViewPort.addProcessor(niftyDisplay);
         stateManager.attach(startState);               //Attach the first start
-
+        
         //guiViewPort.addProcessor(niftyDisplay);     //Put nifty gui into action
         flyCam.setEnabled(false);
         // flyCam.setDragToRotate(true);               //Required whne nifty gui is in use
