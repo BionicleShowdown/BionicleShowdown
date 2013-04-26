@@ -255,6 +255,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
                 animationChannel.setTime(.3f);
                 animationChannel.setLoopMode(LoopMode.DontLoop);
             }
+            
             jumping = false;
         }
     }
