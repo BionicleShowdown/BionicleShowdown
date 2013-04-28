@@ -177,7 +177,7 @@
             
             <panel id="StartMatchPanel" width="90%" height="5%" x="5%" y="50%" childLayout="vertical" visibleToMouse="true">
                 <image id="StartMatch" filename="Interface/MatchNotReady.png" width="100%" height="100%" visibleToMouse="true">
-                    
+                    <interact onClick="startMatch()" />
                 </image>
             </panel>
             

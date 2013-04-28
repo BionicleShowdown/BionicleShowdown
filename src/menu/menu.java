@@ -647,6 +647,11 @@ public class menu extends SimpleApplication implements ScreenController
         }     
     }
     
+    public void startMatch()
+    {
+        
+    }
+    
     
     public void printPlayerSelections()
     {
@@ -659,17 +664,17 @@ public class menu extends SimpleApplication implements ScreenController
     
     
     
-    public void toggleToFullscreen() // This toggles fullscreen, but is really ugly
-    {
-        GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        DisplayMode[] modes = device.getDisplayModes();
-        int i=0; // note: there are usually several, let's pick the first
-        settings.setResolution(modes[i].getWidth(),modes[i].getHeight());
-        settings.setFrequency(modes[i].getRefreshRate());
-        settings.setDepthBits(modes[i].getBitDepth());
-        settings.setFullscreen(device.isFullScreenSupported());
-        app.setSettings(settings);
-        app.restart(); // restart the context to apply changes
-    }
+//    public void toggleToFullscreen() // This toggles fullscreen, but is really ugly
+//    {
+//        GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+//        DisplayMode[] modes = device.getDisplayModes();
+//        int i=0; // note: there are usually several, let's pick the first
+//        settings.setResolution(modes[i].getWidth(),modes[i].getHeight());
+//        settings.setFrequency(modes[i].getRefreshRate());
+//        settings.setDepthBits(modes[i].getBitDepth());
+//        settings.setFullscreen(device.isFullScreenSupported());
+//        app.setSettings(settings);
+//        app.restart(); // restart the context to apply changes
+//    }
       
 }

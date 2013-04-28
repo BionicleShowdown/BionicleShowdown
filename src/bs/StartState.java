@@ -53,7 +53,6 @@ public class StartState extends AbstractAppState implements ScreenController {
         super.initialize(stateManager, app);
         nifty = Main.getNifty();
         nifty.addXml("Interface/GUIS/StartScreenPulse.xml");
-        //stateManager.attach((StartState)nifty.getScreen("start").getScreenController());
         nifty.gotoScreen("start");          //Just for the first one, got to the start screen
 
 

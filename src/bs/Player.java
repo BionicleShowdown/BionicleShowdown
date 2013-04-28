@@ -59,12 +59,15 @@ public class Player implements PhysicsCollisionListener {
         im = ipm;
         cam = cm;
         row = r;
+        //If the character chosen is the same, generate a clone for its model
         if(exists){
             model = Main.getCharList().getModel(0).clone();
         } else {
             model = Main.getCharList().getModel(0);
         }
         
+        //Generate Bounding Box and setup up its Character Control, then
+        //attach that control and add it to the physics space listener
         extent = ((BoundingBox) model.getWorldBound()).getExtent(new Vector3f());
         model.setLocalTranslation(new Vector3f(0f,-extent.getY(),0f));
         playerNode.attachChild(model);
@@ -85,7 +88,9 @@ public class Player implements PhysicsCollisionListener {
         return (player);
     }
 
-    /* Setup CharacterControl */
+    /* Setup CharacterControl
+     * aka main attrubutes and CapsuleCollider
+     */
     private void setupCharacterControl() {
         character = new CapsuleCollisionShape(extent.getZ() + 0.7f, extent.getY(), 1);
         player = new CharacterControl(character, 1f);
