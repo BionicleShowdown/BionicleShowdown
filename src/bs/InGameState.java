@@ -9,6 +9,8 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
+import com.jme3.audio.AudioNode.Status;
 import com.jme3.audio.AudioRenderer;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.InputManager;
@@ -55,6 +57,7 @@ public class InGameState extends AbstractAppState implements ScreenController {
     private ViewPort guiViewPort;
     private Camera cam;
     private Camera flyCam;
+    private AudioNode music;
 
     public InGameState() {
     }
@@ -80,33 +83,53 @@ public class InGameState extends AbstractAppState implements ScreenController {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
 
-        rootNode.attachChild(localRootNode);
-        guiNode.attachChild(localGuiNode);
+        rootNode.attachChild(localRootNode);    //Creates rootNode 
+        guiNode.attachChild(localGuiNode);      //Creates guiNode
 
-        loadStage = new Stage(assetManager.loadModel("Scenes/StageScenes/ShowdownScene.j3o"), bulletAppState);      
-
+        //Load Stage in Game
+        loadStage = new Stage(assetManager.loadModel("Scenes/StageScenes/ShowdownScene.j3o"), bulletAppState);   
+        
+        //Start streaming music
+        music = new AudioNode(assetManager, "Sounds/Music/Super Smash Bionicle Main Theme 2.wav", true);
+        music.play();
+        
+        //Initialize players
         createPlayers();
+        
+        //Attach stage
         localRootNode.attachChild(loadStage.getStageNode());
-
+        
         //bulletAppState.getPhysicsSpace().enableDebug(assetManager);
 
+        //Get Main's nifty
         nifty = Main.getNifty();
+        
+        //Add the InGameHUD xml file, and go this screen
         nifty.addXml("Interface/GUIS/InGameHUD.xml");
-        //stateManager.attach((InGameState)nifty.getScreen("inGameHud").getScreenController());
-        nifty.gotoScreen("inGameHud");          //Just for the first one, got to the start screen 
+        nifty.gotoScreen("inGameHud");        
 
+        //Rotate the camera to start position
         cam.setLocation(new Vector3f(0, 10, 70));
         cam.setRotation(new Quaternion(0f, -1f, 0f, 0f));
     }
-
-    public void createPlayers()
+    
+    /*Create players algo
+     * First, check the length,
+     * and with each increment in length
+     * create the next player appropriately
+     */
+    public void createPlayers()         /**STILL NEEDS ADJUSTING **/
     {
         int[] characters;
         characters = new int[]{0};
+        
+        //players are all null at start
         Player one = null;
         Player two = null;
         Player three = null;
         Player four = null;
+        
+        
         one = new Player(characters[0], bulletAppState, inputManager, cam,false);
         if(characters.length > 1) {
             for(int i = 0; i < characters.length; i++){
@@ -143,6 +166,13 @@ public class InGameState extends AbstractAppState implements ScreenController {
     
     @Override
     public void update(float tpf) {
+        //JME says looping streamed music isn't possible. So instead
+        //look for when the music is stopped, create a new
+        //instance of that music, and play it again.
+        if(music.getStatus() == Status.Stopped){
+            music = new AudioNode(assetManager, "Sounds/Music/Super Smash Bionicle Main Theme 2.wav", true);
+            music.play();
+        }
     }
 
     @Override

@@ -49,6 +49,8 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private ComboMoveExecution groundAAExec;
     private ComboMove groundAAA;
     private ComboMoveExecution groundAAAExec;
+    private ComboMove downTilt;
+    private ComboMoveExecution downTiltExec;
     
     private HashSet<String> pressedMappings = new HashSet<String>();
     private List<ComboMove> invokedMoves = new ArrayList<ComboMove>();
@@ -59,9 +61,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private boolean jumping = false;
     private boolean facingLeft = false;
     private boolean facingRight = false;
-          
-    private Vector3f current = new Vector3f(0,0,0);
-    private Vector3f last = new Vector3f(0,0,0);
+    private boolean ducking = false;
     
 
     /* PlayerControl will manage input and collision logic */
@@ -92,6 +92,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         groundAAExec.updateExpiration(time);
         groundAAAExec.updateExpiration(time);
         upTiltExec.updateExpiration(time);
+        downTiltExec.updateExpiration(time);
 
 
         if (!character.onGround()) {
@@ -122,7 +123,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     public void onAction(String name, boolean pressed, float tpf) {
         //Record pressed mappings
         if(name.equals("Left")){
-            if(pressed){
+            if(pressed && currentMove == null){
                 facingLeft = true;
                 facingRight = false;
                 left = true;
@@ -131,13 +132,21 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
             }
         }
         if(name.equals("Right")){
-            if(pressed){
+            if(pressed && currentMove == null){
                 facingRight = true;
                 facingLeft = false;
                 right = true;
             } else {
                 right = false;
             }
+        }
+        if(name.equals("Down")){
+            if(pressed && currentMove == null){
+                ducking = true;
+            } else {
+                ducking = false;
+            }
+                
         }
         if (pressed){
             pressedMappings.add(name);
@@ -146,11 +155,14 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         }
         //Update ComboExec objects if state has changed
         if(currentMove == null){
-            if (upTiltExec.updateState(pressedMappings, time)) {
+            if (upTiltExec.updateState(pressedMappings, time) ) {
                 jumping = false;
                 invokedMoves.add(upTilt);
             }
-            else if (groundAExec.updateState(pressedMappings, time)) {
+            else if(downTiltExec.updateState(pressedMappings, time)) {
+                invokedMoves.add(downTilt);
+            }
+            else if (groundAExec.updateState(pressedMappings, time) && character.onGround()) {
                 invokedMoves.add(groundA);
             }
         }
@@ -185,8 +197,8 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
             currentMove = toExec;
             currentMoveCastTime = currentMove.getCastTime();
             if(!currentMove.getMoveName().equals(animationChannel.getAnimationName())){
-                current = character.getPhysicsLocation();
                 animationChannel.setAnim(currentMove.getMoveName());
+                animationChannel.setLoopMode(LoopMode.DontLoop);
             }
             invokedMoves.remove(currentMove);       
         }
@@ -227,7 +239,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     public void IdleState(){
         
         if(!"Idle".equals(animationChannel.getAnimationName())){
-            animationChannel.setAnim("Idle");
+            animationChannel.setAnim("Idle", .2f);
         }
     }
     public boolean isIdling(){
@@ -248,20 +260,25 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
             }
         }
         if(jumping){
-            character.jump();
             if(!"Jump".equals(animationChannel.getAnimationName())){
-                //animationChannel.setSpeed(f);
-                animationChannel.setAnim("Jump");
-                animationChannel.setTime(.3f);
+                animationChannel.setSpeed(2f);
+                animationChannel.setAnim("Jump",.3f);
+                //animationChannel.setTime(.3f);
                 animationChannel.setLoopMode(LoopMode.DontLoop);
             }
-            
+            character.jump();
             jumping = false;
+        }
+        if(ducking){
+            if(!"Duck".equals(animationChannel.getAnimationName())){
+                animationChannel.setAnim("Duck",.3f);
+                animationChannel.setLoopMode(LoopMode.DontLoop);
+            }
         }
     }
     
     public boolean isActing(){
-        if((left || right || jumping) && !isFighting()){
+        if((left || right || jumping || ducking) && !isFighting()){
             return true;
         }
         return false;
@@ -282,7 +299,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
                     walkDirection.addLocal(camLeft.negate().multLocal(0.2f));
                 }
                 //character.setPhysicsLocation(newPos);
-            } else if("Second A".equals(currentMove.getMoveName()) && time < 100){
+            } else if("Second A".equals(currentMove.getMoveName()) && time < 150){
                 if(facingLeft){
                     walkDirection.addLocal(camLeft.multLocal(0.2f));
                 } else {
@@ -323,11 +340,13 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         inputManager.addMapping("Right", new KeyTrigger(Main.player1Mappings[2]));
         inputManager.addMapping("Left", new KeyTrigger(Main.player1Mappings[1]));
         inputManager.addMapping("Jump", new KeyTrigger(Main.player1Mappings[0]));
-        inputManager.addMapping("Normal Attack",new KeyTrigger(Main.player1Mappings[3]));
-        inputManager.addListener(this, "Right","Left","Jump","Normal Attack");
+        inputManager.addMapping("Down", new KeyTrigger(Main.player1Mappings[4]));
+        inputManager.addMapping("UpAction", new KeyTrigger(Main.player1Mappings[3]));
+        inputManager.addMapping("Normal Attack",new KeyTrigger(Main.player1Mappings[5]));
+        inputManager.addListener(this, "Right","Left","Jump","Normal Attack", "UpAction", "Down");
         
         groundA = new ComboMove("First A");
-        groundA.press("Normal Attack").notPress("Jump").done();   
+        groundA.press("Normal Attack").done();   
         groundA.setUseFinalState(false); 
         groundA.setPriority(0.1f);
         groundAExec = new ComboMoveExecution(groundA);
@@ -345,10 +364,16 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         groundAAAExec = new ComboMoveExecution(groundAAA);
         
         upTilt = new ComboMove("Up Tilt");
-        upTilt.press("Jump","Normal Attack").done();
+        upTilt.press("UpAction","Normal Attack").done();
         upTilt.setUseFinalState(true);
         upTilt.setPriority(0.1f);
         upTiltExec = new ComboMoveExecution(upTilt);
+        
+        downTilt = new ComboMove("D Tilt");
+        downTilt.press("Down","Normal Attack").done();
+        downTilt.setUseFinalState(true);
+        downTilt.setPriority(0.1f);
+        downTiltExec = new ComboMoveExecution(downTilt);
         
     }
 
