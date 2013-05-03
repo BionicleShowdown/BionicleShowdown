@@ -120,7 +120,7 @@ public class menu extends AbstractAppState implements ScreenController
         nifty.gotoScreen("MainMenu");          //Just for the first one, got to the start screen
         
 
-        nifty.setDebugOptionPanelColors(false);
+        nifty.setDebugOptionPanelColors(true); // Leave it on true for now, so you can see the costume buttons.
     }
     
 

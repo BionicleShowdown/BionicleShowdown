@@ -77,6 +77,7 @@ public class InGameState extends AbstractAppState implements ScreenController {
         this.guiViewPort = this.app.getViewPort();
         this.cam = this.app.getCamera();
         
+        
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
 
@@ -105,7 +106,7 @@ public class InGameState extends AbstractAppState implements ScreenController {
         nifty.gotoScreen("inGameHud");
         
         //Add the InGameHUD xml file, and go this screen
-        
+        nifty.setDebugOptionPanelColors(false); // Added this so the true on the Menu won't make the screen look weird.
 
         //Rotate the camera to start position
         cam.setLocation(new Vector3f(0, 10, 70));
