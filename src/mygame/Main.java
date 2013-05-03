@@ -14,6 +14,7 @@ import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
+import menu.menu;
 
 
 /**
@@ -25,7 +26,6 @@ public class Main extends SimpleApplication {
 
 
     public static Characters charList;
-    private InGameState inGameState;
     private StartState startState;
     private boolean isRunning = false;
     private Trigger enterTrigger = new KeyTrigger(KeyInput.KEY_RETURN);
@@ -57,8 +57,7 @@ public class Main extends SimpleApplication {
         setDisplayFps(true);
 
 
-        startState = new StartState(this);      //assign all the states here
-        inGameState = new InGameState(this);
+        startState = new StartState();      //assign all the states here
 
 
         charList = new Characters((SimpleApplication)this);
@@ -77,11 +76,8 @@ public class Main extends SimpleApplication {
             if (name.equals("Start Game") && !isPressed) {
                 if (!isRunning) {
                     stateManager.detach(startState);
-                    stateManager.attach(inGameState);   //This will become the menuState for the menu
                     isRunning = !isRunning;
                 }
-
-
             }
         }
     };

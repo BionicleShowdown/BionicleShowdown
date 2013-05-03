@@ -62,24 +62,21 @@ public class InGameState extends AbstractAppState implements ScreenController {
     public InGameState() {
     }
 
-    public InGameState(SimpleApplication app) {
-        this.app = (SimpleApplication) app;
-        this.rootNode = app.getRootNode();
-        this.guiNode = app.getGuiNode();
-        this.assetManager = app.getAssetManager();
-        this.settings = app.getContext().getSettings();
-        this.viewPort = app.getViewPort();
-        this.inputManager = app.getInputManager();
-        this.audioRenderer = app.getAudioRenderer();
-        this.guiViewPort = app.getViewPort();
-        this.cam = app.getCamera();
-
-        
-    }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
-
+        super.initialize(stateManager, app);
+        this.app = (SimpleApplication)app;
+        this.rootNode = this.app.getRootNode();
+        this.guiNode = this.app.getGuiNode();
+        this.assetManager = this.app.getAssetManager();
+        this.settings = this.app.getContext().getSettings();
+        this.viewPort = this.app.getViewPort();
+        this.inputManager = this.app.getInputManager();
+        this.audioRenderer = this.app.getAudioRenderer();
+        this.guiViewPort = this.app.getViewPort();
+        this.cam = this.app.getCamera();
+        
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
 
@@ -103,10 +100,12 @@ public class InGameState extends AbstractAppState implements ScreenController {
 
         //Get Main's nifty
         nifty = Main.getNifty();
+        nifty.registerScreenController(this);
+        nifty.addXml("Interface/GUIS/InGameHUD.xml");
+        nifty.gotoScreen("inGameHud");
         
         //Add the InGameHUD xml file, and go this screen
-        nifty.addXml("Interface/GUIS/InGameHUD.xml");
-        nifty.gotoScreen("inGameHud");        
+        
 
         //Rotate the camera to start position
         cam.setLocation(new Vector3f(0, 10, 70));
