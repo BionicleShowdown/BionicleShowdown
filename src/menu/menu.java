@@ -1,9 +1,19 @@
 
 package menu;
 
+import bs.InGameState;
+import bs.StartState;
+import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.AbstractAppState;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.app.state.VideoRecorderAppState;
+import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioRenderer;
+import com.jme3.input.InputManager;
 import com.jme3.niftygui.NiftyJmeDisplay;
+import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
@@ -28,13 +38,21 @@ import mygame.Main;
  *
  * @author JSC and Inferno
  */
-public class menu extends SimpleApplication implements ScreenController 
+public class menu extends AbstractAppState implements ScreenController 
 {
-
+    private AssetManager assetManager;
+    private SimpleApplication app;
+    private Node rootNode;
     private Nifty nifty;
     private NiftyJmeDisplay niftyDisplay;
     private Screen screen;
-    static menu app = new menu(); // Defined outside of function to allow use in all methods
+    private InputManager inputManager;
+    private AudioRenderer audioRenderer;
+    private ViewPort guiViewPort;
+    private AppStateManager stateManager;
+    private InGameState inGameState;
+    StartState startState;
+    //static menu app = new menu(); // Defined outside of function to allow use in all methods
     static AppSettings settings = new AppSettings(true); // Defined outside of function to allow use in all methods
     
     /* Intiializes the screenHeight and screenWidth so they can be used later (initialized in onStartScreen() */
@@ -42,7 +60,6 @@ public class menu extends SimpleApplication implements ScreenController
     static int screenWidth;
    
     /* Files used to initialize Button objects */
-//    File file = new File("../BionicleShowdown/assets/Interface/RGBA_Button_Test.png");
     File fightImage = new File("assets/Interface/MainMenu/Fight.png");
     File trainingImage = new File("assets/Interface/MainMenu/Training.png");
     File extrasImage = new File("assets/Interface/MainMenu/Extras.png");
@@ -53,6 +70,8 @@ public class menu extends SimpleApplication implements ScreenController
     Button trainingButton;
     Button extrasButton;
     Button optionsButton;
+    
+    
     
     /* Records the current screen the player is on. */
     int currentScreen = 0;
@@ -84,30 +103,26 @@ public class menu extends SimpleApplication implements ScreenController
     /* Records whether the TeamType is Free For All or a Team Match. */
     String teamType = "Free For All";
     
+    public menu(){}
     
     @Override
-    public void simpleInitApp() {
-//        stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
-        niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
-        nifty = niftyDisplay.getNifty();            //Create and assign display
-        
+    public void initialize(AppStateManager stateManager, Application app) {
+        super.initialize(stateManager, app);
+        this.app = (SimpleApplication) app;
+        this.assetManager = this.app.getAssetManager();
+        this.inputManager = this.app.getInputManager();
+        this.audioRenderer = this.app.getAudioRenderer();
+        this.guiViewPort = this.app.getViewPort();
+        this.stateManager = this.app.getStateManager();
+        nifty = Main.getNifty();
+        nifty.registerScreenController(this);
         nifty.addXml("Interface/screen.xml");
-        
         nifty.gotoScreen("MainMenu");          //Just for the first one, got to the start screen
         
-        nifty.getScreen("MainMenu").getScreenController();    //Make sure nifty knows the controllers of the screens
-        
-        guiViewPort.addProcessor(niftyDisplay);    //Put nifty gui into action
-        flyCam.setEnabled(false);
-        
-        nifty.setDebugOptionPanelColors(true);
+
+        nifty.setDebugOptionPanelColors(false);
     }
     
-    public static void main(String[] args) 
-    {    
-        app.setSettings(settings);
-        app.start();
-    }
 
     public void bind(Nifty nifty, Screen screen) 
     {
@@ -115,7 +130,23 @@ public class menu extends SimpleApplication implements ScreenController
         this.screen = screen;
     }
 
-    
+    @Override
+    public void update(float tpf) {
+        /* Nothing Yet*/
+    }
+
+    @Override
+    public void cleanup() {
+              
+        
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+
+
+    }
     
     public void onStartScreen() 
     {
@@ -881,7 +912,10 @@ public class menu extends SimpleApplication implements ScreenController
     
     public void startMatch()
     {
-        
+        System.out.println("Working?");
+        inGameState = new InGameState();
+        stateManager.detach(this);
+        stateManager.attach(inGameState);
     }
     
     

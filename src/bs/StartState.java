@@ -17,6 +17,7 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.util.logging.Logger;
+import menu.menu;
 import mygame.Main;
 
 /**
@@ -34,26 +35,26 @@ public class StartState extends AbstractAppState implements ScreenController {
     private AudioRenderer audioRenderer;
     private ViewPort guiViewPort;
     private Screen screen;
+    private AppStateManager stateManager;
 
     public StartState() {
     }
 
-    public StartState(SimpleApplication app) {
-        this.app = (SimpleApplication) app;
-        this.assetManager = app.getAssetManager();
-        this.inputManager = app.getInputManager();
-        this.audioRenderer = app.getAudioRenderer();
-        this.guiViewPort = app.getViewPort();
-
-
-    }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
+        this.app = (SimpleApplication) app;
+        this.assetManager = this.app.getAssetManager();
+        this.inputManager = this.app.getInputManager();
+        this.audioRenderer = this.app.getAudioRenderer();
+        this.guiViewPort = this.app.getViewPort();
+        this.stateManager = this.app.getStateManager();
         nifty = Main.getNifty();
+        nifty.registerScreenController(this);
         nifty.addXml("Interface/GUIS/StartScreenPulse.xml");
         nifty.gotoScreen("start");          //Just for the first one, got to the start screen
+        
 
 
     }
@@ -65,6 +66,8 @@ public class StartState extends AbstractAppState implements ScreenController {
 
     @Override
     public void cleanup() {
+        menu menuState = new menu();
+        stateManager.attach(menuState);
     }
 
     @Override
