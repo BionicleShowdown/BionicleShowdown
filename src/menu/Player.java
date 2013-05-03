@@ -19,6 +19,7 @@ class Player
     PlayableCharacter currentCharacter = preferredCharacter;
 //    Costumes costume = Costumes.Standard;
     Costume costume;
+    String team = "";
     boolean isPlaying = false;
     
     
@@ -86,5 +87,23 @@ class Player
         {
             return false;
         }
+    }
+    
+    public boolean hasTeam()
+    {
+        if ((currentCharacter != null) && (!playerType.equals("Null") && (!team.equals(""))))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    @Override
+    public String toString()
+    {
+        return playerNumber;
     }
 }

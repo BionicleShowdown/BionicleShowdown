@@ -19,6 +19,8 @@ import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.imageio.ImageIO;
 import mygame.Main;
 
@@ -41,10 +43,10 @@ public class menu extends SimpleApplication implements ScreenController
    
     /* Files used to initialize Button objects */
 //    File file = new File("../BionicleShowdown/assets/Interface/RGBA_Button_Test.png");
-    File fightImage = new File("../BionicleShowdown (4-28-2013)/assets/Interface/MainMenu/Fight.png");
-    File trainingImage = new File("../BionicleShowdown (4-28-2013)/assets/Interface/MainMenu/Training.png");
-    File extrasImage = new File("../BionicleShowdown (4-28-2013)/assets/Interface/MainMenu/Extras.png");
-    File optionsImage = new File("../BionicleShowdown (4-28-2013)/assets/Interface/MainMenu/Options.png");
+    File fightImage = new File("assets/Interface/MainMenu/Fight.png");
+    File trainingImage = new File("assets/Interface/MainMenu/Training.png");
+    File extrasImage = new File("assets/Interface/MainMenu/Extras.png");
+    File optionsImage = new File("assets/Interface/MainMenu/Options.png");
     
     /* Uninitialized Button objects (they are initialized in onStartScreen() */
     Button fightButton;
@@ -85,7 +87,7 @@ public class menu extends SimpleApplication implements ScreenController
     
     @Override
     public void simpleInitApp() {
-        stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
+//        stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
         niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         nifty = niftyDisplay.getNifty();            //Create and assign display
         
@@ -262,6 +264,13 @@ public class menu extends SimpleApplication implements ScreenController
             currentPlayer.costume = currentPlayer.currentCharacter.costumeKeys.get(0);
             System.out.println("------> Current costume is: " + currentPlayer.costume);
         }
+        if (teamType.equals("Team Match"))
+        {
+           if (!currentPlayer.costume.owner.equals(currentPlayer.currentCharacter.name))
+           {
+               currentPlayer.costume.owner = currentPlayer.currentCharacter.name;
+           }
+        }
         if (!currentPlayer.costume.owner.equals(currentPlayer.currentCharacter.name))
         {
             System.out.println("<-------" + currentPlayer.costume);
@@ -282,6 +291,17 @@ public class menu extends SimpleApplication implements ScreenController
         if (!costumeNotDuplicate(currentPlayer)) // If the costume is a duplicate, change the costume
         {
             setPlayerCostume(currentPlayer.playerNumber);
+        }
+        if (teamType.equals("Team Match"))
+        {
+            if (currentPlayer.team.equals(""))
+            {
+                setPlayerCostume(currentPlayer.playerNumber);
+            }
+            if (currentPlayer.costume.name.equals("Standard"))
+            {
+                setPlayerCostume(currentPlayer.playerNumber);
+            }
         }
 //        System.out.println("Before: " + currentPlayer.currentCharacter);
 //        currentPlayer.currentCharacter = character;
@@ -401,6 +421,7 @@ public class menu extends SimpleApplication implements ScreenController
         else if (teamType.equals("Team Match"))
         {
             setPlayerTeamCostume(player);
+            // TODO: Add something to actually add members to the team, or else TeamFull will not work!
         }
         else
         {
@@ -485,8 +506,62 @@ public class menu extends SimpleApplication implements ScreenController
     // Make a thing for team matches
     public void setPlayerTeamCostume(String player)
     {
+        Player temp = null;
         
+        if (player.equals("Player1"))
+        {
+            player1.costume = cyclePlayerTeam(player1);
+            temp = player1;
+        }
+        else if (player.equals("Player2"))
+        {
+            player2.costume = cyclePlayerTeam(player2);
+            temp = player2;
+        }
+        else if (player.equals("Player3"))
+        {
+            player3.costume = cyclePlayerTeam(player3);
+            temp = player3;
+        }
+        else if (player.equals("Player4"))
+        {
+            player4.costume = cyclePlayerTeam(player4);
+            temp = player4;
+        }
+        else
+        {
+            System.out.println("An Error has Occured.");
+            return;
+        }
+        
+        if (temp == null) // This may occur, I'm unsure as of yet.
+        {
+            System.out.println("An Error has Occured");
+            // System.exit(0);
+            return;
+        }
+        System.out.println("New Costume is: " + temp.costume.name);
+        
+        NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/" + temp.currentCharacter.name + "/" + temp.costume.name + ".png", false);
+        nifty.getCurrentScreen().findElementByName(player + "Select").getRenderer(ImageRenderer.class).setImage(image);
     }
+    
+//    private Costume cyclePlayerCostume(Player player)
+//    {
+//        if (teamType.equals("Free For All"))
+//        {
+//            return cyclePlayerFFACostume(player);
+//        }
+//        else if (teamType.equals("Team Match"))
+//        {
+//            return cyclePlayerTeamCostume(player);
+//        }
+//        else
+//        {
+//            System.out.println("An Error has Occured.");
+//            return player.costume;
+//        }
+//    }
     
     
     //TODO Figure out a way to implement team selections
@@ -531,6 +606,80 @@ public class menu extends SimpleApplication implements ScreenController
         }
     }
     
+    private Costume cyclePlayerTeam(Player player)
+    {
+        System.out.println("Cycling Player Team");
+        if (player.playerType.equals("Null"))
+        {
+            return new Costume("Red", player.currentCharacter.name);
+        }
+        
+        int index = 0;
+        String oldTeam = "";
+        if (player.costume == null)
+        {
+            oldTeam = player.team;
+            player.team = Team.teamList.get(index);
+            while (Team.teamFull(player.team))
+            {
+                index++;
+                if (index >= Team.teamList.size())
+                {
+                    index = 0;
+                }
+                player.team = Team.teamList.get(index);
+                System.out.println("Player's team is: " + player.team);
+            }  
+        }
+        else
+        {
+            index = Team.teamList.indexOf(player.team);
+            index++;
+            if (index >= Team.teamList.size())
+            {
+                index = 0;
+            }
+            oldTeam = player.team;
+            player.team = Team.teamList.get(index);
+            while (Team.teamFull(player.team))
+            {
+                index++;
+                if (index >= Team.teamList.size())
+                {
+                    index = 0;
+                }
+                player.team = Team.teamList.get(index);
+                System.out.println("Player's team is: " + player.team);
+            }
+        }
+        
+        System.out.println("Red team's members were: " + Team.availableTeams.get(Team.teamList.get(index)).members);
+        Team.removeMember(oldTeam, player);
+        Team.addMember(player.team, player);
+        System.out.println("Red team's members are now: " + Team.availableTeams.get(Team.teamList.get(index)).members);
+        
+        return cyclePlayerTeamCostume(player, 0);
+    }
+    
+    private Costume cyclePlayerTeamCostume(Player player, int index)
+    {
+        if (player == null)
+        {
+            return null;
+        }
+        
+        player.costume = new Costume(PlayableCharacter.teamCostumes.get(player.team).get(index), player.currentCharacter.name);
+        
+        if (costumeNotDuplicate(player))
+        {
+            return player.costume;
+        }
+        else
+        {
+            return cyclePlayerTeamCostume(player, index + 1);
+        }
+    }
+    
     private boolean costumeNotDuplicate(Player player)
     {
         boolean cond1 = true;
@@ -558,8 +707,6 @@ public class menu extends SimpleApplication implements ScreenController
         return (cond1 && cond2 && cond3 && cond4); // If all the conditions are true, then the costume is not a duplicate in the match
     }
     
-    
-  
     public void switchTeamType()
     {
       if (teamType.equals("Free For All"))
@@ -567,13 +714,45 @@ public class menu extends SimpleApplication implements ScreenController
           teamType = "Team Match";
           NiftyImage image = nifty.getRenderEngine().createImage("Interface/TeamMatch.png", false);
           nifty.getCurrentScreen().findElementByName("TeamType").getRenderer(ImageRenderer.class).setImage(image);
+          System.out.println("Changing costumes");
+//          setPlayerCostume(player1.playerNumber);
+//          setPlayerCostume(player2.playerNumber);
+//          setPlayerCostume(player3.playerNumber);
+//          setPlayerCostume(player4.playerNumber);
+          nullifyAndResetCostumesAndTeams();
       }
       else
       {
           teamType = "Free For All";
           NiftyImage image = nifty.getRenderEngine().createImage("Interface/FreeForAll.png", false);
           nifty.getCurrentScreen().findElementByName("TeamType").getRenderer(ImageRenderer.class).setImage(image);
+          System.out.println("Changing costumes");
+//          setPlayerCostume(player1.playerNumber);
+//          setPlayerCostume(player2.playerNumber);
+//          setPlayerCostume(player3.playerNumber);
+//          setPlayerCostume(player4.playerNumber);
+          nullifyAndResetCostumesAndTeams();
       }
+    }
+    
+    public void nullifyAndResetCostumesAndTeams()
+    {
+        player1.costume = null;
+        player2.costume = null;
+        player3.costume = null;
+        player4.costume = null;
+        Team.removeMember(player1.team, player1);
+        Team.removeMember(player2.team, player2);
+        Team.removeMember(player3.team, player3);
+        Team.removeMember(player4.team, player4);
+        player1.team = "";
+        player2.team = "";
+        player3.team = "";
+        player4.team = "";
+        setPlayerCostume(player1.playerNumber);
+        setPlayerCostume(player2.playerNumber);
+        setPlayerCostume(player3.playerNumber);
+        setPlayerCostume(player4.playerNumber);
     }
   
   
@@ -629,9 +808,62 @@ public class menu extends SimpleApplication implements ScreenController
         return numberOfPlayers;
     }
     
+    public int numberOfTeams()
+    {
+        List<String> teamsInvolved = new ArrayList(4);
+        if (player1.hasTeam())
+        {
+            if (!teamsInvolved.contains(player1.team))
+            {
+                teamsInvolved.add(player1.team);
+            }
+        }
+        if (player2.hasTeam())
+        {
+            if (!teamsInvolved.contains(player2.team))
+            {
+                teamsInvolved.add(player2.team);
+            }
+        }
+        if (player3.hasTeam())
+        {
+            if (!teamsInvolved.contains(player3.team))
+            {
+                teamsInvolved.add(player3.team);
+            }
+        }
+        if (player4.hasTeam())
+        {
+            if (!teamsInvolved.contains(player4.team))
+            {
+                teamsInvolved.add(player4.team);
+            }
+        }
+        
+        System.out.println(teamsInvolved);
+        return teamsInvolved.size();
+    }
+    
     public boolean matchReady()
     {
         int numberOfPlayers = numberOfPlayers();
+        int numberOfTeams = numberOfTeams();
+        
+        if (teamType.equals("Team Match"))
+        {
+            if (numberOfTeams > 1)
+            {
+                NiftyImage image = nifty.getRenderEngine().createImage("Interface/MatchReady.png", false);
+                nifty.getCurrentScreen().findElementByName("StartMatch").getRenderer(ImageRenderer.class).setImage(image);
+                return true;
+            }
+            else
+            {
+                NiftyImage image = nifty.getRenderEngine().createImage("Interface/MatchNotReady.png", false);
+                nifty.getCurrentScreen().findElementByName("StartMatch").getRenderer(ImageRenderer.class).setImage(image);
+                return false;  
+            }
+        }
         
         if (numberOfPlayers > 1)
         {
@@ -656,10 +888,14 @@ public class menu extends SimpleApplication implements ScreenController
     public void printPlayerSelections()
     {
         System.out.println(currentPlayer.playerType + " Player (" + currentPlayer.playerNumber + ") as " + currentPlayer.currentCharacter + " with " + currentPlayer.costume + " costume.");
-        System.out.println(player1.playerType + " Player as " + player1.currentCharacter + " with " + player1.costume + " costume.");
-        System.out.println(player2.playerType + " Player as " + player2.currentCharacter + " with " + player2.costume + " costume.");
-        System.out.println(player3.playerType + " Player as " + player3.currentCharacter + " with " + player3.costume + " costume.");
-        System.out.println(player4.playerType + " Player as " + player4.currentCharacter + " with " + player4.costume + " costume.");
+        System.out.println(player1.playerType + " Player as " + player1.currentCharacter + " with " + player1.costume + " costume on " + player1.team + " Team.");
+        System.out.println(player2.playerType + " Player as " + player2.currentCharacter + " with " + player2.costume + " costume on " + player2.team + " Team.");
+        System.out.println(player3.playerType + " Player as " + player3.currentCharacter + " with " + player3.costume + " costume on " + player3.team + " Team.");
+        System.out.println(player4.playerType + " Player as " + player4.currentCharacter + " with " + player4.costume + " costume on " + player4.team + " Team.");
+        for (String color : Team.availableTeams.keySet()) 
+        {
+            System.out.println("Team " + color + " has members: " + Team.stringMembers(color));
+        }
     }
     
     

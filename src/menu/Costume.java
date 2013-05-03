@@ -46,6 +46,10 @@ public class Costume
     
     public boolean equals(Costume otherCostume)
     {
+        if (otherCostume == null)
+        {
+            return false;
+        }
         if ((name == null) || (owner == null))
         {
             return false;

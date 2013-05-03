@@ -18,7 +18,7 @@ class Tahu extends PlayableCharacter
     // Creates the costume list which will be used by all instances of Tahu (to allow unlockable costumes)
 //    public static ArrayList<Costumes> tahuCostumes = new ArrayList(Arrays.asList(costumeArray));
     public static List<Costume> tahuCostumes = Costume.buildCostumeList(initialCostumeNames, "Tahu");
-    public static List<Costumes> tahuTeamCostumes = new ArrayList(Arrays.asList(teamCostumeArray));
+//    public static List<Costumes> tahuTeamCostumes = new ArrayList(Arrays.asList(teamCostumeArray));
     
     public Tahu() 
     {
