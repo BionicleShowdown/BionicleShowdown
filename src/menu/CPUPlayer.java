@@ -5,11 +5,13 @@
 
 package menu;
 
+import Characters.PlayableCharacter;
+
 /**
  *
  * @author Inferno
  */
-class CPUPlayer extends Player {
+public class CPUPlayer extends Player {
 
     public CPUPlayer() 
     {
@@ -21,9 +23,9 @@ class CPUPlayer extends Player {
         super(playerNumber, "CPU");
     }
     
-    public CPUPlayer(String playerNumber, PlayableCharacter currentCharacter)
+    public CPUPlayer(String playerNumber, PlayableCharacter currentCharacter, Costume currentCostume, String currentTeam)
     {
-        super(playerNumber, "CPU", currentCharacter);
+        super(playerNumber, "CPU", currentCharacter, currentCostume, currentTeam);
     }
 
 }

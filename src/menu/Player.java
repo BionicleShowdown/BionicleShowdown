@@ -4,46 +4,53 @@
  */
 package menu;
 
+import Characters.PlayableCharacter;
+
 /**
  *
  * @author Inferno
  */
-class Player 
+public class Player 
 {
-    String name = "";
-    String playerType = "Null";
-    String playerNumber = "";
+    public String name = "";
+    public String playerType = "Null";
+    public String playerNumber = "";
     float handicap = 0;
     float gravity = 0; // A float so it's a percentage of gravity's effect
-    PlayableCharacter preferredCharacter = null;
-    PlayableCharacter currentCharacter = preferredCharacter;
+    public PlayableCharacter preferredCharacter = null;
+    public PlayableCharacter currentCharacter = preferredCharacter;
 //    Costumes costume = Costumes.Standard;
-    Costume costume;
-    String team = "";
-    boolean isPlaying = false;
+    public Costume costume;
+    public String team = "";
+    private boolean isPlaying = false;
     
     
     
     
-    Player()
+    public Player()
     {
         
     }
     
-    Player(String playerNumber, String playerType)
+    public Player(String playerNumber, String playerType)
     {
         this.playerNumber = playerNumber;
         this.playerType = playerType;
     }
     
-    Player(String playerNumber, String playerType, PlayableCharacter currentCharacter)
+    public Player(String playerNumber, String playerType, PlayableCharacter currentCharacter, Costume currentCostume, String team)
     {
         this.playerNumber = playerNumber;
         this.playerType = playerType;
         this.currentCharacter = currentCharacter;
+        this.costume = currentCostume;
+        this.team = team;
     }
     
-    
+    public Costume getCostume()
+    {
+        return costume;
+    }
     
     public void setCharacter(PlayableCharacter character)
     {
@@ -99,6 +106,15 @@ class Player
         {
             return false;
         }
+    }
+    
+    public boolean equals(Player otherPlayer)
+    {
+        if (otherPlayer == null)
+        {
+            return false;
+        }
+        return playerNumber.equals(otherPlayer.playerNumber);
     }
     
     @Override

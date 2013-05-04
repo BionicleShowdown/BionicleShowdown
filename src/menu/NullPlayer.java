@@ -9,7 +9,7 @@ package menu;
  *
  * @author Inferno
  */
-class NullPlayer extends Player {
+public class NullPlayer extends Player {
 
     public NullPlayer()
     {

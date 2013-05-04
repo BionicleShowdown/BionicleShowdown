@@ -5,11 +5,14 @@
 
 package menu;
 
+import Characters.PlayableCharacter;
+
 /**
  *
  * @author Inferno
  */
-class HumanPlayer extends Player {
+public class HumanPlayer extends Player 
+{
 
     public HumanPlayer() 
     {
@@ -21,9 +24,9 @@ class HumanPlayer extends Player {
         super(playerNumber, "Human");
     }
     
-    public HumanPlayer(String playerNumber, PlayableCharacter currentCharacter)
+    public HumanPlayer(String playerNumber, PlayableCharacter currentCharacter, Costume currentCostume, String currentTeam)
     {
-        super(playerNumber, "Human", currentCharacter);
+        super(playerNumber, "Human", currentCharacter, currentCostume, currentTeam);
     }
 
 }

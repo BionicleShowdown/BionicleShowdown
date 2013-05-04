@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+
+
+    
+    <screen id="MainMenu" controller="menu.MainMenu">
+        <layer id="background"  childLayout="vertical" >
+            
+        </layer>
+        <layer id="foreground" childLayout="absolute">
+            <panel id="FightPanel" width="35%" height="25%" x="10%" y="20%"  childLayout="vertical" visibleToMouse = "true">
+                <image filename= "Interface/MainMenu/Fight.png" width = "100%" height = "100%" visibleToMouse = "true"> <!-- width="${CALL.getWidthPx()}" height="${CALL.getHeightPx()}" -->
+                   <!-- <effect>
+                        <onHover name="imageSize" maxSize="20%" >
+                            <hover hoverFalloffType="none" hoverWidth="100%" hoverHeight="100%" hoverFalloffConstraint="both" />                  
+                        </onHover>                                   
+                    </effect> -->
+                    <interact onClick="fightScreen()" />
+                </image>
+            </panel>
+            <panel id="TrainingPanel" width="35%" height="25%" x="55%" y="20%" childLayout="vertical" visibleToMouse = "true" >
+                <image filename= "Interface/MainMenu/Training.png" width = "100%" height = "100%" visibleToMouse = "true">
+                   <!-- <effect>
+                        <onHover name="imageSize" maxSize="20%" >
+                            <hover hoverFalloffType="none" hoverWidth="100%" hoverHeight="100%" hoverFalloffConstraint="both" />                  
+                        </onHover>                                    
+                    </effect> -->
+                    <interact onClick="trainingScreen()" />
+                </image>
+            </panel>
+            <panel id="ExtrasPanel" width="35%" height="25%" x="10%" y="55%" childLayout="vertical" visibleToMouse = "true">
+                <image filename= "Interface/MainMenu/Extras.png" width = "100%" height = "100%" visibleToMouse = "true">
+                    <!-- <effect>
+                        <onHover name="imageSize" maxSize="20%" >
+                            <hover hoverFalloffType="none" hoverWidth="100%" hoverHeight="100%" hoverFalloffConstraint="both" />                  
+                        </onHover>                                    
+                    </effect> -->
+                    <interact onClick="extrasScreen()" />
+                </image>
+            </panel>
+            <panel id="OptionsPanel" width="35%" height="25%" x="55%" y="55%" childLayout="vertical" visibleToMouse = "true" >
+                <image filename= "Interface/MainMenu/Options.png" width = "100%" height = "100%" visibleToMouse = "true">
+                    <!-- <effect>
+                        <onHover name="imageSize" maxSize="20%" >
+                            <hover hoverFalloffType="none" hoverWidth="100%" hoverHeight="100%" hoverFalloffConstraint="both" />                  
+                        </onHover>                                    
+                    </effect> -->
+                    <interact onClick="optionsScreen()" />
+                </image>
+            </panel>
+        </layer>
+        
+    </screen>
+    
+    <screen id="CharSelect" controller="menu.MainMenu">
+        <layer id="Background" childLayout="vertical">
+            
+        </layer>
+        <layer id="Foreground" childLayout="absolute">
+            
+            <panel id="BackButtonPanel" width="10%" height="7%" x="1%" y="1%" childLayout="vertical" visibleToMouse = "true">
+               <image filename="Interface/BackButton.png" width="100%" height="100%" visibleToMouse="true">
+                <interact onClick="goBack()" />
+               </image>
+            </panel>
+            
+            <panel id="TeamTypePanel" width="20%" height="7%" x="15%" y="1%" childLayout="vertical" visibleToMouse = "true">
+                <image id="TeamType" filename="Interface/FreeForAll.png" width="100%" height="100%" visibleToMouse="true">
+                    <interact onClick="switchTeamType()" />
+                </image>           
+            </panel>
+            
+            <panel id="RulesPanel" width="55%" height="7%" x="40%" y="1%" childLayout="vertical" visibleToMouse = "true">
+                <image filename="Interface/Rules.png" width="100%" height="100%" visibleToMouse="true">
+                    <!-- <interact onClick="rules()" /> -->
+                    <interact onClick="printPlayerSelections()" />
+                </image>
+            </panel>
+            
+            <panel id="TahuPanel" width="30%" height="40%" x="5%" y="10%" childLayout="vertical" visibleToMouse = "true">
+                <image filename="Interface/CharacterSelect/SelectTahu.png" width="100%" height="100%" visibleToMouse="true">
+                    <interact onClick="selectTahu()" />
+                </image>
+            </panel>
+            
+            <panel id="KopakaPanel" width="30%" height="40%" x="35%" y="10%" childLayout="vertical" visibleToMouse = "true">
+                <image id="KopakaSelect" filename="Interface/CharacterSelect/SelectKopaka.png" width="100%" height="100%" visibleToMouse="true">
+                    <interact onClick="selectKopaka()" />
+                </image>
+            </panel>
+            
+            <panel id="RandomPanel" width="30%" height="40%" x="65%" y="10%" childLayout="vertical" visibleToMouse = "true">
+                <image filename="Interface/CharacterSelect/SelectRandom.png" width="100%" height="100%" visibleToMouse="true">
+                    <interact onClick="selectRandom()" />
+                </image>
+            </panel>
+            
+            <panel id="Player1SelectPanel" width="18.75%" height="35%" x="5%" y="55%" childLayout="vertical" visibleToMouse = "true">
+                <image id="Player1Select" filename="Interface/PlayerSelect/PlayerNullSelect.png" width="100%" height="100%" visibleToMouse="true">
+                    <interact onClick="setPlayer(Player1)" />
+                </image>
+            </panel>
+            
+            <panel id="Player2SelectPanel" width="18.75%" height="35%" x="28.75%" y="55%" childLayout="vertical" visibleToMouse = "true">
+                <image id="Player2Select" filename="Interface/PlayerSelect/PlayerNullSelect.png" width="100%" height="100%" visibleToMouse="true">
+                    <interact onClick="setPlayer(Player2)" />
+                </image>
+            </panel>
+            
+            <panel id="Player3SelectPanel" width="18.75%" height="35%" x="52.5%" y="55%" childLayout="vertical" visibleToMouse = "true">
+                <image id="Player3Select" filename="Interface/PlayerSelect/PlayerNullSelect.png" width="100%" height="100%" visibleToMouse="true">
+                    <interact onClick="setPlayer(Player3)" />
+                </image>
+            </panel>
+            
+            <panel id="Player4SelectPanel" width="18.75%" height="35%" x="76.25%" y="55%" childLayout="vertical" visibleToMouse = "true">
+                <image id="Player4Select" filename="Interface/PlayerSelect/PlayerNullSelect.png" width="100%" height="100%" visibleToMouse="true">
+                    <interact onClick="setPlayer(Player4)" />
+                </image>
+            </panel>
+            
+            <panel id="Player1TypePanel" width="12.5%" height="5%" x="5%" y="90%" childLayout="vertical" visibleToMouse="true">
+                <image id="Player1Type" filename="Interface/PlayerSelect/PlayerTypeNull.png" width="100%" height="100%" visibleToMouse="true">
+                    <interact onClick="setPlayerType(Player1)" />
+                </image>
+            </panel>
+            
+            <panel id="Player1CostumePanel" width="3.125%" height="5%" x="17.5%" y="90%" childLayout="vertical" visibleToMouse="true">
+                <interact onClick="setPlayerCostume(Player1)" />
+            </panel>
+            
+            <panel id="Player1NamePanel" width="3.125%" height="5%" x="20.625%" y="90%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            
+            <panel id="Player2TypePanel" width="12.5%" height="5%" x="28.75%" y="90%" childLayout="vertical" visibleToMouse="true">
+                <image id="Player2Type" filename="Interface/PlayerSelect/PlayerTypeNull.png" width="100%" height="100%" visibleToMouse="true">
+                    <interact onClick="setPlayerType(Player2)" />
+                </image>
+            </panel>
+            
+            <panel id="Player2CostumePanel" width="3.125%" height="5%" x="41.25%" y="90%" childLayout="vertical" visibleToMouse="true">
+                <interact onClick="setPlayerCostume(Player2)" />
+            </panel>
+            
+            <panel id="Player2NamePanel" width="3.125%" height="5%" x="44.375%" y="90%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            
+            <panel id="Player3TypePanel" width="12.5%" height="5%" x="52.5%" y="90%" childLayout="vertical" visibleToMouse="true">
+                <image id="Player3Type" filename="Interface/PlayerSelect/PlayerTypeNull.png" width="100%" height="100%" visibleToMouse="true">
+                    <interact onClick="setPlayerType(Player3)" />
+                </image>
+            </panel>
+            
+            <panel id="Player3CostumePanel" width="3.125%" height="5%" x="65%" y="90%" childLayout="vertical" visibleToMouse="true">
+                <interact onClick="setPlayerCostume(Player3)" />
+            </panel>
+            
+            <panel id="Player3NamePanel" width="3.125%" height="5%" x="68.125%" y="90%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            
+            <panel id="Player4TypePanel" width="12.5%" height="5%" x="76.25%" y="90%" childLayout="vertical" visibleToMouse="true">
+                <image id="Player4Type" filename="Interface/PlayerSelect/PlayerTypeNull.png" width="100%" height="100%" visibleToMouse="true">
+                    <interact onClick="setPlayerType(Player4)" />
+                </image>
+            </panel>
+            
+            <panel id="Player4CostumePanel" width="3.125%" height="5%" x="88.75%" y="90%" childLayout="vertical" visibleToMouse="true">
+                <interact onClick="setPlayerCostume(Player4)" />
+            </panel>
+            
+            <panel id="Player4NamePanel" width="3.125%" height="5%" x="91.875%" y="90%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            
+            <panel id="StartMatchPanel" width="90%" height="5%" x="5%" y="50%" childLayout="vertical" visibleToMouse="true">
+                <image id="StartMatch" filename="Interface/MatchNotReady.png" width="100%" height="100%" visibleToMouse="true">
+                    <interact onClick="startMatch()" />
+                </image>
+            </panel>
+            
+        </layer>
+        
+        
+    </screen>
+
+</nifty>

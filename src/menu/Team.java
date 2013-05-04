@@ -5,6 +5,7 @@
 
 package menu;
 
+import Characters.PlayableCharacter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,17 +81,17 @@ public class Team
         {
             return false;
         }
-        if (team.members[0] == member)
+        if (member.equals(team.members[0]))
         {
             team.members[0] = null;
             return true;
         }
-        else if (team.members[1] == member)
+        else if (member.equals(team.members[1]))
         {
             team.members[1] = null;
             return true;
         }
-        else if (team.members[2] == member)
+        else if (member.equals(team.members[2]))
         {
             team.members[2] = null;
             return true;
@@ -161,6 +162,10 @@ public class Team
     
     public static String stringMembers(String color)
     {
+        if (color.equals(""))
+        {
+            return "No team";
+        }
         String memberList = "";
         Player[] memberArray = availableTeams.get(color).members;
         for (int i = 0; i < memberArray.length; i++) 
