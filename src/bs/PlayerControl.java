@@ -35,7 +35,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private Vector3f walkDirection = new Vector3f(0, 0, 0);
     private CharacterControl character;
     private int health;
-    private int stock;
+    private int stock = 3;
     private Spatial model;
     private Camera cam;
     private AnimChannel animationChannel;
@@ -231,6 +231,16 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         return (stock);
     }
 
+    public boolean respawn(){
+        //if players lives are greater than 1
+        if(stock > 0){
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
+    
     public void onAnalog(String name, float value, float tpf) {
         // System.out.println(name + " = " + value);
     }
