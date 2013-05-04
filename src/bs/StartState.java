@@ -17,7 +17,7 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.util.logging.Logger;
-import menu.menu;
+import menu.MainMenu;
 import mygame.Main;
 
 /**
@@ -66,7 +66,7 @@ public class StartState extends AbstractAppState implements ScreenController {
 
     @Override
     public void cleanup() {
-        menu menuState = new menu();
+        MainMenu menuState = new MainMenu();
         stateManager.attach(menuState);
     }
 

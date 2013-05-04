@@ -36,7 +36,8 @@ import mygame.Main;
  *
  * @author CotA
  */
-public class InGameState extends AbstractAppState implements ScreenController {
+public class InGameState extends AbstractAppState implements ScreenController 
+{
 
     private static final Logger logger = Logger.getLogger(InGameState.class.getName());
     private SimpleApplication app;
@@ -59,12 +60,14 @@ public class InGameState extends AbstractAppState implements ScreenController {
     private Camera flyCam;
     private AudioNode music;
 
-    public InGameState() {
+    public InGameState() 
+    {
     }
 
 
     @Override
-    public void initialize(AppStateManager stateManager, Application app) {
+    public void initialize(AppStateManager stateManager, Application app) 
+    {
         super.initialize(stateManager, app);
         this.app = (SimpleApplication)app;
         this.rootNode = this.app.getRootNode();
@@ -88,8 +91,14 @@ public class InGameState extends AbstractAppState implements ScreenController {
         loadStage = new Stage(assetManager.loadModel("Scenes/StageScenes/ShowdownScene.j3o"), bulletAppState);   
         
         //Start streaming music
-        music = new AudioNode(assetManager, "Sounds/Music/Super Smash Bionicle Main Theme 2.wav", true);
-        music.play();
+//        music = new AudioNode(assetManager, "Sounds/Music/Super Smash Bionicle Main Theme 2.wav", true);
+       
+        
+         // Can use same music node across all menus. Not sure if ideal, but it is functional, and seems to work well.
+        Main.changeMusic("Sounds/Music/Super Smash Bionicle Main Theme 2.wav"); 
+       
+        
+//        music.play();
         
         //Initialize players
         createPlayers();
@@ -131,24 +140,32 @@ public class InGameState extends AbstractAppState implements ScreenController {
         
         
         one = new Player(characters[0], bulletAppState, inputManager, cam,false);
-        if(characters.length > 1) {
-            for(int i = 0; i < characters.length; i++){
-                if(characters[i] == characters[1] && i!=1){
+        if(characters.length > 1) 
+        {
+            for(int i = 0; i < characters.length; i++)
+            {
+                if(characters[i] == characters[1] && i!=1)
+                {
                     two = new Player(characters[1], bulletAppState, inputManager, cam,true);
                     break;
                 }
-                if(i == characters.length-1){
+                if(i == characters.length-1)
+                {
                     two = new Player(characters[1], bulletAppState, inputManager, cam,false);
                 }
             }
         }
-        if(characters.length > 2){
-            for(int i = 0; i < characters.length; i++){
-                if(characters[i] == characters[2] && i!=2){
+        if(characters.length > 2)
+        {
+            for(int i = 0; i < characters.length; i++)
+            {
+                if(characters[i] == characters[2] && i!=2)
+                {
                     three = new Player(characters[1], bulletAppState, inputManager, cam,true);
                     break;
                 }
-                if(i == characters.length-1){
+                if(i == characters.length-1)
+                {
                     three = new Player(0, bulletAppState, inputManager, cam,false);
                 }
             }
@@ -165,25 +182,29 @@ public class InGameState extends AbstractAppState implements ScreenController {
     }
     
     @Override
-    public void update(float tpf) {
+    public void update(float tpf) 
+    {
         //JME says looping streamed music isn't possible. So instead
         //look for when the music is stopped, create a new
         //instance of that music, and play it again.
-        if(music.getStatus() == Status.Stopped){
-            music = new AudioNode(assetManager, "Sounds/Music/Super Smash Bionicle Main Theme 2.wav", true);
-            music.play();
-        }
+//        if(music.getStatus() == Status.Stopped)
+//        {
+//            music = new AudioNode(assetManager, "Sounds/Music/Super Smash Bionicle Main Theme 2.wav", true);
+//            music.play();
+//        }
     }
 
     @Override
-    public void cleanup() {
+    public void cleanup() 
+    {
         rootNode.detachChild(localRootNode);
         guiNode.detachChild(localRootNode);
 
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(boolean enabled) 
+    {
         super.setEnabled(enabled);
 
         if (enabled) {
@@ -194,16 +215,19 @@ public class InGameState extends AbstractAppState implements ScreenController {
 
     }
 
-    public void bind(Nifty nifty, Screen screen) {
+    public void bind(Nifty nifty, Screen screen) 
+    {
         this.nifty = nifty;
         this.screen = screen;
     }
 
-    public void onStartScreen() {
+    public void onStartScreen() 
+    {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void onEndScreen() {
+    public void onEndScreen() 
+    {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 }

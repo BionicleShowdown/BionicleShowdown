@@ -119,14 +119,14 @@ public class Button
     {
         this.height = this.image.getHeight();
         this.width = this.image.getWidth();
-        this.screenWidth = menu.screenWidth;
-        this.screenHeight = menu.screenHeight;
+        this.screenWidth = MainMenu.screenWidth;
+        this.screenHeight = MainMenu.screenHeight;
         this.imgScrX = perScrX * screenWidth;
         this.imgScrY = perScrY * screenHeight;
         this.ratioX = width/imgScrX;
         this.ratioY = height/imgScrY;
-        this.mapX = (int)(menu.screenWidth * perEdX);
-        this.mapY = (int) (menu.screenHeight * perEdY);
+        this.mapX = (int)(MainMenu.screenWidth * perEdX);
+        this.mapY = (int) (MainMenu.screenHeight * perEdY);
     }
     
     
