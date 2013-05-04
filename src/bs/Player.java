@@ -89,6 +89,8 @@ public class Player implements PhysicsCollisionListener {
     }
 
     
+    
+    
     /* Setup CharacterControl
      * aka main attrubutes and CapsuleCollider
      */
