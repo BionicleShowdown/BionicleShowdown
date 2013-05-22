@@ -8,6 +8,7 @@ import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.animation.LoopMode;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
@@ -20,6 +21,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
@@ -35,7 +37,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private Vector3f walkDirection = new Vector3f(0, 0, 0);
     private CharacterControl character;
     private int health;
-    private int stock;
+    private int stock = 3;
     private Spatial model;
     private Camera cam;
     private AnimChannel animationChannel;
@@ -231,6 +233,24 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         return (stock);
     }
 
+    public void respawn(Spatial event, Node respawn, BulletAppState bas){
+        //if players lives are greater than 1
+        if(stock > 0){
+            if(!"Idle".equals(animationChannel.getAnimationName())){
+                animationChannel.setAnim("Idle", .2f);
+            }
+            left = false;
+            right = false;
+            stock--;
+            respawn.attachChild(event);
+            character.setPhysicsLocation(respawn.getWorldTranslation());
+        } else {
+            event.removeFromParent();
+            bas.getPhysicsSpace().remove(event);
+        }
+        
+    }
+    
     public void onAnalog(String name, float value, float tpf) {
         // System.out.println(name + " = " + value);
     }
