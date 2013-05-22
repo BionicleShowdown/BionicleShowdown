@@ -15,6 +15,8 @@ import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
+import java.io.File;
+import java.io.IOException;
 import menu.MainMenu;
 
 
@@ -41,16 +43,20 @@ public class Main extends SimpleApplication
     public static int[] player1Mappings = new int[]{KeyInput.KEY_W,KeyInput.KEY_A,KeyInput.KEY_D,KeyInput.KEY_1,KeyInput.KEY_S,KeyInput.KEY_O};
 
 
-    public static void main(String[] args) 
+    public static void main(String[] args) throws IOException
     {
 //        AppSettings settings = new AppSettings(true);
+        
+
         settings.setResolution(800, 600);
         settings.setUseInput(true);
         settings.setTitle("Bionicle Showdown");
         settings.setSettingsDialogImage("Textures/Menu/FullVoidLogo.png");
-        Main app = new Main();
+        SimpleApplication app = new Main();
         
         app.setSettings(settings);
+        
+        
         app.start();
     }
 
@@ -74,9 +80,9 @@ public class Main extends SimpleApplication
         niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         nifty = niftyDisplay.getNifty();
         guiViewPort.addProcessor(niftyDisplay);
-        stateManager.attach(startState);               //Attach the first start
+        stateManager.attach(startState);               //Attach the first state
 
-
+        
         flyCam.setEnabled(false);
     }
     /*This ActionListener will handle all the switching of states*/
@@ -152,6 +158,7 @@ public class Main extends SimpleApplication
 //        {
 //            music.stop();
 //        }
+        // Couldn't you just use music.setLooping(true); ? That would loop it without having to check, I believe.
         if(music.getStatus() == AudioNode.Status.Stopped)
         {
             music = new AudioNode(assetManager, musicSelection, true);

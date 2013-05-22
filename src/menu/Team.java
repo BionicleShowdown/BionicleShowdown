@@ -9,6 +9,7 @@ import Characters.PlayableCharacter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -97,6 +98,31 @@ public class Team
             return true;
         }
         return false;
+    }
+    
+    /**
+     * Clears the chosen team of all members.
+     * @param color 
+     */
+    public static void clearTeam(String color)
+    {
+        Team team = availableTeams.get(color);
+        for (int i = 0; i < team.members.length; i++) 
+        {
+            team.members[i] = null; 
+        }
+    }
+    
+    /**
+     * Clears members from all teams.
+     */
+    public static void clearAllMembers()
+    {
+        Set<String> teams = availableTeams.keySet();
+        for (String color : teams) 
+        {
+            clearTeam(color);
+        }
     }
     
     /**

@@ -1,5 +1,6 @@
 package menu;
 
+import de.lessvoid.nifty.elements.Element;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -12,32 +13,41 @@ import javax.imageio.ImageIO;
  */
 public class Button 
 {
-    String fileName;
-    File file;
-    int height;
-    int width;
-    double perEdX; // Percent from edge along the x-axis
-    double perEdY; // Percent from edge along the y-axis
-    double perScrX; // Percent width of button
-    double perScrY; // Percent height of button
+    String fileName = "";
+    File file = null;
+    Element element = null;
+    int height = 0;
+    int width = 0;
+    double perEdX = 0.0; // Percent from edge along the x-axis
+    double perEdY = 0.0; // Percent from edge along the y-axis
+    double perScrX = 0.0; // Percent width of button
+    double perScrY = 0.0; // Percent height of button
     BufferedImage image = null;
     
-    int screenWidth;
-    int screenHeight;
+    int screenWidth = 0;
+    int screenHeight = 0;
     
-    double imgScrX;
-    double imgScrY;
+    double imgScrX = 0.0;
+    double imgScrY = 0.0;
     
-    double ratioX; // The ratio of the button Image's width to the width it has on the screen
-    double ratioY; // The ratio of the button Image's height to the height it has on the screen
+    double ratioX = 0.0; // The ratio of the button Image's width to the width it has on the screen
+    double ratioY = 0.0; // The ratio of the button Image's height to the height it has on the screen
     
-    int mapX; // How far the x-component of the cursor's click needs to be shifted to coorespond to the correct pixel on the image
-    int mapY; // How far the y-component of the cursor's click needs to be shifted to coorespond to the correct pixel on the image
+    int mapX = 0; // How far the x-component of the cursor's click needs to be shifted to coorespond to the correct pixel on the image
+    int mapY = 0; // How far the y-component of the cursor's click needs to be shifted to coorespond to the correct pixel on the image
     
    public Button() // Null Constructor
     {
     }
     
+   /**
+    * Used to make Buttons with relative (percentage) locations and sizes.
+    * @param file
+    * @param perEdX
+    * @param perEdY
+    * @param perScrX
+    * @param perScrY 
+    */
     public Button(File file, double perEdX, double perEdY, double perScrX, double perScrY)
     {
         this.file = file;
@@ -48,6 +58,22 @@ public class Button
         this.perScrY = perScrY;
         this.refresh(); // Make sures all necessary values dependent on the input values are initialized correctly 
         
+    }
+    
+    /**
+     * Used to make Buttons with exact pixel locations.
+     * @param file
+     * @param element The actual element
+     */
+    public Button(File file, Element element)
+    {
+        this.file = file;
+        this.element = element;
+        this.makeBufferedImage();
+        this.ratioX = 1;
+        this.ratioY = 1;
+        this.mapX = element.getX();
+        this.mapY = element.getY();
     }
     
     public boolean fileExists()
@@ -129,7 +155,11 @@ public class Button
         this.mapY = (int) (MainMenu.screenHeight * perEdY);
     }
     
-    
+    public void mobileRefresh()
+    {
+        this.mapX = element.getX();
+        this.mapY = element.getY();
+    }
     
     
 }
