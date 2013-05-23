@@ -13,8 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import menu.Costume;
-import menu.Costumes;
-import menu.Player;
+import Players.Player;
 import menu.Team;
 
 /**
@@ -32,13 +31,9 @@ public class PlayableCharacter
     protected String modelPath; // String because it'll be passed to the GUI as the pathname.
     protected Spatial model;
     protected Material material;
-    protected final static Costumes[] costumeArray = {Costumes.Standard, Costumes.Alignment, Costumes.Inverse, Costumes.Reverse, Costumes.Special};
     protected final static String[] initialCostumeNames = {"Standard", "Alignment", "Inverse", "Reverse"};//, "Special"};
     protected final static String[] initialTeams = {"Red", "Blue"};//, "Green"};
     private AssetManager assetManager;
-//    protected final static Costumes[] teamCostumeArray = {Costumes.Red, Costumes.LightRed, Costumes.DarkRed, Costumes.Blue, Costumes.LightBlue, Costumes.DarkBlue, Costumes.Green, Costumes.LightGreen, Costumes.DarkGreen};
-//    ArrayList<Costumes> costumeKeys = new ArrayList(); // A list which holds all regular costumes
-//    ArrayList<Costumes> teamCostumeKeys = new ArrayList(); // A list which holds all team costumes
     public List<Costume> costumeKeys = new ArrayList(); // A list which holds all regular costumes
     public List<Costume> teamCostumeKeys = new ArrayList(); // A list which holds all team costumes
     public static HashMap<String, List<String>> teamCostumes = Team.buildTeamMap(initialTeams);
@@ -73,11 +68,13 @@ public class PlayableCharacter
         return symbol;
     }
     
+    // Could be done from Player class. May make more sense.
     public void initializeCharacter(SimpleApplication app, Player player)
     {
         assetManager = app.getAssetManager();
-        model = assetManager.loadModel(modelPath);
-        material = new Material(assetManager, "Materials/Characters/" + player.getCostume());
+        modelPath = "Models/Characters/" + name + "/" + name + ".mesh.j3o";
+        model = assetManager.loadModel(modelPath); 
+        material = new Material(assetManager, "Textures/Characters/" + player.getCostume()); // Only need to get the Costume because Costume's toString includes the character name
         
     }
     

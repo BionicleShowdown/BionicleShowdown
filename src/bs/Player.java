@@ -34,7 +34,8 @@ import mygame.Main;
  *
  * @author JSC
  */
-public class Player implements PhysicsCollisionListener {
+public class Player implements PhysicsCollisionListener 
+{
 
     private static final Logger logger = Logger.getLogger(Stage.class.getName());
     private Spatial model;
@@ -53,16 +54,19 @@ public class Player implements PhysicsCollisionListener {
      * but online docs should help. Look at PlayerControl for
      * logic, this is merely setup
      */
-    Player(int r, BulletAppState bas, InputManager ipm, Camera cm, boolean exists) {
+    Player(int r, BulletAppState bas, InputManager ipm, Camera cm, boolean exists) 
+    {
 
         bulletAppState = bas;
         im = ipm;
         cam = cm;
         row = r;
         //If the character chosen is the same, generate a clone for its model
-        if(exists){
+        if(exists)
+        {
             model = Main.getCharList().getModel(0).clone();
-        } else {
+        } else 
+        {
             model = Main.getCharList().getModel(0);
         }
         
@@ -79,12 +83,14 @@ public class Player implements PhysicsCollisionListener {
     }
     
     /* Return the node of the player*/
-    public Node getPlayer() {
+    public Node getPlayer() 
+    {
         return (playerNode);
     }
     
     /*Return CharacterControl */
-    public CharacterControl getCharacterControl() {
+    public CharacterControl getCharacterControl() 
+    {
         return (player);
     }
 
@@ -94,7 +100,8 @@ public class Player implements PhysicsCollisionListener {
     /* Setup CharacterControl
      * aka main attrubutes and CapsuleCollider
      */
-    private void setupCharacterControl() {
+    private void setupCharacterControl() 
+    {
         character = new CapsuleCollisionShape(extent.getZ() + 0.7f, extent.getY(), 1);
         player = new CharacterControl(character, 1f);
        
@@ -107,7 +114,8 @@ public class Player implements PhysicsCollisionListener {
     }
 
     /* Setup specifc features of player */
-    public void setupFeatures(float gravity, float fallSpeed, float jumpSpeed) {
+    public void setupFeatures(float gravity, float fallSpeed, float jumpSpeed) 
+    {
         player.setGravity(gravity);
         player.setJumpSpeed(jumpSpeed);
         player.setFallSpeed(fallSpeed);

@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package menu;
+package Players;
 
 import Characters.PlayableCharacter;
+import menu.Costume;
 
 /**
  *
@@ -19,7 +20,6 @@ public class Player
     float gravity = 0; // A float so it's a percentage of gravity's effect
     public PlayableCharacter preferredCharacter = null;
     public PlayableCharacter currentCharacter = preferredCharacter;
-//    Costumes costume = Costumes.Standard;
     public Costume costume;
     public String team = "";
     private boolean isPlaying = false;

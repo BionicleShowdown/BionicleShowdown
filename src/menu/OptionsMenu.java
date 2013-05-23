@@ -95,11 +95,13 @@ public class OptionsMenu implements ScreenController
         if (volume == 0)
         {
             Main.getMusic().setVolume(preMuteVolume);
+            Main.setMusicVolume(preMuteVolume);
         }
         else
         {
             preMuteVolume = Main.getMusic().getVolume();
             Main.getMusic().setVolume(0);
+            Main.setMusicVolume(0);
         }
     }
     
@@ -154,6 +156,7 @@ public class OptionsMenu implements ScreenController
             volume = 1;
         }
         System.out.println("" + event.getValue());
+        Main.setMusicVolume(volume);
         Main.getMusic().setVolume(volume);
     }
     

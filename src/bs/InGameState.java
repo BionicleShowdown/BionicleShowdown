@@ -30,6 +30,7 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.util.logging.Logger;
+import menu.Match;
 import mygame.Main;
 
 /**
@@ -59,9 +60,17 @@ public class InGameState extends AbstractAppState implements ScreenController
     private Camera cam;
     private Camera flyCam;
     private AudioNode music;
+    
+    private Match currentMatch;
 
     public InGameState() 
     {
+        
+    }
+    
+    public InGameState(Match currentMatch)
+    {
+        this.currentMatch = currentMatch;
     }
 
 

@@ -1,6 +1,9 @@
 
 package menu;
 
+import Players.CPUPlayer;
+import Players.Player;
+import Players.HumanPlayer;
 import Characters.Tahu;
 import Characters.Kopaka;
 import Characters.PlayableCharacter;
@@ -471,6 +474,7 @@ public class CharacterSelectMenu implements ScreenController
         if (teamType.equals("Free For All"))
         {
             setPlayerFFACostume(player);
+            matchReady();
         }
         else if (teamType.equals("Team Match"))
         {
@@ -919,7 +923,8 @@ public class CharacterSelectMenu implements ScreenController
     public void startMatch(String id, NiftyMousePrimaryClickedEvent event)
     {
         System.out.println("Working?");
-        inGameState = new InGameState();
+        Match currentMatch = new Match(player1, player2, player3, player4);
+        inGameState = new InGameState(currentMatch);
         stateManager.detach(mainMenu);
         stateManager.attach(inGameState);
     }
@@ -940,21 +945,6 @@ public class CharacterSelectMenu implements ScreenController
             System.out.println("Team " + color + " has members: " + Team.stringMembers(color));
         }
     }
-    
-    
-    
-//    public void toggleToFullscreen() // This toggles fullscreen, but is really ugly
-//    {
-//        GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-//        DisplayMode[] modes = device.getDisplayModes();
-//        int i=0; // note: there are usually several, let's pick the first
-//        settings.setResolution(modes[i].getWidth(),modes[i].getHeight());
-//        settings.setFrequency(modes[i].getRefreshRate());
-//        settings.setDepthBits(modes[i].getBitDepth());
-//        settings.setFullscreen(device.isFullScreenSupported());
-//        app.setSettings(settings);
-//        app.restart(); // restart the context to apply changes
-//    }
 
     // Could change this part to just initialize all button images correctly
     private void clearPlayersAndTeams() 

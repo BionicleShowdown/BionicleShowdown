@@ -37,6 +37,7 @@ public class Main extends SimpleApplication
     private NiftyJmeDisplay niftyDisplay;
     private static AudioNode music;
     public static String musicSelection = "Sounds/Music/Fire and Ice.wav";
+    private static float musicVolume = 1.0f;
     private static AppSettings settings = new AppSettings(true); // Made this outside of main method so it could be acquired with getSettings()
     
     //Temp Input Mappigns for testing
@@ -132,6 +133,11 @@ public class Main extends SimpleApplication
         music.stop();
         musicSelection = newMusicSelection;
     }
+    
+    public static void setMusicVolume(float volume)
+    {
+        musicVolume = volume;
+    }
 
 
     private void initKeys() 
@@ -162,6 +168,7 @@ public class Main extends SimpleApplication
         if(music.getStatus() == AudioNode.Status.Stopped)
         {
             music = new AudioNode(assetManager, musicSelection, true);
+            music.setVolume(musicVolume);
             music.play();
         }
     }
