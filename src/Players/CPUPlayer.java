@@ -3,9 +3,10 @@
  * and open the template in the editor.
  */
 
-package menu;
+package Players;
 
 import Characters.PlayableCharacter;
+import menu.Costume;
 
 /**
  *

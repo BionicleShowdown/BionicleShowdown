@@ -32,6 +32,7 @@ import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.util.ArrayList;
 import java.util.logging.Logger;
+import menu.Match;
 import mygame.Main;
 
 /**
@@ -63,8 +64,16 @@ public class InGameState extends AbstractAppState implements ScreenController
     private Camera flyCam;
     private AudioNode music;
     
+    private Match currentMatch;
+
     public InGameState() 
     {
+        
+    }
+    
+    public InGameState(Match currentMatch)
+    {
+        this.currentMatch = currentMatch;
     }
 
 
@@ -90,19 +99,9 @@ public class InGameState extends AbstractAppState implements ScreenController
         rootNode.attachChild(localRootNode);    //Creates rootNode 
         guiNode.attachChild(localGuiNode);      //Creates guiNode
 
-        //Load Stage in Game
-        
-        
-        //Start streaming music
-//        music = new AudioNode(assetManager, "Sounds/Music/Super Smash Bionicle Main Theme 2.wav", true);
-       
-        
          // Can use same music node across all menus. Not sure if ideal, but it is functional, and seems to work well.
         Main.changeMusic("Sounds/Music/Super Smash Bionicle Main Theme 2.wav"); 
-       
-        
-//        music.play();
-        
+
         //Initialize enviornment
         createEnviron();
         
@@ -132,56 +131,86 @@ public class InGameState extends AbstractAppState implements ScreenController
      */
     public void createEnviron()         /**STILL NEEDS ADJUSTING **/
     {
-        int[] characters;
-        characters = new int[]{0};
         
         //players are all null at start
-        Player one = null;
-        Player two = null;
-        Player three = null;
-        Player four = null;
+        PlayerPhysics[] players = new PlayerPhysics[4];
+        players[0] = null; 
+        players[1] = null;
+        players[2] = null;
+        players[3] = null;
         
         
-        one = new Player(characters[0], bulletAppState, inputManager, cam,false);
-        if(characters.length > 1) 
+        players[0] = new PlayerPhysics(currentMatch.getPlayer1(), bulletAppState, inputManager, cam,false);
+        for(int i = 1; i < 4; i++)
         {
-            for(int i = 0; i < characters.length; i++)
-            {
-                if(characters[i] == characters[1] && i!=1)
-                {
-                    two = new Player(characters[1], bulletAppState, inputManager, cam,true);
+            switch(i){
+                case 1:
+                    if(!currentMatch.getPlayer2().canPlay()){
+                        break;
+                    } else if(currentMatch.getPlayer2().sameCharacter(currentMatch.getPlayer1())){
+                        //players[1]= new PlayerPhysics(currentMatch.getPlayer2(), bulletAppState, inputManager, cam,true);
+                    } else {
+                        //players[1]= new PlayerPhysics(currentMatch.getPlayer2(), bulletAppState, inputManager, cam,false);
+                    }
                     break;
-                }
-                if(i == characters.length-1)
-                {
-                    two = new Player(characters[1], bulletAppState, inputManager, cam,false);
-                }
-            }
-        }
-        if(characters.length > 2)
-        {
-            for(int i = 0; i < characters.length; i++)
-            {
-                if(characters[i] == characters[2] && i!=2)
-                {
-                    three = new Player(characters[1], bulletAppState, inputManager, cam,true);
+                case 2:
+                    if(!currentMatch.getPlayer3().canPlay()){
+                        break;
+                    }else if(currentMatch.getPlayer3().sameCharacter(currentMatch.getPlayer2()) || currentMatch.getPlayer3().sameCharacter(currentMatch.getPlayer1())){
+                       // players[2]= new PlayerPhysics(currentMatch.getPlayer3(), bulletAppState, inputManager, cam,true);
+                    } else {
+                       // players[2]= new PlayerPhysics(currentMatch.getPlayer3(), bulletAppState, inputManager, cam,false);
+                    }
                     break;
-                }
-                if(i == characters.length-1)
-                {
-                    three = new Player(0, bulletAppState, inputManager, cam,false);
-                }
+                case 3:
+                    if(!currentMatch.getPlayer4().canPlay()){
+                        break;
+                    }else if(currentMatch.getPlayer4().sameCharacter(currentMatch.getPlayer3()) || currentMatch.getPlayer4().sameCharacter(currentMatch.getPlayer2()) || currentMatch.getPlayer4().sameCharacter(currentMatch.getPlayer1())){
+                      //  players[3]= new PlayerPhysics(currentMatch.getPlayer3(), bulletAppState, inputManager, cam,true);
+                    } else {
+                      //  players[3]= new PlayerPhysics(currentMatch.getPlayer3(), bulletAppState, inputManager, cam,false);
+                    }
+                    break;
+                    
             }
         }
         
         loadStage = new Stage(assetManager.loadModel("Scenes/StageScenes/ShowdownScene.j3o"), bulletAppState);  
         ledges = loadStage.getLedges();
         
-        loadStage.getp1Spawn().attachChild(one.getPlayer());
+        for(int i = 0; i < 4; i++){
+            switch (i){
+                case 0:
+                    if(players[0] != null){
+                        loadStage.getp1Spawn().attachChild(players[i].getPlayer());
+                        players[i].getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp1Spawn()).getWorldTranslation()));
+                    }
+                    break;
+                case 1:
+                    if(players[1] != null){
+                        loadStage.getp2Spawn().attachChild(players[i].getPlayer());
+                        players[i].getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp1Spawn()).getWorldTranslation()));
+                    }
+                    break;
+                case 2:
+                    if(players[2] != null){
+                        loadStage.getp3Spawn().attachChild(players[i].getPlayer());
+                        players[i].getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp1Spawn()).getWorldTranslation()));
+                    }
+                    break;
+                case 3:
+                    if(players[3] != null){
+                        loadStage.getp4Spawn().attachChild(players[i].getPlayer());
+                        players[i].getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp1Spawn()).getWorldTranslation()));
+                    }
+                    break;
+            }
+        }
+            
         //loadStage.getp2Spawn().attachChild(two.getPlayer());
         //loadStage.getp3Spawn().attachChild(three.getPlayer());
 
-        one.getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp1Spawn()).getWorldTranslation()));
+        
         //two.getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp2Spawn()).getWorldTranslation()));
         //three.getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp3Spawn()).getWorldTranslation()));   
     }

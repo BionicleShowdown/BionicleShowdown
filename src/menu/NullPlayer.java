@@ -5,6 +5,8 @@
 
 package menu;
 
+import Players.Player;
+
 /**
  *
  * @author Inferno

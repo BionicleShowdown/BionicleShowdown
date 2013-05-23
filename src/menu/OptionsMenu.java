@@ -15,6 +15,9 @@ import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.NiftyEventSubscriber;
+import de.lessvoid.nifty.controls.SliderChangedEvent;
+import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import mygame.Main;
@@ -35,10 +38,21 @@ public class OptionsMenu implements ScreenController
     private AudioRenderer audioRenderer;
     private ViewPort guiViewPort;
     private AppStateManager stateManager;
+    private MainMenu mainMenu;
     
     private float preMuteVolume;
     
-    public void initiate(SimpleApplication app) 
+    public OptionsMenu()
+    {
+        
+    }
+    
+    public OptionsMenu(MainMenu mainMenu)
+    {
+        this.mainMenu = mainMenu;
+    }
+    
+    public void initiate(Application app) 
     {
         this.app = (SimpleApplication) app;
         this.assetManager = this.app.getAssetManager();
@@ -65,9 +79,6 @@ public class OptionsMenu implements ScreenController
     {
         
     }
-    
-    
-    
 
     public void bind(Nifty nifty, Screen screen) 
     {
@@ -84,11 +95,13 @@ public class OptionsMenu implements ScreenController
         if (volume == 0)
         {
             Main.getMusic().setVolume(preMuteVolume);
+            Main.setMusicVolume(preMuteVolume);
         }
         else
         {
             preMuteVolume = Main.getMusic().getVolume();
             Main.getMusic().setVolume(0);
+            Main.setMusicVolume(0);
         }
     }
     
@@ -105,24 +118,56 @@ public class OptionsMenu implements ScreenController
         }
     }
     
-    // Can change music volume. Should hopefully be changed to a slider rather than a Button.
-    public void changeMusicVolume(String direction)
+    // Changes the volume value and updates the text on the volume label when the Slider changes
+    @NiftyEventSubscriber(id="musicVolumeSlider")
+    public void getVolume(String id, SliderChangedEvent event)
     {
-        float volume = Main.getMusic().getVolume();
-        System.out.println("Volume was: " + volume);
-        if (direction.equals("+"))
+        float floatVolume = Main.getMusic().getVolume();
+        int volume = Math.round(floatVolume * 100);
+        if (volume < 0)
         {
-            Main.getMusic().setVolume(volume + 1);
+            volume = 0;
         }
-        else if (direction.equals("-"))
+        if (volume > 100)
         {
-            Main.getMusic().setVolume(volume - 1);
+            volume = 100;
         }
-        else
+        nifty.getCurrentScreen().findElementByName("CurrentVolume").getRenderer(TextRenderer.class).setText("VOLUME: " + volume + "%");
+    }
+    
+    // Used by OptionsMenu.xml to get initial volume.
+    public String getVolume()
+    {
+        int volume = Math.round(Main.getMusic().getVolume() * 100);
+        return "VOLUME: " + volume + "%";
+    }
+    
+    // Can change music volume. Should hopefully be changed to a slider rather than a Button.
+    @NiftyEventSubscriber(id="musicVolumeSlider")
+    public void changeMusicVolume(String id, SliderChangedEvent event)
+    {
+        float volume = event.getValue();
+        if (volume < 0)
         {
-            System.out.println("An Error has Occured.");
+            volume = 0;
         }
-        System.out.println("Volume is now: " + Main.getMusic().getVolume());
+        if (volume > 1)
+        {
+            volume = 1;
+        }
+        System.out.println("" + event.getValue());
+        Main.setMusicVolume(volume);
+        Main.getMusic().setVolume(volume);
+    }
+    
+    public void controlsScreen()
+    {
+        System.out.println("Controls Screen!");
+    }
+    
+    public void goBack()
+    {
+        mainMenu.initiate(app);
     }
 
 }

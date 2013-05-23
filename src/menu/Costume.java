@@ -15,8 +15,8 @@ import java.util.List;
  */
 public class Costume 
 {
-    String name;
-    String owner;
+    public String name;
+    public String owner;
     
     public Costume()
     {

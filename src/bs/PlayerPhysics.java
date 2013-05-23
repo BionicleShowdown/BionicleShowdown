@@ -29,13 +29,14 @@ import com.jme3.scene.control.AbstractControl;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mygame.Main;
+import Players.Player;
 
 
 /**
  *
  * @author JSC
  */
-public class Player implements PhysicsCollisionListener 
+public class PlayerPhysics implements PhysicsCollisionListener 
 {
 
     private static final Logger logger = Logger.getLogger(Stage.class.getName());
@@ -48,27 +49,27 @@ public class Player implements PhysicsCollisionListener
     private CharacterControl player;
     private BulletAppState bulletAppState;
     private Camera cam;
-    private int row;
+    private Player menuPlayer;
 
     /* Player class builds player with proper inputs, name, etc.
      * Haven't worked out the passing of data nor the inputs, 
      * but online docs should help. Look at PlayerControl for
      * logic, this is merely setup
      */
-    Player(int r, BulletAppState bas, InputManager ipm, Camera cm, boolean exists) 
+    PlayerPhysics(Player p, BulletAppState bas, InputManager ipm, Camera cm, boolean exists) 
     {
 
         bulletAppState = bas;
         im = ipm;
         cam = cm;
-        row = r;
+        menuPlayer = p;
         //If the character chosen is the same, generate a clone for its model
         if(exists)
         {
-            model = Main.getCharList().getModel(0).clone();
+            model = p.getCharacter().getModel().clone();
         } else 
         {
-            model = Main.getCharList().getModel(0);
+            model = p.getCharacter().getModel();
         }
         
         //Generate Bounding Box and setup up its Character Control, then
@@ -108,9 +109,9 @@ public class Player implements PhysicsCollisionListener
        
         playerNode.addControl(player);
         bulletAppState.getPhysicsSpace().add(player);
-        player.setGravity(Main.getCharList().getGravity(row));
-        player.setJumpSpeed(Main.getCharList().getJumpSpeed(row));
-        player.setFallSpeed(Main.getCharList().getJumpSpeed(row));
+        player.setGravity(menuPlayer.getCharacter().getWeight());
+        player.setJumpSpeed(menuPlayer.getCharacter().getJumpSpeed());
+        player.setFallSpeed(menuPlayer.getCharacter().getFallSpeed());
 
     }
 

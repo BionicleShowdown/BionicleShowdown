@@ -41,20 +41,23 @@ public class Main extends SimpleApplication
     private NiftyJmeDisplay niftyDisplay;
     private static AudioNode music;
     public static String musicSelection = "Sounds/Music/Fire and Ice.wav";
+    private static float musicVolume = 1.0f;
     private static AppSettings settings = new AppSettings(true); // Made this outside of main method so it could be acquired with getSettings()
     
     //Temp Input Mappigns for testing
     public static int[] player1Mappings = new int[]{KeyInput.KEY_W,KeyInput.KEY_A,KeyInput.KEY_D,KeyInput.KEY_1,KeyInput.KEY_S,KeyInput.KEY_O};
 
 
-    public static void main(String[] args) 
+    public static void main(String[] args) throws IOException
     {
 //        AppSettings settings = new AppSettings(true);
+        
+
         settings.setResolution(800, 600);
         settings.setUseInput(true);
         settings.setTitle("Bionicle Showdown");
         settings.setSettingsDialogImage("Textures/Menu/FullVoidLogo.png");
-        Main app = new Main();
+        SimpleApplication app = new Main();
         
         app.setSettings(settings);
         
@@ -84,27 +87,20 @@ public class Main extends SimpleApplication
     {
         
             //stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
+        startState = new StartState();
         
-            
-            setDisplayStatView(true);  //For now, leave this own to ensure quality play
-            setDisplayFps(true);
+        music = new AudioNode(assetManager, "Sounds/Music/Fire and Ice.wav", true);
+        music.play();
 
+        charList = new Characters((SimpleApplication)this);
+        initKeys();
+        niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
+        nifty = niftyDisplay.getNifty();
+        guiViewPort.addProcessor(niftyDisplay);
+        stateManager.attach(startState);               //Attach the first state
 
-            startState = new StartState();      //assign all the states here
-            
-            music = new AudioNode(assetManager, "Sounds/Music/Fire and Ice.wav", true);
-            music.play();
-
-            charList = new Characters((SimpleApplication)this);
-            initKeys();
-            niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
-            nifty = niftyDisplay.getNifty();
-            guiViewPort.addProcessor(niftyDisplay);
-            stateManager.attach(startState);               //Attach the first start
-
-
-            flyCam.setEnabled(false);
         
+        flyCam.setEnabled(false);
     }
     /*This ActionListener will handle all the switching of states*/
     private ActionListener actionListener = new ActionListener() 
@@ -153,6 +149,11 @@ public class Main extends SimpleApplication
         music.stop();
         musicSelection = newMusicSelection;
     }
+    
+    public static void setMusicVolume(float volume)
+    {
+        musicVolume = volume;
+    }
 
 
     private void initKeys() 
@@ -179,9 +180,11 @@ public class Main extends SimpleApplication
 //        {
 //            music.stop();
 //        }
+        // Couldn't you just use music.setLooping(true); ? That would loop it without having to check, I believe.
         if(music.getStatus() == AudioNode.Status.Stopped)
         {
             music = new AudioNode(assetManager, musicSelection, true);
+            music.setVolume(musicVolume);
             music.play();
         }
     }
