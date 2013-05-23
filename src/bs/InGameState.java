@@ -13,6 +13,7 @@ import com.jme3.audio.AudioNode;
 import com.jme3.audio.AudioNode.Status;
 import com.jme3.audio.AudioRenderer;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.input.InputManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -29,6 +30,7 @@ import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import mygame.Main;
 
@@ -48,7 +50,8 @@ public class InGameState extends AbstractAppState implements ScreenController
     private Node localGuiNode = new Node("In Game GuiNode");
     private AppSettings settings;
     private ViewPort viewPort;
-    Stage loadStage;
+    private Stage loadStage;
+    private ArrayList ledges;
     private NiftyJmeDisplay niftyDisplay;
     private Screen screen;
     private Nifty nifty;
@@ -59,7 +62,7 @@ public class InGameState extends AbstractAppState implements ScreenController
     private Camera cam;
     private Camera flyCam;
     private AudioNode music;
-
+    
     public InGameState() 
     {
     }
@@ -88,7 +91,7 @@ public class InGameState extends AbstractAppState implements ScreenController
         guiNode.attachChild(localGuiNode);      //Creates guiNode
 
         //Load Stage in Game
-        loadStage = new Stage(assetManager.loadModel("Scenes/StageScenes/ShowdownScene.j3o"), bulletAppState);   
+        
         
         //Start streaming music
 //        music = new AudioNode(assetManager, "Sounds/Music/Super Smash Bionicle Main Theme 2.wav", true);
@@ -100,13 +103,13 @@ public class InGameState extends AbstractAppState implements ScreenController
         
 //        music.play();
         
-        //Initialize players
-        createPlayers();
+        //Initialize enviornment
+        createEnviron();
         
         //Attach stage
         localRootNode.attachChild(loadStage.getStageNode());
         
-        //bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
 
         //Get Main's nifty
         nifty = Main.getNifty();
@@ -127,7 +130,7 @@ public class InGameState extends AbstractAppState implements ScreenController
      * and with each increment in length
      * create the next player appropriately
      */
-    public void createPlayers()         /**STILL NEEDS ADJUSTING **/
+    public void createEnviron()         /**STILL NEEDS ADJUSTING **/
     {
         int[] characters;
         characters = new int[]{0};
@@ -171,6 +174,8 @@ public class InGameState extends AbstractAppState implements ScreenController
             }
         }
         
+        loadStage = new Stage(assetManager.loadModel("Scenes/StageScenes/ShowdownScene.j3o"), bulletAppState);  
+        ledges = loadStage.getLedges();
         
         loadStage.getp1Spawn().attachChild(one.getPlayer());
         //loadStage.getp2Spawn().attachChild(two.getPlayer());
@@ -184,6 +189,11 @@ public class InGameState extends AbstractAppState implements ScreenController
     @Override
     public void update(float tpf) 
     {
+        for(int i =0; i < ledges.size(); i++){
+            System.out.println(((Spatial)ledges.get(i)).getControl(GhostControl.class).getOverlappingCount());
+            System.out.println(((Spatial)ledges.get(i)).getUserData("ledgeGrabbed"));
+        }
+        
         //JME says looping streamed music isn't possible. So instead
         //look for when the music is stopped, create a new
         //instance of that music, and play it again.

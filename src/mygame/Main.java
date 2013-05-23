@@ -15,6 +15,12 @@ import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import com.aurellem.capture.Capture;
+import com.aurellem.capture.IsoTimer;
 import menu.MainMenu;
 
 
@@ -51,33 +57,54 @@ public class Main extends SimpleApplication
         Main app = new Main();
         
         app.setSettings(settings);
+        
+        /*try {
+            //Testing Audio+Video capture
+            File video = File.createTempFile("Test", ".avi");
+            File audio = File.createTempFile("TestingAudio",".wav");
+            app.setTimer(new IsoTimer(60));
+            app.setShowSettings(false);
+            Capture.captureVideo(app,video);
+            Capture.captureAudio(app,audio);
+            System.out.println("Vid" + video.getCanonicalPath());
+            System.out.println("Aud" + audio.getCanonicalPath());
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
+        
+        
+        
         app.start();
     }
 
 
     @Override
-    public void simpleInitApp() 
+    public void simpleInitApp () 
     {
-        //stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
         
-        setDisplayStatView(true);  //For now, leave this own to ensure quality play
-        setDisplayFps(true);
-
-
-        startState = new StartState();      //assign all the states here
+            //stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
         
-        music = new AudioNode(assetManager, "Sounds/Music/Fire and Ice.wav", true);
-        music.play();
-
-        charList = new Characters((SimpleApplication)this);
-        initKeys();
-        niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
-        nifty = niftyDisplay.getNifty();
-        guiViewPort.addProcessor(niftyDisplay);
-        stateManager.attach(startState);               //Attach the first start
+            
+            setDisplayStatView(true);  //For now, leave this own to ensure quality play
+            setDisplayFps(true);
 
 
-        flyCam.setEnabled(false);
+            startState = new StartState();      //assign all the states here
+            
+            music = new AudioNode(assetManager, "Sounds/Music/Fire and Ice.wav", true);
+            music.play();
+
+            charList = new Characters((SimpleApplication)this);
+            initKeys();
+            niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
+            nifty = niftyDisplay.getNifty();
+            guiViewPort.addProcessor(niftyDisplay);
+            stateManager.attach(startState);               //Attach the first start
+
+
+            flyCam.setEnabled(false);
+        
     }
     /*This ActionListener will handle all the switching of states*/
     private ActionListener actionListener = new ActionListener() 

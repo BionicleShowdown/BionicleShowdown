@@ -66,6 +66,10 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private boolean facingRight = false;
     private boolean ducking = false;
     
+    private boolean grabbingLedge = false;
+    private float startGravity;
+    private float startFallSpeed;
+    
 
     /* PlayerControl will manage input and collision logic */
     PlayerControl(Spatial s,InputManager input, CharacterControl cc, Camera cm) {
@@ -75,6 +79,8 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         initKeys();
         health = 0;
         cam = cm;
+        startGravity = character.getGravity();
+        startFallSpeed = character.getFallSpeed();
         
         animationControl = model.getControl(AnimControl.class);
         animationControl.addListener(this);
@@ -207,7 +213,11 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         }
 
         else if(name.equals("Jump") && pressed && !isFighting()){
-            jumping = true;
+            if(grabbingLedge){
+                grabbingLedge = false;
+            } else {
+                jumping = true;
+            }
         }
         
     }
@@ -231,6 +241,25 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
 
     public int getStock() {
         return (stock);
+    }
+    
+    public void resetGravity() {
+        character.setGravity(startGravity);
+    }
+    
+    public void grabLedge(Spatial event){
+        System.out.println("Character " + character.getPhysicsLocation().y);
+        System.out.println("Ledge " + event.getWorldTranslation().y);
+        if(character.getPhysicsLocation().y < event.getWorldTranslation().y && !grabbingLedge){
+            
+            grabbingLedge = true;
+            animationChannel.setAnim("Slow Walk");
+            character.setGravity(0);
+            character.setFallSpeed(0);
+        }
+    }
+    public boolean isGrabbingLedge(){
+        return grabbingLedge;
     }
 
     public void respawn(Spatial event, Node respawn, BulletAppState bas){
@@ -296,10 +325,16 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
                 animationChannel.setLoopMode(LoopMode.DontLoop);
             }
         }
+        if(grabbingLedge){
+            if(!"Slow Walk".equals(animationChannel.getAnimationName())){
+                animationChannel.setAnim("Slow Walk",.3f);
+                animationChannel.setLoopMode(LoopMode.Loop);
+            }
+        }
     }
     
     public boolean isActing(){
-        if((left || right || jumping || ducking) && !isFighting()){
+        if((left || right || jumping || ducking || grabbingLedge) && !isFighting()){
             return true;
         }
         return false;
