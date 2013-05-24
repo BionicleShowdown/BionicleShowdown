@@ -1,12 +1,12 @@
 package mygame;
 
 
+import AudioNodes.MusicAudioNode;
 import bs.Characters;
 import bs.InGameState;
 import bs.StartState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.VideoRecorderAppState;
-import com.jme3.audio.AudioNode;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -19,8 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.aurellem.capture.Capture;
-import com.aurellem.capture.IsoTimer;
+//import com.aurellem.capture.Capture;
+//import com.aurellem.capture.IsoTimer;
 import menu.MainMenu;
 
 
@@ -39,7 +39,7 @@ public class Main extends SimpleApplication
     private Trigger enterTrigger = new KeyTrigger(KeyInput.KEY_RETURN);
     private static Nifty nifty;
     private NiftyJmeDisplay niftyDisplay;
-    private static AudioNode music;
+    private static MusicAudioNode music;
     public static String musicSelection = "Sounds/Music/Fire and Ice.wav";
     private static float musicVolume = 1.0f;
     private static AppSettings settings = new AppSettings(true); // Made this outside of main method so it could be acquired with getSettings()
@@ -89,7 +89,7 @@ public class Main extends SimpleApplication
             //stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
         startState = new StartState();
         
-        music = new AudioNode(assetManager, "Sounds/Music/Fire and Ice.wav", true);
+        music = new MusicAudioNode(assetManager, "Sounds/Music/Fire and Ice.wav", true);
         music.play();
 
         charList = new Characters((SimpleApplication)this);
@@ -134,7 +134,7 @@ public class Main extends SimpleApplication
         return (nifty);
     }
     
-    public static AudioNode getMusic()
+    public static MusicAudioNode getMusic()
     {
         return (music);
     }
@@ -181,9 +181,9 @@ public class Main extends SimpleApplication
 //            music.stop();
 //        }
         // Couldn't you just use music.setLooping(true); ? That would loop it without having to check, I believe.
-        if(music.getStatus() == AudioNode.Status.Stopped)
+        if(music.getStatus() == MusicAudioNode.Status.Stopped)
         {
-            music = new AudioNode(assetManager, musicSelection, true);
+            music = new MusicAudioNode(assetManager, musicSelection, true);
             music.setVolume(musicVolume);
             music.play();
         }

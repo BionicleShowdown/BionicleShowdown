@@ -1,11 +1,17 @@
 package menu;
 
+import com.jme3.app.SimpleApplication;
+import com.jme3.asset.AssetManager;
+import com.jme3.asset.TextureKey;
+import com.jme3.texture.Texture;
 import de.lessvoid.nifty.elements.Element;
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import jme3tools.converters.ImageToAwt;
 
 /**
  *
@@ -16,13 +22,17 @@ public class Button
     String fileName = "";
     File file = null;
     Element element = null;
+    AssetManager assetManager;
     int height = 0;
     int width = 0;
     double perEdX = 0.0; // Percent from edge along the x-axis
     double perEdY = 0.0; // Percent from edge along the y-axis
     double perScrX = 0.0; // Percent width of button
     double perScrY = 0.0; // Percent height of button
-    BufferedImage image = null;
+    
+    Texture texture = null;
+    Image image = null;
+    BufferedImage buffImage = null;
     
     int screenWidth = 0;
     int screenHeight = 0;
@@ -38,36 +48,45 @@ public class Button
     
    public Button() // Null Constructor
     {
+       
     }
-    
+   
    /**
-    * Used to make Buttons with relative (percentage) locations and sizes.
-    * @param file
-    * @param perEdX
-    * @param perEdY
-    * @param perScrX
-    * @param perScrY 
+    * This is used to make a Button with pathnames
+    * @param app Should just be app
+    * @param pathname From Asset manager, so assumed to being with assets/ already
+    * @param perEdX Percent from Left Edge
+    * @param perEdY Percent from Upper Edge
+    * @param perScrX Percent of Horizontal Screen taken by Button
+    * @param perScrY Percent of Vertical Screen taken by Button
+    * @param needsFlip Is it upside down?
     */
-    public Button(File file, double perEdX, double perEdY, double perScrX, double perScrY)
-    {
-        this.file = file;
-        this.makeBufferedImage();
-        this.perEdX = perEdX;
-        this.perEdY = perEdY;
-        this.perScrX = perScrX;
-        this.perScrY = perScrY;
-        this.refresh(); // Make sures all necessary values dependent on the input values are initialized correctly 
-        
-    }
+   public Button(SimpleApplication app, String pathname, double perEdX, double perEdY, double perScrX, double perScrY, boolean needsFlip)
+   {
+       TextureKey key = new TextureKey(pathname, needsFlip);
+       this.assetManager = app.getAssetManager();
+       this.texture = assetManager.loadTexture(key);
+       this.makeBufferedImage();
+       this.perEdX = perEdX;
+       this.perEdY = perEdY;
+       this.perScrX = perScrX;
+       this.perScrY = perScrY;
+       this.refresh();
+   }
     
-    /**
-     * Used to make Buttons with exact pixel locations.
-     * @param file
-     * @param element The actual element
-     */
-    public Button(File file, Element element)
+   
+   /**
+    * This is used to make Buttons with exact pixel locations
+    * @param app Should just be app
+    * @param pathname From Asset manager, so assumed to being with assets/ already
+    * @param element The actual Element the image is located on
+    * @param needsFlip Is it upside down (can use createImage() to check)?
+    */
+    public Button(SimpleApplication app, String pathname, Element element, boolean needsFlip)
     {
-        this.file = file;
+        TextureKey key = new TextureKey(pathname, needsFlip);
+        this.assetManager = app.getAssetManager();
+        this.texture = assetManager.loadTexture(key);
         this.element = element;
         this.makeBufferedImage();
         this.ratioX = 1;
@@ -76,25 +95,18 @@ public class Button
         this.mapY = element.getY();
     }
     
+    /**
+     * @deprecated 
+     * @return 
+     */
     public boolean fileExists()
     {
         return this.file.exists();
     }
     
-    public void makeBufferedImage() 
+    public void makeBufferedImage()
     {
-       
-       try
-       {
-           image = ImageIO.read(this.file);
-       }
-       //File file = new File(this.fileName);
-       
-       catch (IOException e)
-       {
-           System.out.println("Error");
-       }
-      
+        buffImage = ImageToAwt.convert(texture.getImage(), false, true, 0);
     }
     
     public int getButtonHeight()
@@ -107,12 +119,20 @@ public class Button
         return this.width;
     }
     
+    /**
+     * Given a pixel location, tells if the Button is clickable or not (if the pixel is fully transparent, it is not clickable)
+     * @param x
+     * @param y
+     * @return 
+     */
     public boolean isClickable(int x, int y)
     {
         int imageX = (int) ((x - mapX) * ratioX);
         int imageY = (int) ((y - mapY) * ratioY);
-        int pixelColorInt = image.getRGB(imageX, imageY);
+        System.out.println("X on image: " + imageX + ", Y on image: " + imageY);
+        int pixelColorInt = buffImage.getRGB(imageX, imageY);
         Color pixelColor = new Color(pixelColorInt, true);
+        System.out.println(pixelColor.getRed() + ", " + pixelColor.getGreen() + ", " + pixelColor.getBlue() + ", " + pixelColor.getAlpha());
         boolean notAlpha = false;
         
         if (pixelColor.getAlpha() != 0)
@@ -141,10 +161,13 @@ public class Button
         System.out.println("Map of y: " + mapY);
     }
     
+    /**
+     * Refreshes Button data
+     */
     public void refresh()
     {
-        this.height = this.image.getHeight();
-        this.width = this.image.getWidth();
+        this.height = this.buffImage.getHeight();
+        this.width = this.buffImage.getWidth();
         this.screenWidth = MainMenu.screenWidth;
         this.screenHeight = MainMenu.screenHeight;
         this.imgScrX = perScrX * screenWidth;
@@ -155,11 +178,30 @@ public class Button
         this.mapY = (int) (MainMenu.screenHeight * perEdY);
     }
     
+    /**
+     * Refreshes mapping on mobile Buttons
+     */
     public void mobileRefresh()
     {
         this.mapX = element.getX();
         this.mapY = element.getY();
     }
     
-    
+    // This is incredibly useful. Make sure to keep track of this. Just search for "saved" in Windows to find file and look
+    /**
+     * Creates an actual image to view, used mainly for Debugging
+     */
+    public void createImage()
+    {
+        try
+        {
+            File outputfile = new File("saved.png");
+            System.out.println(outputfile.exists());
+            ImageIO.write(buffImage, "png", outputfile);
+        }
+        catch (IOException e)
+        {
+            System.out.println("Fail");
+        }
+    }
 }

@@ -1,6 +1,8 @@
 
 package menu;
 
+import AudioNodes.SFXAudioNode;
+import AudioNodes.VoiceAudioNode;
 import Players.CPUPlayer;
 import Players.Player;
 import Players.HumanPlayer;
@@ -16,7 +18,6 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.app.state.VideoRecorderAppState;
 import com.jme3.asset.AssetManager;
-import com.jme3.audio.AudioNode;
 import com.jme3.audio.AudioRenderer;
 import com.jme3.input.InputManager;
 import com.jme3.niftygui.NiftyJmeDisplay;
@@ -88,7 +89,7 @@ public class CharacterSelectMenu implements ScreenController
     
     String currentPlayerSelection = "";
     
-    AudioNode characterSelectedAnnounce;
+    VoiceAudioNode characterSelectedAnnounce;
     
     // Current X and Y coordinates
     int currentX = 0;
@@ -153,10 +154,10 @@ public class CharacterSelectMenu implements ScreenController
         System.out.println("Screen height is: " + screenHeight + ", Screen width is: " + screenWidth);
         resetVariables(); // Not entirely sure why this is necessary if the Menu is a new instance, but it is.
         disableAndHideDroppers(); // Sets the droppers to not exist until a player isn't null. May start Player 1 as not null to begin with.
-        player1Dropper = new Button(new File("assets/Interface/CharacterSelect/Player1Dropper.png"), screen.findElementByName("Player1Dropper"));
-        player2Dropper = new Button(new File("assets/Interface/CharacterSelect/Player2Dropper.png"), screen.findElementByName("Player2Dropper"));
-        player3Dropper = new Button(new File("assets/Interface/CharacterSelect/Player3Dropper.png"), screen.findElementByName("Player3Dropper"));
-        player4Dropper = new Button(new File("assets/Interface/CharacterSelect/Player4Dropper.png"), screen.findElementByName("Player4Dropper"));
+        player1Dropper = new Button(app, "Interface/CharacterSelect/Player1Dropper.png", screen.findElementByName("Player1Dropper"), false);
+        player2Dropper = new Button(app, "Interface/CharacterSelect/Player2Dropper.png", screen.findElementByName("Player2Dropper"), false);
+        player3Dropper = new Button(app, "Interface/CharacterSelect/Player3Dropper.png", screen.findElementByName("Player3Dropper"), false);
+        player4Dropper = new Button(app, "Interface/CharacterSelect/Player4Dropper.png", screen.findElementByName("Player4Dropper"), false);
         setPlayerType("Player1"); // Called twice so Player1 will first appear as the Human type.
         setPlayerType("Player1");
         matchReady();
@@ -278,7 +279,7 @@ public class CharacterSelectMenu implements ScreenController
         setPlayer(event.getDraggable().getId());
         
         // Need Random Announce
-        characterSelectedAnnounce = new AudioNode(assetManager, "Sounds/Announcements/CharacterSelected/" + character.name + ".wav");
+        characterSelectedAnnounce = new VoiceAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/" + character.name + ".wav");
         characterSelectedAnnounce.play();
         
         if (currentPlayer == null)
@@ -493,6 +494,10 @@ public class CharacterSelectMenu implements ScreenController
         
         if (player.equals("Player1"))
         {
+            if (player1.currentCharacter == null)
+            {
+                return;
+            }
             player1.costume = cyclePlayerCostume(player1);
             if (costumeNotDuplicate(player1)) // If the costume isn't a duplicate, then continue the method
             {
@@ -506,6 +511,10 @@ public class CharacterSelectMenu implements ScreenController
         }
         else if (player.equals("Player2"))
         {
+            if (player2.currentCharacter == null)
+            {
+                return;
+            }
             player2.costume = cyclePlayerCostume(player2);
             if (costumeNotDuplicate(player2))
             {
@@ -518,6 +527,10 @@ public class CharacterSelectMenu implements ScreenController
         }
         else if (player.equals("Player3"))
         {
+            if (player3.currentCharacter == null)
+            {
+                return;
+            }
             player3.costume = cyclePlayerCostume(player3);
             if (costumeNotDuplicate(player3))
             {
@@ -530,6 +543,10 @@ public class CharacterSelectMenu implements ScreenController
         }
         else if (player.equals("Player4"))
         {
+            if (player4.currentCharacter == null)
+            {
+                return;
+            }
             player4.costume = cyclePlayerCostume(player4);
             if (costumeNotDuplicate(player4))
             {
@@ -568,21 +585,37 @@ public class CharacterSelectMenu implements ScreenController
         
         if (player.equals("Player1"))
         {
+            if (player1.currentCharacter == null)
+            {
+                return;
+            }
             player1.costume = cyclePlayerTeam(player1);
             temp = player1;
         }
         else if (player.equals("Player2"))
         {
+            if (player2.currentCharacter == null)
+            {
+                return;
+            }
             player2.costume = cyclePlayerTeam(player2);
             temp = player2;
         }
         else if (player.equals("Player3"))
         {
+            if (player3.currentCharacter == null)
+            {
+                return;
+            }
             player3.costume = cyclePlayerTeam(player3);
             temp = player3;
         }
         else if (player.equals("Player4"))
         {
+            if (player4.currentCharacter == null)
+            {
+                return;
+            }
             player4.costume = cyclePlayerTeam(player4);
             temp = player4;
         }
@@ -604,25 +637,6 @@ public class CharacterSelectMenu implements ScreenController
         nifty.getCurrentScreen().findElementByName(player + "Select").getRenderer(ImageRenderer.class).setImage(image);
     }
     
-//    private Costume cyclePlayerCostume(Player player)
-//    {
-//        if (teamType.equals("Free For All"))
-//        {
-//            return cyclePlayerFFACostume(player);
-//        }
-//        else if (teamType.equals("Team Match"))
-//        {
-//            return cyclePlayerTeamCostume(player);
-//        }
-//        else
-//        {
-//            System.out.println("An Error has Occured.");
-//            return player.costume;
-//        }
-//    }
-    
-    
-    //TODO Figure out a way to implement team selections
     private Costume cyclePlayerCostume(Player player)
     {
         System.out.println("Cycling Player Costume");
@@ -631,7 +645,7 @@ public class CharacterSelectMenu implements ScreenController
             return new Costume("Standard", player.currentCharacter.name);
         }
         PlayableCharacter temp = player.currentCharacter;
-//        Costumes currentCostume = player.costume;
+        
         Costume currentCostume = player.costume;
         if (currentCostume == null)
         {

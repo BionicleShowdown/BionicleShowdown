@@ -14,48 +14,50 @@ and open the template in the editor.
         <layer id="background"  childLayout="vertical" >
             
         </layer>
+        
+        
         <layer id="foreground" childLayout="absolute">
             <panel id="BackButtonPanel" width="10%" height="7%" x="1%" y="1%" childLayout="vertical" visibleToMouse = "true">
                <image filename="Interface/BackButton.png" width="100%" height="100%" visibleToMouse="true">
                 <interact onClick="goBack()" />
                </image>
             </panel>
-            <panel id="VolumePanel" width="35%" height="25%" x="10%" y="20%"  childLayout="vertical" visibleToMouse = "true">
-                <!-- <image filename= "Interface/RGBA_Button_Test.png" width = "100%" height = "100%" visibleToMouse = "true"> -->
-                   <!-- <effect>
-                        <onHover name="imageSize" maxSize="20%" >
-                            <hover hoverFalloffType="none" hoverWidth="100%" hoverHeight="100%" hoverFalloffConstraint="both" />                  
-                        </onHover>                                   
-                    </effect> -->
-                    <control id="musicVolumeSlider" name="horizontalSlider" width="100%" min="-0.01" max="1.01" initial="1.0" stepSize="0.01" buttonStepSize="0.01" />
-                   <!-- <interact onClick="changeMusicVolume(-)" /> -->
-                <!--</image>-->
+            
+            <panel id="VolumePanel" width="50%" height="5%" x="15%" y="20%" childLayout="center" visibleToMouse = "true">
+                <control id="musicVolumeSlider" name="horizontalSlider" width="100%" min="-0.01" max="1.01" initial="1.0" stepSize="0.01" buttonStepSize="0.01" valign="center" />
             </panel>
-            <panel id="MutePanel" width="35%" height="25%" x="55%" y="20%" childLayout="vertical" visibleToMouse = "true" >
-                <!--<image filename= "Interface/MainMenu/Training.png" width = "100%" height = "100%" visibleToMouse = "true">-->
-                <text id="CurrentVolume" font="Interface/Fonts/Exo.fnt" text="${CALL.getVolume()}" />   
-                <!-- <effect>
-                        <onHover name="imageSize" maxSize="20%" >
-                            <hover hoverFalloffType="none" hoverWidth="100%" hoverHeight="100%" hoverFalloffConstraint="both" />                  
-                        </onHover>                                    
-                    </effect> -->
-                    <interact onClick="muteMusic()" />
-                <!--</image>-->
+            
+            <panel id="SFXPanel" width="50%" height="5%" x="15%" y="30%" childLayout="center" visibleToMouse="true">
+                <control id="sfxVolumeSlider" name="horizontalSlider" width="100%" min="-0.01" max="1.01" initial="1.0" stepSize="0.01" buttonStepSize="0.01" valign="center"/>
             </panel>
+            
+            <panel id="VoicePanel" width="50%" height="5%" x="15%" y="40%" valign="center" childLayout="center">
+                <control id="voiceVolumeSlider" name="horizontalSlider" width="100%" min="-0.01" max="1.01" initial="1.0" stepSize="0.01" buttonStepSize="0.01" valign="center"/>
+            </panel>
+            
+            <panel id="MutePanel" width="25%" height="5%" x="70%" y="20%" childLayout="center" visibleToMouse = "true" >
+                <text id="CurrentMusicVolume" font="Interface/Fonts/Kalinga.fnt" text="Music Volume: 100%" valign="center"/>   
+                <interact onClick="muteMusic()" />
+            </panel>
+            
+            <panel id="SFXVolumeLabelPanel" width="25%" height="5%" x="70%" y="30%" childLayout="center">
+                <text id="CurrentSFXVolume" font="Interface/Fonts/Kalinga.fnt" text="SFX Volume: 100%" valign="center"/>
+            </panel>
+            
+            <panel id="VoiceVolumeLabelPanel" width="25%" height="5%" x="70%" y="40%" childLayout="center">
+                <text id="CurrentVoiceVolume" font="Interface/Fonts/Kalinga.fnt" text="Voice Volume: 100%" valign="center"/>
+            </panel>
+            
             <panel id="SwitchMusicPanel" width="35%" height="25%" x="10%" y="55%" childLayout="vertical" visibleToMouse = "true">
                 <image filename= "Interface/MainMenu/Extras.png" width = "100%" height = "100%" visibleToMouse = "true">
-                    <!-- <effect>
-                        <onHover name="imageSize" maxSize="20%" >
-                            <hover hoverFalloffType="none" hoverWidth="100%" hoverHeight="100%" hoverFalloffConstraint="both" />                  
-                        </onHover>                                    
-                    </effect> -->
                     <interact onClick="switchMusic()" />
                 </image>
             </panel>
-            Screen.width*.25,Screen.height*.5,Screen.width*.5,Screen.height*.45
+            
             <panel id="ControlsPanel" width="50%" height="45%" x="25%" y="50%" childLayout="vertical" visibleToMouse = "true">
                 <interact onClick="controlsScreen()" />
             </panel>
+            
         </layer>
     </screen>
 

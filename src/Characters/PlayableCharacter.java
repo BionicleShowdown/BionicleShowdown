@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import menu.Costume;
 import Players.Player;
+import com.jme3.asset.TextureKey;
 import menu.Team;
 
 /**
@@ -83,7 +84,10 @@ public class PlayableCharacter
         System.out.println(modelPath);
         model = assetManager.loadModel(modelPath); 
         System.out.println(model);
-        //material = new Material(assetManager, "Textures/Characters/" + player.getCostume()); // Only need to get the Costume because Costume's toString includes the character name
+        material = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md"); // Only need to get the Costume because Costume's toString includes the character name
+        TextureKey key = new TextureKey("Textures/Characters/" + player.costume + ".png", false);
+        material.setTexture("DiffuseMap", assetManager.loadTexture(key));
+        model.setMaterial(material);
         
     }
     
