@@ -16,6 +16,8 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
+import de.lessvoid.nifty.controls.NiftyControl;
+import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
@@ -41,6 +43,12 @@ public class OptionsMenu implements ScreenController
     private MainMenu mainMenu;
     
     private float preMuteVolume;
+    private static float defaultMusicVolume = 1.0f;
+    public static float currentMusicVolume = 1.0f;
+    private static float defaultSFXVolume = 1.0f;
+    public static float currentSFXVolume = defaultSFXVolume;
+    private static float defaultVoiceVolume = 1.0f;
+    public static float currentVoiceVolume = defaultVoiceVolume;
     
     public OptionsMenu()
     {
@@ -71,7 +79,12 @@ public class OptionsMenu implements ScreenController
     @Override
     public void onStartScreen()
     {
-        
+        nifty.getCurrentScreen().findElementByName("CurrentMusicVolume").getRenderer(TextRenderer.class).setText(getMusicVolume());
+        nifty.getCurrentScreen().findElementByName("CurrentSFXVolume").getRenderer(TextRenderer.class).setText(getSFXVolume());
+        nifty.getCurrentScreen().findElementByName("CurrentVoiceVolume").getRenderer(TextRenderer.class).setText(getVoiceVolume());
+        screen.findNiftyControl("musicVolumeSlider", Slider.class).setValue(Main.getMusic().getVolume());
+        screen.findNiftyControl("sfxVolumeSlider", Slider.class).setValue(currentSFXVolume);
+        screen.findNiftyControl("voiceVolumeSlider", Slider.class).setValue(currentVoiceVolume);
     }
     
     @Override
@@ -96,12 +109,14 @@ public class OptionsMenu implements ScreenController
         {
             Main.getMusic().setVolume(preMuteVolume);
             Main.setMusicVolume(preMuteVolume);
+            currentMusicVolume = preMuteVolume;
         }
         else
         {
             preMuteVolume = Main.getMusic().getVolume();
             Main.getMusic().setVolume(0);
             Main.setMusicVolume(0);
+            currentMusicVolume = 0;
         }
     }
     
@@ -120,7 +135,7 @@ public class OptionsMenu implements ScreenController
     
     // Changes the volume value and updates the text on the volume label when the Slider changes
     @NiftyEventSubscriber(id="musicVolumeSlider")
-    public void getVolume(String id, SliderChangedEvent event)
+    public void getMusicVolume(String id, SliderChangedEvent event)
     {
         float floatVolume = Main.getMusic().getVolume();
         int volume = Math.round(floatVolume * 100);
@@ -132,17 +147,63 @@ public class OptionsMenu implements ScreenController
         {
             volume = 100;
         }
-        nifty.getCurrentScreen().findElementByName("CurrentVolume").getRenderer(TextRenderer.class).setText("VOLUME: " + volume + "%");
+        nifty.getCurrentScreen().findElementByName("CurrentMusicVolume").getRenderer(TextRenderer.class).setText("Music Volume: " + volume + "%");
+    }
+    
+    @NiftyEventSubscriber(id="sfxVolumeSlider")
+    public void getSFXVolume(String id, SliderChangedEvent event)
+    {
+        float floatVolume = currentSFXVolume;
+        int volume = Math.round(floatVolume * 100);
+        if (volume < 0)
+        {
+            volume = 0;
+        }
+        if (volume > 100)
+        {
+            volume = 100;
+        }
+        nifty.getCurrentScreen().findElementByName("CurrentSFXVolume").getRenderer(TextRenderer.class).setText("SFX Volume: " + volume + "%");
+    }
+    
+    @NiftyEventSubscriber(id="voiceVolumeSlider")
+    public void getVoiceVolume(String id, SliderChangedEvent event)
+    {
+        float floatVolume = currentVoiceVolume;
+        int volume = Math.round(floatVolume * 100);
+        if (volume < 0)
+        {
+            volume = 0;
+        }
+        if (volume > 100)
+        {
+            volume = 100;
+        }
+        nifty.getCurrentScreen().findElementByName("CurrentVoiceVolume").getRenderer(TextRenderer.class).setText("Voice Volume: " + volume + "%");
     }
     
     // Used by OptionsMenu.xml to get initial volume.
-    public String getVolume()
+    public String getMusicVolume()
     {
         int volume = Math.round(Main.getMusic().getVolume() * 100);
-        return "VOLUME: " + volume + "%";
+        return "Music Volume: " + volume + "%";
     }
     
-    // Can change music volume. Should hopefully be changed to a slider rather than a Button.
+    // Used by OptionsMenu.xml to get initial volume.
+    public String getSFXVolume()
+    {
+        int volume = Math.round(currentSFXVolume * 100);
+        return "SFX Volume: " + volume + "%";
+    }
+    
+    // Used by OptionsMenu.xml to get initial volume.
+    public String getVoiceVolume()
+    {
+        int volume = Math.round(currentVoiceVolume * 100);
+        return "Voice Volume: " + volume + "%";
+    }
+    
+    // Can change music volume.
     @NiftyEventSubscriber(id="musicVolumeSlider")
     public void changeMusicVolume(String id, SliderChangedEvent event)
     {
@@ -156,8 +217,41 @@ public class OptionsMenu implements ScreenController
             volume = 1;
         }
         System.out.println("" + event.getValue());
+        currentMusicVolume = volume;
         Main.setMusicVolume(volume);
         Main.getMusic().setVolume(volume);
+    }
+    
+    @NiftyEventSubscriber(id="sfxVolumeSlider")
+    public void changeSFXVolume(String id, SliderChangedEvent event)
+    {
+        float volume = event.getValue();
+        if (volume < 0)
+        {
+            volume = 0;
+        }
+        if (volume > 1)
+        {
+            volume = 1;
+        }
+        System.out.println("" + event.getValue());
+        currentSFXVolume = volume;
+    }
+    
+    @NiftyEventSubscriber(id="voiceVolumeSlider")
+    public void changeVoiceVolume(String id, SliderChangedEvent event)
+    {
+        float volume = event.getValue();
+        if (volume < 0)
+        {
+            volume = 0;
+        }
+        if (volume > 1)
+        {
+            volume = 1;
+        }
+        System.out.println("" + event.getValue());
+        currentVoiceVolume = volume;
     }
     
     public void controlsScreen()

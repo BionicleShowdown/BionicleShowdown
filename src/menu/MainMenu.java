@@ -13,12 +13,14 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.app.state.VideoRecorderAppState;
 import com.jme3.asset.AssetManager;
+import com.jme3.asset.TextureKey;
 import com.jme3.audio.AudioRenderer;
 import com.jme3.input.InputManager;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
+import com.jme3.texture.Texture;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
@@ -29,6 +31,7 @@ import java.awt.Color;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -36,7 +39,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
-import mygame.Main;
+import jme3tools.converters.ImageToAwt;
+import mygame.Main; 
+
 
 /**
  *
@@ -65,10 +70,10 @@ public class MainMenu extends AbstractAppState implements ScreenController
     static int screenWidth;
    
     /* Files used to initialize Button objects */
-    File fightImage = new File("assets/Interface/MainMenu/Fight.png");
-    File trainingImage = new File("assets/Interface/MainMenu/Training.png");
-    File extrasImage = new File("assets/Interface/MainMenu/Extras.png");
-    File optionsImage = new File("assets/Interface/MainMenu/Options.png");
+//    File fightImage = new File("assets/Interface/MainMenu/Fight.png");
+//    File trainingImage = new File("assets/Interface/MainMenu/Training.png");
+//    File extrasImage = new File("assets/Interface/MainMenu/Extras.png");
+//    File optionsImage = new File("assets/Interface/MainMenu/Options.png");
     
     /* Uninitialized Button objects (they are initialized in onStartScreen() */
     Button fightButton;
@@ -155,12 +160,11 @@ public class MainMenu extends AbstractAppState implements ScreenController
 //        trainingButton = new Button(trainingImage, .55, .20, .35, .25);
 //        extrasButton = new Button(extrasImage, .1, .55, .35, .25);
 //        optionsButton = new Button(optionsImage, .55, .55, .35, .25);
-        
         // Not sure which version would be better
-        fightButton = new Button(new File("assets/Interface/MainMenu/Fight.png"), 0.1, 0.2, 0.35, 0.25);
-        trainingButton = new Button(new File("assets/Interface/MainMenu/Training.png"), .55, .20, .35, .25);
-        extrasButton = new Button(new File("assets/Interface/MainMenu/Extras.png"), .1, .55, .35, .25);
-        optionsButton = new Button(new File("assets/Interface/MainMenu/Options.png"), .55, .55, .35, .25);
+        fightButton = new Button(app, "Interface/MainMenu/Fight.png", 0.1, 0.2, 0.35, 0.25, false);
+        trainingButton = new Button(app, "Interface/MainMenu/Training.png", .55, .20, .35, .25, false);
+        extrasButton = new Button(app, "Interface/MainMenu/Extras.png", .1, .55, .35, .25, false);
+        optionsButton = new Button(app, "Interface/MainMenu/Options.png", .55, .55, .35, .25, false);
     }
 
     public void onEndScreen() 
