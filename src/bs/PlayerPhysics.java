@@ -78,7 +78,7 @@ public class PlayerPhysics implements PhysicsCollisionListener
         model.setLocalTranslation(new Vector3f(0f,-extent.getY(),0f));
         playerNode.attachChild(model);
         setupCharacterControl();
-        pc = new PlayerControl(model,im, player, cam);
+        pc = new PlayerControl(p,model,im, player, cam);
         playerNode.addControl(pc);
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
         

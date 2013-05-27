@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import mygame.Main;
+import Players.Player;
 
 public class PlayerControl extends AbstractControl implements ActionListener, AnalogListener, AnimEventListener {
 
@@ -69,18 +70,22 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private boolean grabbingLedge = false;
     private float startGravity;
     private float startFallSpeed;
+    private float startJumpSpeed;
+    private String number;
     
 
     /* PlayerControl will manage input and collision logic */
-    PlayerControl(Spatial s,InputManager input, CharacterControl cc, Camera cm) {
+    PlayerControl(Player p,Spatial s,InputManager input, CharacterControl cc, Camera cm) {
         model = s;
         character = cc;
         inputManager = input;
         initKeys();
         health = 0;
         cam = cm;
+        number = p.playerNumber;
         startGravity = character.getGravity();
         startFallSpeed = character.getFallSpeed();
+        startJumpSpeed = character.getJumpSpeed();
         
         animationControl = model.getControl(AnimControl.class);
         animationControl.addListener(this);
@@ -214,7 +219,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
 
         else if(name.equals("Jump") && pressed && !isFighting()){
             if(grabbingLedge){
-                grabbingLedge = false;
+                resetGravity();
             } else {
                 jumping = true;
             }
@@ -245,6 +250,10 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     
     public void resetGravity() {
         character.setGravity(startGravity);
+        character.setFallSpeed(startFallSpeed);
+        character.setJumpSpeed(startJumpSpeed);
+        grabbingLedge = false;
+        System.out.println("settings are: " + startGravity + " " + startFallSpeed + " " + startJumpSpeed);
     }
     
     public void grabLedge(Spatial event){
@@ -252,10 +261,12 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         System.out.println("Ledge " + event.getWorldTranslation().y);
         if(character.getPhysicsLocation().y < event.getWorldTranslation().y && !grabbingLedge){
             
+            
             grabbingLedge = true;
             animationChannel.setAnim("Slow Walk");
             character.setGravity(0);
             character.setFallSpeed(0);
+            character.setJumpSpeed(0);
         }
     }
     public boolean isGrabbingLedge(){
@@ -284,7 +295,9 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         // System.out.println(name + " = " + value);
     }
     
-    
+    public int getNumber(){
+        return Integer.valueOf((number.charAt(6)))-48;
+    }
     
     public void IdleState(){
         

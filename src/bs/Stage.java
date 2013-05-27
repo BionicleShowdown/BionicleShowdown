@@ -131,63 +131,44 @@ public class Stage implements PhysicsCollisionListener {
             if (event.getNodeA().getName().equals("ledgeNode") && (Integer) event.getNodeA().getUserData("Number") == i) {
                 if ((Boolean) event.getNodeA().getUserData("ledgeGrabbed") == false && !event.getNodeB().getName().equals("platform") ) {
                     logger.log(Level.WARNING, "Ledge {0} hit", new Object[]{i});
+                    if(event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge()){
+                        event.getNodeA().setUserData("ledgeGrabbed", true);
+                    } else {
+                        event.getNodeB().getControl(PlayerControl.class).resetGravity();
+                    }
                     event.getNodeB().getControl(PlayerControl.class).grabLedge((Spatial)event.getNodeA());
+                    event.getNodeA().setUserData("playerGrabbing",event.getNodeB().getControl(PlayerControl.class).getNumber());
+                    
                     System.out.println("PlayerControl " + event.getNodeB().getControl(PlayerControl.class));
 
                     if(event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge()){
                         event.getNodeA().setUserData("ledgeGrabbed", true);
                     }
                 } else if ((Boolean) event.getNodeA().getUserData("ledgeGrabbed") == true){
-                    System.out.println(event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge());
+                    System.out.println("Node A: " + event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge());
                     if(!event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge()){
                         event.getNodeA().setUserData("ledgeGrabbed", false);
-                        event.getNodeB().getControl(PlayerControl.class).resetGravity();
                     }
                 }
-                /*if (event.getNodeB().getControl(PlayerControl.class) == null || !event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge()){
-                     event.getNodeA().setUserData("ledgeGrabbed", false);
-                     if(event.getNodeB().getControl(PlayerControl.class) != null){
-                         
-                         event.getNodeB().getControl(PlayerControl.class).resetGravity();
-                     }
-                }*/
             } else if (event.getNodeB().getName().equals("ledgeNode") && (Integer) event.getNodeB().getUserData("Number") == i) {
                 if ((Boolean) event.getNodeB().getUserData("ledgeGrabbed") == false && !event.getNodeA().getName().equals("platform")) {
                     logger.log(Level.WARNING, "Ledge {0} hit", new Object[]{i});
-                    event.getNodeA().getControl(PlayerControl.class).grabLedge((Spatial)event.getNodeB());
-                    System.out.println("PlayerControl " + event.getNodeA().getControl(PlayerControl.class));
-
                     if(event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge()){
                         event.getNodeB().setUserData("ledgeGrabbed", true);
-                    }
-                }else if ((Boolean) event.getNodeB().getUserData("ledgeGrabbed") == true){
-                    System.out.println(event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge());
-                    if(!event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge()){
-                        
-                        event.getNodeB().setUserData("ledgeGrabbed", false);
+                    } else {
                         event.getNodeA().getControl(PlayerControl.class).resetGravity();
                     }
-                }
-                /*if (event.getNodeA().getControl(PlayerControl.class) == null || !event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge()){
-                     event.getNodeB().setUserData("ledgeGrabbed", false);
-                     if(event.getNodeA().getControl(PlayerControl.class) != null){
-                         event.getNodeA().getControl(PlayerControl.class).resetGravity();
-                     }
-                }*/
-            } else {
-                /*for (int j = 0; j < ledges.size(); j++) {
-                    if (((Integer) ((Node) stage).getChild("ledgeNode").getUserData("Number") == j) && ((Boolean) ((Node) stage).getChild("ledgeNode").getUserData("ledgeGrabbed") == false)) {
-                        if(!event.getNodeA().getName().equals("platform")){
-                            ((Node) stage).getChild("ledgeNode").setUserData("ledgeGrabbed", true);
-                            logger.log(Level.WARNING, "Ledge {0} hit", new Object[]{j});
-                            break;
-                        } else  if(!event.getNodeB().getName().equals("platform")){
-                            ((Node) stage).getChild("ledgeNode").setUserData("ledgeGrabbed", true);
-                            logger.log(Level.WARNING, "Ledge {0} hit", new Object[]{j});
-                            break;
-                        } 
+                    event.getNodeA().getControl(PlayerControl.class).grabLedge((Spatial)event.getNodeB());
+                    event.getNodeB().setUserData("playerGrabbing",event.getNodeA().getControl(PlayerControl.class).getNumber());
+                    System.out.println("PlayerControl " + event.getNodeA().getControl(PlayerControl.class));
+
+                    
+                }else if ((Boolean) event.getNodeB().getUserData("ledgeGrabbed") == true){
+                    System.out.println("Node B: " + event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge());
+                    if(!event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge()){                      
+                        event.getNodeB().setUserData("ledgeGrabbed", false);
                     }
-                }*/
+                }
             }
 
         }

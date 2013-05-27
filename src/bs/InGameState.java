@@ -63,6 +63,7 @@ public class InGameState extends AbstractAppState implements ScreenController
     private Camera cam;
     private Camera flyCam;
     private AudioNode music;
+    private PlayerPhysics[] players = new PlayerPhysics[4];
     
     private Match currentMatch;
 
@@ -133,7 +134,7 @@ public class InGameState extends AbstractAppState implements ScreenController
     {
         
         //players are all null at start
-        PlayerPhysics[] players = new PlayerPhysics[4];
+        
         players[0] = null; 
         players[1] = null;
         players[2] = null;
@@ -221,6 +222,12 @@ public class InGameState extends AbstractAppState implements ScreenController
         for(int i =0; i < ledges.size(); i++){
             System.out.println(((Spatial)ledges.get(i)).getControl(GhostControl.class).getOverlappingCount());
             System.out.println(((Spatial)ledges.get(i)).getUserData("ledgeGrabbed"));
+            if(((Spatial)ledges.get(i)).getControl(GhostControl.class).getOverlappingCount() == 0 && (Boolean)((Spatial)ledges.get(i)).getUserData("ledgeGrabbed")){
+                ((Spatial)ledges.get(i)).setUserData("ledgeGrabbed",false);
+                System.out.println((Integer)((Spatial)ledges.get(i)).getUserData("playerGrabbing")-1);
+                players[(Integer)((Spatial)ledges.get(i)).getUserData("playerGrabbing")-1].getPlayer().getControl(PlayerControl.class).resetGravity();
+                
+            }
         }
         
         //JME says looping streamed music isn't possible. So instead
