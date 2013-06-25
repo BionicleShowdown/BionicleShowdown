@@ -109,7 +109,7 @@ public class InGameState extends AbstractAppState implements ScreenController
         //Attach stage
         localRootNode.attachChild(loadStage.getStageNode());
         
-        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+       // bulletAppState.getPhysicsSpace().enableDebug(assetManager);
 
         //Get Main's nifty
         nifty = Main.getNifty();
