@@ -27,6 +27,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
+import com.jme3.system.lwjgl.LwjglTimer;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
@@ -63,6 +64,7 @@ public class InGameState extends AbstractAppState implements ScreenController
     private Camera cam;
     private Camera flyCam;
     private AudioNode music;
+    private LwjglTimer time;
     private PlayerPhysics[] players = new PlayerPhysics[4];
     
     private Match currentMatch;
@@ -93,6 +95,7 @@ public class InGameState extends AbstractAppState implements ScreenController
         this.guiViewPort = this.app.getViewPort();
         this.cam = this.app.getCamera();
         
+        time = new LwjglTimer();        
         
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
@@ -105,11 +108,11 @@ public class InGameState extends AbstractAppState implements ScreenController
 
         //Initialize enviornment
         createEnviron();
-        
+
         //Attach stage
         localRootNode.attachChild(loadStage.getStageNode());
-        
-       // bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+        players[1].getPlayer().getControl(AIController.class).findTarget(); //TO CHANGE AFTER AI TESTING
+        //bulletAppState.getPhysicsSpace().enableDebug(assetManager);
 
         //Get Main's nifty
         nifty = Main.getNifty();
@@ -141,7 +144,7 @@ public class InGameState extends AbstractAppState implements ScreenController
         players[3] = null;
         
         
-        players[0] = new PlayerPhysics(currentMatch.getPlayer1(), bulletAppState, inputManager, cam,false);
+        players[0] = new PlayerPhysics(localRootNode,currentMatch.getPlayer1(), bulletAppState, inputManager, cam,false);
         for(int i = 1; i < 4; i++)
         {
             switch(i){
@@ -149,9 +152,9 @@ public class InGameState extends AbstractAppState implements ScreenController
                     if(!currentMatch.getPlayer2().canPlay()){
                         break;
                     } else if(currentMatch.getPlayer2().sameCharacter(currentMatch.getPlayer1())){
-                        //players[1]= new PlayerPhysics(currentMatch.getPlayer2(), bulletAppState, inputManager, cam,true);
+                        players[1]= new PlayerPhysics(localRootNode,currentMatch.getPlayer2(), bulletAppState, inputManager, cam,true);
                     } else {
-                        //players[1]= new PlayerPhysics(currentMatch.getPlayer2(), bulletAppState, inputManager, cam,false);
+                        players[1]= new PlayerPhysics(localRootNode,currentMatch.getPlayer2(), bulletAppState, inputManager, cam,false);
                     }
                     break;
                 case 2:
@@ -190,7 +193,7 @@ public class InGameState extends AbstractAppState implements ScreenController
                 case 1:
                     if(players[1] != null){
                         loadStage.getp2Spawn().attachChild(players[i].getPlayer());
-                        players[i].getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp1Spawn()).getWorldTranslation()));
+                        players[i].getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp2Spawn()).getWorldTranslation()));
                     }
                     break;
                 case 2:
@@ -220,11 +223,8 @@ public class InGameState extends AbstractAppState implements ScreenController
     public void update(float tpf) 
     {
         for(int i =0; i < ledges.size(); i++){
-            System.out.println(((Spatial)ledges.get(i)).getControl(GhostControl.class).getOverlappingCount());
-            System.out.println(((Spatial)ledges.get(i)).getUserData("ledgeGrabbed"));
             if(((Spatial)ledges.get(i)).getControl(GhostControl.class).getOverlappingCount() == 0 && (Boolean)((Spatial)ledges.get(i)).getUserData("ledgeGrabbed")){
                 ((Spatial)ledges.get(i)).setUserData("ledgeGrabbed",false);
-                System.out.println((Integer)((Spatial)ledges.get(i)).getUserData("playerGrabbing")-1);
                 players[(Integer)((Spatial)ledges.get(i)).getUserData("playerGrabbing")-1].getPlayer().getControl(PlayerControl.class).resetGravity();
                 
             }

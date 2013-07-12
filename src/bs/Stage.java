@@ -126,135 +126,138 @@ public class Stage implements PhysicsCollisionListener {
      * barriers.
      */
     public void collision(PhysicsCollisionEvent event) {
-        
-        for (int i = 0; i < ledges.size(); i++) {
-            if (event.getNodeA().getName().equals("ledgeNode") && (Integer) event.getNodeA().getUserData("Number") == i) {
-                if ((Boolean) event.getNodeA().getUserData("ledgeGrabbed") == false && !event.getNodeB().getName().equals("platform") ) {
-                    logger.log(Level.WARNING, "Ledge {0} hit", new Object[]{i});
-                    if(event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge()){
-                        event.getNodeA().setUserData("ledgeGrabbed", true);
-                    } else {
-                        event.getNodeB().getControl(PlayerControl.class).resetGravity();
-                    }
-                    event.getNodeB().getControl(PlayerControl.class).grabLedge((Spatial)event.getNodeA());
-                    event.getNodeA().setUserData("playerGrabbing",event.getNodeB().getControl(PlayerControl.class).getNumber());
-                    
-                    System.out.println("PlayerControl " + event.getNodeB().getControl(PlayerControl.class));
+        if (event.getNodeA().getName() == null || event.getNodeB().getName() == null){ 
+            return;
+        } else {
+            for (int i = 0; i < ledges.size(); i++) {
+                if (event.getNodeA().getName().equals("ledgeNode") && (Integer) event.getNodeA().getUserData("Number") == i) {
+                    if ((Boolean) event.getNodeA().getUserData("ledgeGrabbed") == false && !event.getNodeB().getName().equals("platform") ) {
+                        logger.log(Level.WARNING, "Ledge {0} hit", new Object[]{i});
+                        if(event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge()){
+                            event.getNodeA().setUserData("ledgeGrabbed", true);
+                        } else {
+                            event.getNodeB().getControl(PlayerControl.class).resetGravity();
+                        }
+                        event.getNodeB().getControl(PlayerControl.class).grabLedge((Spatial)event.getNodeA());
+                        event.getNodeA().setUserData("playerGrabbing",event.getNodeB().getControl(PlayerControl.class).getNumber());
 
-                    if(event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge()){
-                        event.getNodeA().setUserData("ledgeGrabbed", true);
-                    }
-                } else if ((Boolean) event.getNodeA().getUserData("ledgeGrabbed") == true){
-                    System.out.println("Node A: " + event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge());
-                    if(!event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge()){
-                        event.getNodeA().setUserData("ledgeGrabbed", false);
-                    }
-                }
-            } else if (event.getNodeB().getName().equals("ledgeNode") && (Integer) event.getNodeB().getUserData("Number") == i) {
-                if ((Boolean) event.getNodeB().getUserData("ledgeGrabbed") == false && !event.getNodeA().getName().equals("platform")) {
-                    logger.log(Level.WARNING, "Ledge {0} hit", new Object[]{i});
-                    if(event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge()){
-                        event.getNodeB().setUserData("ledgeGrabbed", true);
-                    } else {
-                        event.getNodeA().getControl(PlayerControl.class).resetGravity();
-                    }
-                    event.getNodeA().getControl(PlayerControl.class).grabLedge((Spatial)event.getNodeB());
-                    event.getNodeB().setUserData("playerGrabbing",event.getNodeA().getControl(PlayerControl.class).getNumber());
-                    System.out.println("PlayerControl " + event.getNodeA().getControl(PlayerControl.class));
+                        System.out.println("PlayerControl " + event.getNodeB().getControl(PlayerControl.class));
 
-                    
-                }else if ((Boolean) event.getNodeB().getUserData("ledgeGrabbed") == true){
-                    System.out.println("Node B: " + event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge());
-                    if(!event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge()){                      
-                        event.getNodeB().setUserData("ledgeGrabbed", false);
+                        if(event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge()){
+                            event.getNodeA().setUserData("ledgeGrabbed", true);
+                        }
+                    } else if ((Boolean) event.getNodeA().getUserData("ledgeGrabbed") == true){
+                        System.out.println("Node A: " + event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge());
+                        if(!event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge()){
+                            event.getNodeA().setUserData("ledgeGrabbed", false);
+                        }
+                    }
+                } else if (event.getNodeB().getName().equals("ledgeNode") && (Integer) event.getNodeB().getUserData("Number") == i) {
+                    if ((Boolean) event.getNodeB().getUserData("ledgeGrabbed") == false && !event.getNodeA().getName().equals("platform")) {
+                        logger.log(Level.WARNING, "Ledge {0} hit", new Object[]{i});
+                        if(event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge()){
+                            event.getNodeB().setUserData("ledgeGrabbed", true);
+                        } else {
+                            event.getNodeA().getControl(PlayerControl.class).resetGravity();
+                        }
+                        event.getNodeA().getControl(PlayerControl.class).grabLedge((Spatial)event.getNodeB());
+                        event.getNodeB().setUserData("playerGrabbing",event.getNodeA().getControl(PlayerControl.class).getNumber());
+                        System.out.println("PlayerControl " + event.getNodeA().getControl(PlayerControl.class));
+
+
+                    }else if ((Boolean) event.getNodeB().getUserData("ledgeGrabbed") == true){
+                        System.out.println("Node B: " + event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge());
+                        if(!event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge()){                      
+                            event.getNodeB().setUserData("ledgeGrabbed", false);
+                        }
+                    }
+                }
+
+            }
+            if (event.getNodeA().getName().equals("bottomBoundingBoxNode")) {
+                if (!event.getNodeB().getName().equals("rightBoundingBoxNode") && !event.getNodeB().getName().equals("leftBoundingBoxNode")) {
+                    logger.log(Level.WARNING, "Item Destroyed");
+                    if(timer.getTime() > 10 || event.getNodeB() != lastCollided){
+                        lastCollided = event.getNodeB();
+                        timer.reset();
+                        event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
+                        logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
+                    }
+                }
+            } else if (event.getNodeB().getName().equals("bottomBoundingBoxNode")) {
+                if (!event.getNodeA().getName().equals("rightBoundingBoxNode") && !event.getNodeA().getName().equals("leftBoundingBoxNode")) {
+                    logger.log(Level.WARNING, "Item Destroyed");
+                    if(timer.getTime() > 10 || event.getNodeA() != lastCollided){
+                        lastCollided = event.getNodeA();
+                        timer.reset();
+                        event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
+                        logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
                     }
                 }
             }
+            if (event.getNodeA().getName().equals("topBoundingBoxNode")) {
+                if (!event.getNodeB().getName().equals("rightBoundingBoxNode") && !event.getNodeB().getName().equals("leftBoundingBoxNode")) {
+                    logger.log(Level.WARNING, "Item Destroyed");
+                    if(timer.getTime() > 10 || event.getNodeB() != lastCollided){
+                        lastCollided = event.getNodeB();
+                        timer.reset();
+                        event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
+                        logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
+                    }
+                }
+            } else if (event.getNodeB().getName().equals("topBoundingBoxNode")) {
+                if (!event.getNodeA().getName().equals("rightBoundingBoxNode") && !event.getNodeA().getName().equals("leftBoundingBoxNode")) {
+                    logger.log(Level.WARNING, "Item Destroyed");
+                    if(timer.getTime() > 10 || event.getNodeA() != lastCollided){
+                        lastCollided = event.getNodeA();
+                        timer.reset();
+                        event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
+                        logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
+                    }
+                }
+            }
+            if (event.getNodeA().getName().equals("rightBoundingBoxNode")) {
+                if (!event.getNodeB().getName().equals("topBoundingBoxNode") && !event.getNodeB().getName().equals("bottomBoundingBoxNode")) {
+                    logger.log(Level.WARNING, "Item Destroyed");
+                    if(timer.getTime() > 10 || event.getNodeB() != lastCollided){
+                        lastCollided = event.getNodeB();
+                        timer.reset();
+                        event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
+                        logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
+                    }
+                }
+            } else if (event.getNodeB().getName().equals("rightBoundingBoxNode")) {
+                if (!event.getNodeA().getName().equals("topBoundingBoxNode") && !event.getNodeA().getName().equals("bottomBoundingBoxNode")) {
+                    logger.log(Level.WARNING, "Item Destroyed");
+                    if(timer.getTime() > 10 || event.getNodeA() != lastCollided){
+                        lastCollided = event.getNodeA();
+                        timer.reset();
+                        event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
+                        logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
+                    }
+                }
+            }
+            if (event.getNodeA().getName().equals("rightBoundingBoxNode")) {
+                if (!event.getNodeB().getName().equals("topBoundingBoxNode") && !event.getNodeB().getName().equals("bottomBoundingBoxNode")) {
+                    logger.log(Level.WARNING, "Item Destroyed");
+                    if(timer.getTime() > 10 || event.getNodeB() != lastCollided){
+                        lastCollided = event.getNodeB();
+                        timer.reset();
+                        event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
+                        logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
+                    }
+                }
+            } else if (event.getNodeB().getName().equals("rightBoundingBoxNode")) {
+                if (!event.getNodeA().getName().equals("topBoundingBoxNode") && !event.getNodeA().getName().equals("bottomBoundingBoxNode")) {
+                    logger.log(Level.WARNING, "Item Destroyed");
+                    if(timer.getTime() > 10 || event.getNodeA() != lastCollided){
+                        lastCollided = event.getNodeA();
+                        timer.reset();
+                        event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
+                        logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
+                    }
 
-        }
-        if (event.getNodeA().getName().equals("bottomBoundingBoxNode")) {
-            if (!event.getNodeB().getName().equals("rightBoundingBoxNode") && !event.getNodeB().getName().equals("leftBoundingBoxNode")) {
-                logger.log(Level.WARNING, "Item Destroyed");
-                if(timer.getTime() > 10 || event.getNodeB() != lastCollided){
-                    lastCollided = event.getNodeB();
-                    timer.reset();
-                    event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
-                    logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
                 }
-            }
-        } else if (event.getNodeB().getName().equals("bottomBoundingBoxNode")) {
-            if (!event.getNodeA().getName().equals("rightBoundingBoxNode") && !event.getNodeA().getName().equals("leftBoundingBoxNode")) {
-                logger.log(Level.WARNING, "Item Destroyed");
-                if(timer.getTime() > 10 || event.getNodeA() != lastCollided){
-                    lastCollided = event.getNodeA();
-                    timer.reset();
-                    event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
-                    logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
-                }
-            }
-        }
-        if (event.getNodeA().getName().equals("topBoundingBoxNode")) {
-            if (!event.getNodeB().getName().equals("rightBoundingBoxNode") && !event.getNodeB().getName().equals("leftBoundingBoxNode")) {
-                logger.log(Level.WARNING, "Item Destroyed");
-                if(timer.getTime() > 10 || event.getNodeB() != lastCollided){
-                    lastCollided = event.getNodeB();
-                    timer.reset();
-                    event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
-                    logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
-                }
-            }
-        } else if (event.getNodeB().getName().equals("topBoundingBoxNode")) {
-            if (!event.getNodeA().getName().equals("rightBoundingBoxNode") && !event.getNodeA().getName().equals("leftBoundingBoxNode")) {
-                logger.log(Level.WARNING, "Item Destroyed");
-                if(timer.getTime() > 10 || event.getNodeA() != lastCollided){
-                    lastCollided = event.getNodeA();
-                    timer.reset();
-                    event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
-                    logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
-                }
-            }
-        }
-        if (event.getNodeA().getName().equals("rightBoundingBoxNode")) {
-            if (!event.getNodeB().getName().equals("topBoundingBoxNode") && !event.getNodeB().getName().equals("bottomBoundingBoxNode")) {
-                logger.log(Level.WARNING, "Item Destroyed");
-                if(timer.getTime() > 10 || event.getNodeB() != lastCollided){
-                    lastCollided = event.getNodeB();
-                    timer.reset();
-                    event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
-                    logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
-                }
-            }
-        } else if (event.getNodeB().getName().equals("rightBoundingBoxNode")) {
-            if (!event.getNodeA().getName().equals("topBoundingBoxNode") && !event.getNodeA().getName().equals("bottomBoundingBoxNode")) {
-                logger.log(Level.WARNING, "Item Destroyed");
-                if(timer.getTime() > 10 || event.getNodeA() != lastCollided){
-                    lastCollided = event.getNodeA();
-                    timer.reset();
-                    event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
-                    logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
-                }
-            }
-        }
-        if (event.getNodeA().getName().equals("rightBoundingBoxNode")) {
-            if (!event.getNodeB().getName().equals("topBoundingBoxNode") && !event.getNodeB().getName().equals("bottomBoundingBoxNode")) {
-                logger.log(Level.WARNING, "Item Destroyed");
-                if(timer.getTime() > 10 || event.getNodeB() != lastCollided){
-                    lastCollided = event.getNodeB();
-                    timer.reset();
-                    event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
-                    logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
-                }
-            }
-        } else if (event.getNodeB().getName().equals("rightBoundingBoxNode")) {
-            if (!event.getNodeA().getName().equals("topBoundingBoxNode") && !event.getNodeA().getName().equals("bottomBoundingBoxNode")) {
-                logger.log(Level.WARNING, "Item Destroyed");
-                if(timer.getTime() > 10 || event.getNodeA() != lastCollided){
-                    lastCollided = event.getNodeA();
-                    timer.reset();
-                    event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
-                    logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
-                }
-                
             }
         }
 
