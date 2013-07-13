@@ -4,7 +4,296 @@
     <!-- start screen -->
     <!-- +++++++++++++++++++++++++++++++++++++++ -->
     <screen id="inGameHud" controller="bs.InGameState">
-        <layer id="layer" childLayout="center">
+        
+        <layer id="constant" childLayout="absolute">
+            
+            <panel id="Player1StatusConstantPanel" width="18.75%" height="20%" x="5%" y="75%" childLayout="absolute">
+                <panel id="Player1ImagePanel" width="40%" height="70%" x="0%" y="15%" childLayout="vertical">
+                    <image id="Player1Image" filename="Interface/CharacterSelect/SelectTahu.png" width="100%" height="100%" />
+                </panel>
+                <panel id="Player1NamePanel" width="100%" height="15%" x="0%" y="85%" childLayout="vertical">
+                    <text id="Player1Name" font="Interface/Fonts/1942report16.fnt" text="Tahu" align="center" valign="center" />
+                </panel>
+                <panel id="Player1EmblemPanel" width="60%" height="70%" x="40%" y="0%" childLayout="vertical">
+                    <image id="Player1Emblem" filename="Interface/CharacterInGame/Tahu/Emblem.png" width="100%" height="100%" />
+                </panel>
+            </panel>
+            
+            <panel id="Player2StatusConstantPanel" width="18.75%" height="20%" x="28.75%" y="75%" childLayout="absolute">
+                <panel id="Player2ImagePanel" width="40%" height="70%" x="0%" y="15%" childLayout="vertical">
+                    <image id="Player2Image" filename="Interface/CharacterSelect/SelectTahu.png" width="100%" height="100%" />
+                </panel>
+                <panel id="Player2NamePanel" width="100%" height="15%" x="0%" y="85%" childLayout="vertical">
+                    <text id="Player2Name" font="Interface/Fonts/1942report16.fnt" text="Tahu" align="center" valign="center" />
+                </panel>
+                <panel id="Player2EmblemPanel" width="60%" height="70%" x="40%" y="0%" childLayout="vertical">
+                    <image id="Player2Emblem" filename="Interface/CharacterInGame/Tahu/Emblem.png" width="100%" height="100%" />
+                </panel>
+            </panel>
+            
+            <panel id="Player3StatusConstantPanel" width="18.75%" height="20%" x="52.5%" y="75%" childLayout="absolute">
+                <panel id="Player3ImagePanel" width="40%" height="70%" x="0%" y="15%" childLayout="vertical">
+                    <image id="Player3Image" filename="Interface/CharacterSelect/SelectTahu.png" width="100%" height="100%" />
+                </panel>
+                <panel id="Player3NamePanel" width="100%" height="15%" x="0%" y="85%" childLayout="vertical">
+                    <text id="Player3Name" font="Interface/Fonts/1942report16.fnt" text="Tahu" align="center" valign="center" />
+                </panel>
+                <panel id="Player3EmblemPanel" width="60%" height="70%" x="40%" y="0%" childLayout="vertical">
+                    <image id="Player3Emblem" filename="Interface/CharacterInGame/Tahu/Emblem.png" width="100%" height="100%" />
+                </panel>
+            </panel>
+            
+            <panel id="Player4StatusConstantPanel" width="18.75%" height="20%" x="76.25%" y="75%" childLayout="absolute">
+                <panel id="Player4ImagePanel" width="40%" height="70%" x="0%" y="15%" childLayout="vertical">
+                    <image id="Player4Image" filename="Interface/CharacterSelect/SelectTahu.png" width="100%" height="100%" />
+                </panel>
+                <panel id="Player4NamePanel" width="100%" height="15%" x="0%" y="85%" childLayout="vertical">
+                    <text id="Player4Name" font="Interface/Fonts/1942report16.fnt" text="Tahu" align="center" valign="center" />
+                </panel>
+                <panel id="Player4EmblemPanel" width="60%" height="70%" x="40%" y="0%" childLayout="vertical">
+                    <image id="Player4Emblem" filename="Interface/CharacterInGame/Tahu/Emblem.png" width="100%" height="100%" />
+                </panel>
+            </panel>
+            
+        </layer>
+        
+        <layer id="variableUnderlay" childLayout="absolute">
+            
+<!--            <panel id="TimerBox" width="40%" height="5%" x="30%" y="5%" childLayout="vertical">
+                 Probably should be 24 
+                <text id="CurrentTime" font="Interface/Fonts/1942report32.fnt" text="0.00" align="center" valign="center" />
+            </panel>-->
+            
+            <panel id="Player1StatusUnderlayPanel" width="18.75%" height="20%" x="5%" y="75%" childLayout="absolute">
+
+<!--                <panel id="Player1DamagePanel" width="60%" height="40%" x="40%" y="45%" childLayout="vertical">
+                    <text id="Player1Damage" font="Interface/Fonts/1942report48.fnt" text="0%" align="center" valign="center" />
+                </panel>-->
+                <!-- When higher than 5 stock, panels 1, 3, 4, and 5 will have no image, but 3 and 4 will have X and # respectively. 
+                     When 5 stock, all will have image, and will disappear as stock drops. -->
+                <panel id="Player1ProgressPanel" width="60%" height="30%" x="40%" y="15%" childLayout="absolute">
+<!--                    <panel id="Player1ProgressItem1" width="20%" height="100%" x="0%" y="0%" childLayout="center">
+                         Find a way to maintain aspect ratio 
+                        <image id="Player1StockIcon1" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>-->
+                    <panel id="Player1ProgressItem2" width="20%" height="100%" x="20%" y="0%" childLayout="center">
+                        <!--<image id="Player1StockIcon2" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />-->
+                    </panel>
+                    <panel id="Player1ProgressItem3" width="20%" height="100%" x="40%" y="0%" childLayout="center">
+                        <!--<image id="Player1StockIcon3" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />-->
+                        <text id="Player1StockLeftX" font="Interface/Fonts/1942report16.fnt" text="X" />
+                    </panel>
+                    <panel id="Player1ProgressItem4" width="20%" height="100%" x="60%" y="0%" childLayout="center">
+                        <!--<image id="Player1StockIcon4" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />-->
+                        <text id="Player1StockLeftNumber" font="Interface/Fonts/1942report16.fnt" text="6" />
+                    </panel>
+<!--                    <panel id="Player1ProgressItem5" width="20%" height="100%" x="80%" y="0%" childLayout="center">
+                        <image id="Player1StockIcon5" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>-->
+                    
+                </panel>
+            </panel>
+            
+            <panel id="Player2StatusUnderlayPanel" width="18.75%" height="20%" x="28.75%" y="75%" childLayout="absolute">
+<!--                  <panel id="Player2DamagePanel" width="60%" height="40%" x="40%" y="45%" childLayout="vertical">
+                    <text id="Player2Damage" font="Interface/Fonts/1942report48.fnt" text="0%" align="center" valign="center" />
+                </panel>-->
+                <!-- Add some padding along the horizontal axis -->
+                <panel id="Player2ProgressPanel" width="60%" height="30%" x="40%" y="15%" childLayout="absolute">
+<!--                    <panel id="Player2ProgressItem1" width="20%" height="100%" x="0%" y="0%" childLayout="center">
+                         Find a way to maintain aspect ratio 
+                        <image id="Player2StockIcon1" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>-->
+                    <panel id="Player2ProgressItem2" width="20%" height="100%" x="20%" y="0%" childLayout="center">
+                        <!--<image id="Player2StockIcon2" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />-->
+                    </panel>
+                    <panel id="Player2ProgressItem3" width="20%" height="100%" x="40%" y="0%" childLayout="center">
+                        <!--<image id="Player2StockIcon3" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />-->
+                        <text id="Player2StockLeftX" font="Interface/Fonts/1942report16.fnt" text="X" />
+                    </panel>
+                    <panel id="Player2ProgressItem4" width="20%" height="100%" x="60%" y="0%" childLayout="center">
+                        <!--<image id="Player2StockIcon4" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />-->
+                        <text id="Player2StockLeftNumber" font="Interface/Fonts/1942report16.fnt" text="6" />
+                    </panel>
+<!--                    <panel id="Player2ProgressItem5" width="20%" height="100%" x="80%" y="0%" childLayout="center">
+                        <image id="Player2StockIcon5" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>-->
+                </panel>
+            </panel>
+            
+            <panel id="Player3StatusUnderlayPanel" width="18.75%" height="20%" x="52.5%" y="75%" childLayout="absolute">
+<!--                <panel id="Player3DamagePanel" width="60%" height="40%" x="40%" y="45%" childLayout="vertical">
+                    <text id="Player3Damage" font="Interface/Fonts/1942report48.fnt" text="0%" align="center" valign="center" />
+                </panel>-->
+                <!-- Add some padding along the horizontal axis -->
+                <panel id="Player3ProgressPanel" width="60%" height="30%" x="40%" y="15%" childLayout="absolute">
+<!--                    <panel id="Player3ProgressItem1" width="20%" height="100%" x="0%" y="0%" childLayout="center">
+                         Find a way to maintain aspect ratio 
+                        <image id="Player3StockIcon1" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>-->
+                    <panel id="Player3ProgressItem2" width="20%" height="100%" x="20%" y="0%" childLayout="center">
+                        <!--<image id="Player3StockIcon2" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />-->
+                    </panel>
+                    <panel id="Player3ProgressItem3" width="20%" height="100%" x="40%" y="0%" childLayout="center">
+                        <!--<image id="Player3StockIcon3" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />-->
+                        <text id="Player3StockLeftX" font="Interface/Fonts/1942report16.fnt" text="X" />
+                    </panel>
+                    <panel id="Player3ProgressItem4" width="20%" height="100%" x="60%" y="0%" childLayout="center">
+                        <!--<image id="Player3StockIcon4" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />-->
+                        <text id="Player3StockLeftNumber" font="Interface/Fonts/1942report16.fnt" text="6" />
+                    </panel>
+<!--                    <panel id="Player3ProgressItem5" width="20%" height="100%" x="80%" y="0%" childLayout="center">
+                        <image id="Player3StockIcon5" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>-->
+                </panel>
+            </panel>
+            
+            <panel id="Player4StatusUnderlayPanel" width="18.75%" height="20%" x="76.25%" y="75%" childLayout="absolute">
+<!--                <panel id="Player4DamagePanel" width="60%" height="40%" x="40%" y="45%" childLayout="vertical">
+                    <text id="Player4Damage" font="Interface/Fonts/1942report48.fnt" text="0%" align="center" valign="center" />
+                </panel>-->
+                <!-- Add some padding along the horizontal axis -->
+                <panel id="Player4ProgressPanel" width="60%" height="30%" x="40%" y="15%" childLayout="absolute">
+<!--                    <panel id="Player4ProgressItem1" width="20%" height="100%" x="0%" y="0%" childLayout="center">
+                         Find a way to maintain aspect ratio 
+                        <image id="Player4StockIcon1" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>-->
+                    <panel id="Player4ProgressItem2" width="20%" height="100%" x="20%" y="0%" childLayout="center">
+                        <!--<image id="Player4StockIcon2" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />-->
+                    </panel>
+                    <panel id="Player4ProgressItem3" width="20%" height="100%" x="40%" y="0%" childLayout="center">
+                        <!--<image id="Player4StockIcon3" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />-->
+                        <text id="Player4StockLeftX" font="Interface/Fonts/1942report16.fnt" text="X" />
+                    </panel>
+                    <panel id="Player4ProgressItem4" width="20%" height="100%" x="60%" y="0%" childLayout="center">
+                        <!--<image id="Player4StockIcon4" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />-->
+                        <text id="Player4StockLeftNumber" font="Interface/Fonts/1942report16.fnt" text="6" />
+                    </panel>
+<!--                    <panel id="Player4ProgressItem5" width="20%" height="100%" x="80%" y="0%" childLayout="center">
+                        <image id="Player4StockIcon5" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>-->
+                </panel> 
+            </panel>
+            
+        </layer>
+        
+        <layer id="variableOverlay" childLayout="absolute">
+            
+            <panel id="TimerBox" width="40%" height="5%" x="30%" y="5%" childLayout="vertical">
+                <!-- Probably should be 24 -->
+                <text id="CurrentTime" font="Interface/Fonts/1942report32.fnt" text="0.00" align="center" valign="center" />
+            </panel>
+            
+            <panel id="Player1StatusOverlayPanel" width="18.75%" height="20%" x="5%" y="75%" childLayout="absolute">
+
+                <panel id="Player1DamagePanel" width="60%" height="40%" x="40%" y="45%" childLayout="vertical">
+                    <text id="Player1Damage" font="Interface/Fonts/1942report48.fnt" text="0%" align="center" valign="center" />
+                </panel>
+                <!-- When higher than 5 stock, panels 1, 3, 4, and 5 will have no image, but 3 and 4 will have X and # respectively. 
+                     When 5 stock, all will have image, and will disappear as stock drops. -->
+                <panel id="Player1ProgressPanel" width="60%" height="30%" x="40%" y="15%" childLayout="absolute">
+                    <panel id="Player1ProgressItem1" width="20%" height="100%" x="0%" y="0%" childLayout="center">
+                        <!-- Find a way to maintain aspect ratio -->
+                        <image id="Player1StockIcon1" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>
+                    <panel id="Player1ProgressItem2" width="20%" height="100%" x="20%" y="0%" childLayout="center">
+                        <image id="Player1StockIcon2" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>
+                    <panel id="Player1ProgressItem3" width="20%" height="100%" x="40%" y="0%" childLayout="center">
+                        <image id="Player1StockIcon3" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                        <!--<text id="Player1StockLeftX" font="Interface/Fonts/1942report32.fnt" text="X" />-->
+                    </panel>
+                    <panel id="Player1ProgressItem4" width="20%" height="100%" x="60%" y="0%" childLayout="center">
+                        <image id="Player1StockIcon4" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                        <!--<text id="Player1StockLeftNumber" font="Interface/Fonts/1942report32.fnt" text="6" />-->
+                    </panel>
+                    <panel id="Player1ProgressItem5" width="20%" height="100%" x="80%" y="0%" childLayout="center">
+                        <image id="Player1StockIcon5" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>
+                    
+                </panel>
+            </panel>
+            
+            <panel id="Player2StatusOverlayPanel" width="18.75%" height="20%" x="28.75%" y="75%" childLayout="absolute">
+                  <panel id="Player2DamagePanel" width="60%" height="40%" x="40%" y="45%" childLayout="vertical">
+                    <text id="Player2Damage" font="Interface/Fonts/1942report48.fnt" text="0%" align="center" valign="center" />
+                </panel>
+                <!-- Add some padding along the horizontal axis -->
+                <panel id="Player2ProgressPanel" width="60%" height="30%" x="40%" y="15%" childLayout="absolute">
+                    <panel id="Player2ProgressItem1" width="20%" height="100%" x="0%" y="0%" childLayout="center">
+                        <!-- Find a way to maintain aspect ratio -->
+                        <image id="Player2StockIcon1" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>
+                    <panel id="Player2ProgressItem2" width="20%" height="100%" x="20%" y="0%" childLayout="center">
+                        <image id="Player2StockIcon2" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>
+                    <panel id="Player2ProgressItem3" width="20%" height="100%" x="40%" y="0%" childLayout="center">
+                        <image id="Player2StockIcon3" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                        <!--<text id="Player2StockLeft" font="Interface/Fonts/1942report32.fnt" text="X" />-->
+                    </panel>
+                    <panel id="Player2ProgressItem4" width="20%" height="100%" x="60%" y="0%" childLayout="center">
+                        <image id="Player2StockIcon4" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                        <!--<text id="Player2StockLeft" font="Interface/Fonts/1942report32.fnt" text="6" />-->
+                    </panel>
+                    <panel id="Player2ProgressItem5" width="20%" height="100%" x="80%" y="0%" childLayout="center">
+                        <image id="Player2StockIcon5" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>
+                </panel>
+            </panel>
+            
+            <panel id="Player3StatusOverlayPanel" width="18.75%" height="20%" x="52.5%" y="75%" childLayout="absolute">
+                <panel id="Player3DamagePanel" width="60%" height="40%" x="40%" y="45%" childLayout="vertical">
+                    <text id="Player3Damage" font="Interface/Fonts/1942report48.fnt" text="0%" align="center" valign="center" />
+                </panel>
+                <!-- Add some padding along the horizontal axis -->
+                <panel id="Player3ProgressPanel" width="60%" height="30%" x="40%" y="15%" childLayout="absolute">
+                    <panel id="Player3ProgressItem1" width="20%" height="100%" x="0%" y="0%" childLayout="center">
+                        <!-- Find a way to maintain aspect ratio -->
+                        <image id="Player3StockIcon1" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>
+                    <panel id="Player3ProgressItem2" width="20%" height="100%" x="20%" y="0%" childLayout="center">
+                        <image id="Player3StockIcon2" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>
+                    <panel id="Player3ProgressItem3" width="20%" height="100%" x="40%" y="0%" childLayout="center">
+                        <image id="Player3StockIcon3" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                        <!--<text id="Player3StockLeft" font="Interface/Fonts/1942report32.fnt" text="X" />-->
+                    </panel>
+                    <panel id="Player3ProgressItem4" width="20%" height="100%" x="60%" y="0%" childLayout="center">
+                        <image id="Player3StockIcon4" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                        <!--<text id="Player3StockLeft" font="Interface/Fonts/1942report32.fnt" text="6" />-->
+                    </panel>
+                    <panel id="Player3ProgressItem5" width="20%" height="100%" x="80%" y="0%" childLayout="center">
+                        <image id="Player3StockIcon5" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>
+                </panel>
+            </panel>
+            
+            <panel id="Player4StatusOverlayPanel" width="18.75%" height="20%" x="76.25%" y="75%" childLayout="absolute">
+                <panel id="Player4DamagePanel" width="60%" height="40%" x="40%" y="45%" childLayout="vertical">
+                    <text id="Player4Damage" font="Interface/Fonts/1942report48.fnt" text="0%" align="center" valign="center" />
+                </panel>
+                <!-- Add some padding along the horizontal axis -->
+                <panel id="Player4ProgressPanel" width="60%" height="30%" x="40%" y="15%" childLayout="absolute">
+                    <panel id="Player4ProgressItem1" width="20%" height="100%" x="0%" y="0%" childLayout="center">
+                        <!-- Find a way to maintain aspect ratio -->
+                        <image id="Player4StockIcon1" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>
+                    <panel id="Player4ProgressItem2" width="20%" height="100%" x="20%" y="0%" childLayout="center">
+                        <image id="Player4StockIcon2" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>
+                    <panel id="Player4ProgressItem3" width="20%" height="100%" x="40%" y="0%" childLayout="center">
+                        <image id="Player4StockIcon3" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                        <!--<text id="Player4StockLeft" font="Interface/Fonts/1942report32.fnt" text="X" />-->
+                    </panel>
+                    <panel id="Player4ProgressItem4" width="20%" height="100%" x="60%" y="0%" childLayout="center">
+                        <image id="Player4StockIcon4" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                        <!--<text id="Player4StockLeft" font="Interface/Fonts/1942report32.fnt" text="6" />-->
+                    </panel>
+                    <panel id="Player4ProgressItem5" width="20%" height="100%" x="80%" y="0%" childLayout="center">
+                        <image id="Player4StockIcon5" filename="Interface/CharacterInGame/Tahu/Standard.png" width="100%" height="100%" />
+                    </panel>
+                </panel> 
+            </panel>
             
         </layer>
     </screen>

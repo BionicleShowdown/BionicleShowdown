@@ -248,6 +248,11 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         return (stock);
     }
     
+    public void setStock(int newStock)
+    {
+        stock = newStock;
+    }
+    
     public void resetGravity() {
         character.setGravity(startGravity);
         character.setFallSpeed(startFallSpeed);

@@ -181,6 +181,31 @@
                 <image id="Player4Dropper" filename="Interface/CharacterSelect/Player4Dropper.png" width="100%" height="100%" />
             </control>
             
+            
+            
+        </layer>
+        
+        <layer id="ExtraMenus" childLayout="absolute">
+            
+<!--             Make the button stuff look better. 
+            <panel id="Player1DifficultySelect" backgroundColor="#f00f" width="18.75%" height="40%" x="5%" y="55%" childLayout="absolute">
+                <panel id="UpButton" width="100%" height="10%" x="0%" y="0%" childLayout="vertical">
+                    <image id="UpButtonImage" filename="Interface/CharacterSelect/SelectTahu.png" width="100%" height="100%"/>
+                </panel>
+                <panel id="FirstSelect" width="100%" height="20%" x="0%" y="15%" childLayout="vertical">
+                    <image filename="Interface/CharacterSelect/SelectTahu.png" width="100%" height="100%"/>
+                </panel>
+                <panel id="SecondSelect" width="100%" height="20%" x="0%" y="40%" childLayout="vertical">
+                    <image filename="Interface/CharacterSelect/SelectTahu.png" width="100%" height="100%"/>
+                </panel>
+                <panel id="ThirdSelect" width="100%" height="20%" x="0%" y="65%" childLayout="vertical">
+                    <image filename="Interface/CharacterSelect/SelectTahu.png" width="100%" height="100%"/>
+                </panel>
+                <panel id="DownButton" width="100%" height="10%" x="0%" y="90%" childLayout="vertical">
+                    <image filename="Interface/CharacterSelect/SelectTahu.png" width="100%" height="100%"/>
+                </panel>
+            </panel>-->
+            
         </layer>
         
     </screen>

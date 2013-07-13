@@ -28,8 +28,10 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import de.lessvoid.nifty.tools.SizeValue;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import menu.Match;
@@ -66,6 +68,15 @@ public class InGameState extends AbstractAppState implements ScreenController
     private PlayerPhysics[] players = new PlayerPhysics[4];
     
     private Match currentMatch;
+    
+    // Stock Options (no, not the financial kind :P)
+    private int initialStock = 10;
+    public int currentStock = initialStock;
+    
+    private boolean isStockMatch = false;
+    
+    // Time Options
+//    private Timer gameTimer;
 
     public InGameState() 
     {
@@ -75,6 +86,8 @@ public class InGameState extends AbstractAppState implements ScreenController
     public InGameState(Match currentMatch)
     {
         this.currentMatch = currentMatch;
+        isStockMatch = currentMatch.isStockMatch();
+        initialStock = currentMatch.getStock();
     }
 
 
@@ -120,6 +133,11 @@ public class InGameState extends AbstractAppState implements ScreenController
         //Add the InGameHUD xml file, and go this screen
         nifty.setDebugOptionPanelColors(false); // Added this so the true on the Menu won't make the screen look weird.
 
+        //Initialize GUI
+        guiInitiate();
+        playerStockInitialize();
+        adjustStock(initialStock, 1);
+        
         //Rotate the camera to start position
         cam.setLocation(new Vector3f(0, 10, 70));
         cam.setRotation(new Quaternion(0f, -1f, 0f, 0f));
@@ -178,6 +196,7 @@ public class InGameState extends AbstractAppState implements ScreenController
         
         loadStage = new Stage(assetManager.loadModel("Scenes/StageScenes/ShowdownScene.j3o"), bulletAppState);  
         ledges = loadStage.getLedges();
+        loadStage.setInGameState(this);
         
         for(int i = 0; i < 4; i++){
             switch (i){
@@ -206,6 +225,7 @@ public class InGameState extends AbstractAppState implements ScreenController
                     }
                     break;
             }
+            
         }
             
         //loadStage.getp2Spawn().attachChild(two.getPlayer());
@@ -238,6 +258,7 @@ public class InGameState extends AbstractAppState implements ScreenController
 //            music = new AudioNode(assetManager, "Sounds/Music/Super Smash Bionicle Main Theme 2.wav", true);
 //            music.play();
 //        }
+        
     }
 
     @Override
@@ -275,5 +296,105 @@ public class InGameState extends AbstractAppState implements ScreenController
     public void onEndScreen() 
     {
         //throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    public void guiInitiate()
+    {
+        setStockImageHeight();
+    }
+    
+    public void setStockImageHeight()
+    {
+        String width = "" + screen.findElementByName("Player1ProgressItem1").getWidth() + "px";
+        String image = "";
+        
+        for (int i = 1; i <= 4; i++) 
+        {
+            for (int j = 1; j <= 5; j++) 
+            {
+                image = "Player" + i + "StockIcon" + j;
+                screen.findElementByName(image).setConstraintHeight(new SizeValue(width));
+                screen.findElementByName(image).getParent().layoutElements();
+            }  
+        }
+        
+    }
+    
+    public void playerStockInitialize()
+    {
+        for (int j = 0; j < 4; j++) 
+            {
+                if (players[j] != null)
+                {
+                    players[j].setStock(initialStock);
+                }
+                else
+                {
+                    screen.findElementByName("Player" + (j + 1) + "StatusConstantPanel").hide();
+                    screen.findElementByName("Player" + (j + 1) + "StatusUnderlayPanel").hide();
+                    screen.findElementByName("Player" + (j + 1) + "StatusOverlayPanel").hide();
+                }
+            }
+    }
+    
+    public void adjustStock(int newStock, int playerNumber)
+    {
+        // Adjust alignment for large numbers
+        
+        // Add stuff for when below 5 (5 can just be left alone)
+        
+        currentStock = newStock;
+        int stockAmount = newStock;
+        
+        if (stockAmount > 5)
+        {
+            screen.findElementByName("Player" + playerNumber + "StockIcon1").hide();
+            screen.findElementByName("Player" + playerNumber + "StockIcon3").hide();
+            screen.findElementByName("Player" + playerNumber + "StockIcon4").hide();
+            screen.findElementByName("Player" + playerNumber + "StockIcon5").hide();
+            screen.findElementByName("Player" + playerNumber + "StockLeftNumber").getRenderer(TextRenderer.class).setText("" + stockAmount + "");
+            
+        }
+        
+        if (stockAmount == 5)
+        {
+            screen.findElementByName("Player" + playerNumber + "StockIcon1").show();
+            screen.findElementByName("Player" + playerNumber + "StockIcon3").show();
+            screen.findElementByName("Player" + playerNumber + "StockIcon4").show();
+            screen.findElementByName("Player" + playerNumber + "StockIcon5").show();
+            
+        }
+        
+        if (stockAmount <= 4)
+        {
+            screen.findElementByName("Player" + playerNumber + "StockIcon5").hide();
+//          
+        }
+        
+        if (stockAmount <= 3)
+        {
+            screen.findElementByName("Player" + playerNumber + "StockIcon4").hide();
+            screen.findElementByName("Player" + playerNumber + "StockLeftNumber").hide();
+        }
+        
+        if (stockAmount <= 2)
+        {
+            screen.findElementByName("Player" + playerNumber + "StockIcon3").hide();
+            screen.findElementByName("Player" +playerNumber + "StockLeftX").hide();
+        }
+        
+        if (stockAmount <= 1)
+        {
+            screen.findElementByName("Player" + playerNumber + "StockIcon2").hide();
+        }
+        
+        if (stockAmount <= 0)
+        {
+            screen.findElementByName("Player" + playerNumber + "StockIcon1").hide();
+            screen.findElementByName("Player" + playerNumber + "StatusUnderlayPanel").hide();
+            screen.findElementByName("Player" + playerNumber + "StatusOverlayPanel").hide();
+            screen.findElementByName("Player" + playerNumber + "ImagePanel").hide();
+            screen.findElementByName("Player" + playerNumber + "NamePanel").hide();
+        }
     }
 }

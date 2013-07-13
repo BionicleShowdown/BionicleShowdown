@@ -122,6 +122,11 @@ public class PlayerPhysics implements PhysicsCollisionListener
         player.setJumpSpeed(jumpSpeed);
         player.setFallSpeed(fallSpeed);
     }
+    
+    public void setStock(int newStock)
+    {
+        pc.setStock(newStock - 1);
+    }
 
     public void collision(PhysicsCollisionEvent event) {
     }

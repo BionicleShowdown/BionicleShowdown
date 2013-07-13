@@ -54,6 +54,8 @@ public class Stage implements PhysicsCollisionListener {
     //private Spatial;
     private int ledgeCount = 0;
     private ArrayList ledges = new ArrayList();
+    
+    private InGameState currentInGameState;
 
     /*Constructor accepts a spatial (yet to be implemented) for the stage
      * and the height and width of the stage from
@@ -108,6 +110,11 @@ public class Stage implements PhysicsCollisionListener {
     public Node getRespawnNode() {
         return (respawnNode);
     }
+    
+    public void setInGameState(InGameState state)
+    {
+        currentInGameState = state;
+    }
 
     /* Sets up spatial for stage, spawn
      * nodes for the players, and all
@@ -126,6 +133,8 @@ public class Stage implements PhysicsCollisionListener {
      * barriers.
      */
     public void collision(PhysicsCollisionEvent event) {
+        
+        int currentPlayer = 1;
         
         for (int i = 0; i < ledges.size(); i++) {
             if (event.getNodeA().getName().equals("ledgeNode") && (Integer) event.getNodeA().getUserData("Number") == i) {
@@ -180,6 +189,7 @@ public class Stage implements PhysicsCollisionListener {
                     timer.reset();
                     event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
                     logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
+                    currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
                 }
             }
         } else if (event.getNodeB().getName().equals("bottomBoundingBoxNode")) {
@@ -190,6 +200,7 @@ public class Stage implements PhysicsCollisionListener {
                     timer.reset();
                     event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
                     logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
+                    currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
                 }
             }
         }
@@ -201,6 +212,7 @@ public class Stage implements PhysicsCollisionListener {
                     timer.reset();
                     event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
                     logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
+                    currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
                 }
             }
         } else if (event.getNodeB().getName().equals("topBoundingBoxNode")) {
@@ -211,6 +223,30 @@ public class Stage implements PhysicsCollisionListener {
                     timer.reset();
                     event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
                     logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
+                    currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
+                }
+            }
+        }
+        if (event.getNodeA().getName().equals("leftBoundingBoxNode")) {
+            if (!event.getNodeB().getName().equals("topBoundingBoxNode") && !event.getNodeB().getName().equals("bottomBoundingBoxNode")) {
+                logger.log(Level.WARNING, "Item Destroyed");
+                if(timer.getTime() > 10 || event.getNodeB() != lastCollided){
+                    lastCollided = event.getNodeB();
+                    timer.reset();
+                    event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
+                    logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
+                    currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
+                }
+            }
+        } else if (event.getNodeB().getName().equals("leftBoundingBoxNode")) {
+            if (!event.getNodeA().getName().equals("topBoundingBoxNode") && !event.getNodeA().getName().equals("bottomBoundingBoxNode")) {
+                logger.log(Level.WARNING, "Item Destroyed");
+                if(timer.getTime() > 10 || event.getNodeA() != lastCollided){
+                    lastCollided = event.getNodeA();
+                    timer.reset();
+                    event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
+                    logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
+                    currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
                 }
             }
         }
@@ -222,6 +258,7 @@ public class Stage implements PhysicsCollisionListener {
                     timer.reset();
                     event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
                     logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
+                    currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
                 }
             }
         } else if (event.getNodeB().getName().equals("rightBoundingBoxNode")) {
@@ -232,27 +269,7 @@ public class Stage implements PhysicsCollisionListener {
                     timer.reset();
                     event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
                     logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
-                }
-            }
-        }
-        if (event.getNodeA().getName().equals("rightBoundingBoxNode")) {
-            if (!event.getNodeB().getName().equals("topBoundingBoxNode") && !event.getNodeB().getName().equals("bottomBoundingBoxNode")) {
-                logger.log(Level.WARNING, "Item Destroyed");
-                if(timer.getTime() > 10 || event.getNodeB() != lastCollided){
-                    lastCollided = event.getNodeB();
-                    timer.reset();
-                    event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
-                    logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
-                }
-            }
-        } else if (event.getNodeB().getName().equals("rightBoundingBoxNode")) {
-            if (!event.getNodeA().getName().equals("topBoundingBoxNode") && !event.getNodeA().getName().equals("bottomBoundingBoxNode")) {
-                logger.log(Level.WARNING, "Item Destroyed");
-                if(timer.getTime() > 10 || event.getNodeA() != lastCollided){
-                    lastCollided = event.getNodeA();
-                    timer.reset();
-                    event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
-                    logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
+                    currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
                 }
                 
             }

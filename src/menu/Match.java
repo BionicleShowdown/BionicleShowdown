@@ -17,6 +17,7 @@ public class Match
     private Player player2 = null;
     private Player player3 = null;
     private Player player4 = null;
+    private int stock;
     // Extend into FFAMatch and TeamMatch?
     // Includes: Players, Teams, Gametype, Game settings, Statistics
     // Gets filled in with Statistics post-game, then gets passed to the stats menu
@@ -54,5 +55,30 @@ public class Match
     {
         return player4;
     }
+    
+    public boolean isStockMatch()
+    {
+        if (stock != 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    
+    public int getStock()
+    {
+        return stock;
+    }
+    
+    public void setStock(int newStock)
+    {
+        stock = newStock;
+    }
+    
+    // Do same for Time and Widget
+    
     // When match is over, clear the teams of all members (the teams are static)
 }
