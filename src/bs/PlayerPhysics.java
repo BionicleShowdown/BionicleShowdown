@@ -148,6 +148,10 @@ public class PlayerPhysics implements PhysicsCollisionListener
     
     public void setStock(int newStock)
     {
+        if (pc == null)
+        {
+            return;
+        }
         pc.setStock(newStock - 1);
     }
 

@@ -4,6 +4,7 @@
  */
 package bs;
 
+
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
@@ -24,32 +25,41 @@ import com.jme3.scene.control.Control;
 import com.jme3.system.lwjgl.LwjglTimer;
 import java.sql.Time;
 
+
 /**
  *
  * @author JSC
  */
 public class EnemyMoveAttack extends AbstractControl implements AnimEventListener,PhysicsCollisionListener {
 
+
     public Spatial motor; //This takes the GameObject of the executer of the code
     public Transform head; //This takes a prefab assigned to the head of the executer of the code
+
 
     public float targetDistanceMin = 3.0f; //This sets the max and min view range
     public float targetDistanceMax = 12.0f;
 
+
     public Control weaponBehaviours[] = {}; //This takes the location of the weapons the executer of the code has and sets them in an array
     public float fireFrequency = 2f;
+
 
     // Private memeber data
    // private AI ai; //This is the code that launched this code
 
+
     private Transform character;
 
+
     private Transform target;
+
 
     private boolean inRange = false;
     private float nextRaycastTime = 0; //This takes the time at which a Raycast wave was fired
     private float lastRaycastSuccessfulTime = 0; //This tallys the amount of times the Raycast wave collided with the target
     private float noticeTime = 0; //This tallys the time it took for the AI to register the collision of the Raycast
+
 
     private boolean firing = false;
     private float lastFireTime  = -1f;
@@ -144,6 +154,7 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
         if (closeFiring == false) {
             firing = state;
 
+
         }
     }
     
@@ -186,6 +197,7 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
        //that is, to face the direction from this character to the target
       
        container.setViewDirection(targetDirection);
+
 
        
        // For a short moment after noticing target…
@@ -249,6 +261,7 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
+
     public void collision(PhysicsCollisionEvent event) {
         if (event.getNodeA().getUserData("tag").equals("target") && time.getTimeInSeconds() > nextMelee) {
             nextMelee = time.getTimeInSeconds() + meleeRate;
@@ -274,6 +287,7 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
         
         if (event.getNodeA().getUserData("tag").equals("projectile") && chanceDodge() == false) {
 
+
             closeFiring = false;
             //Apply damage to Aganonce Chronicler
         }
@@ -281,13 +295,20 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
       
     }
 
+
     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
+
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
         //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Control cloneForSpatial(Spatial spatial) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     
 }
+

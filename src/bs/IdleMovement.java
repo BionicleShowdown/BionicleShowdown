@@ -4,6 +4,7 @@
  */
 package bs;
 
+
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
@@ -22,11 +23,13 @@ import com.jme3.scene.control.Control;
 import com.jme3.system.lwjgl.LwjglTimer;
 import java.sql.Time;
 
+
 /**
  *
  * @author JSC
  */
 public class IdleMovement extends AbstractControl implements AnimEventListener{
+
 
     CharacterControl container;
     private AnimChannel animationChannel;
@@ -56,16 +59,25 @@ public class IdleMovement extends AbstractControl implements AnimEventListener{
     }
 
 
+
+
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
         
     }
 
+
     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
        // throw new UnsupportedOperationException("Not supported yet.");
     }
 
+
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public Control cloneForSpatial(Spatial spatial) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
+

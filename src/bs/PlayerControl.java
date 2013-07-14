@@ -76,6 +76,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private String number;
     
     
+    
 
     /* PlayerControl will manage input and collision logic */
     PlayerControl(Player p,Spatial s,InputManager input, CharacterControl cc, Camera cm) {
@@ -283,6 +284,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
 
     public void respawn(Spatial event, Node respawn, BulletAppState bas){
         //if players lives are greater than 1
+        
         if(stock > 0){
             if(!"Idle".equals(animationChannel.getAnimationName())){
                 animationChannel.setAnim("Idle", .2f);

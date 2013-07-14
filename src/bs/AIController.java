@@ -21,6 +21,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import com.jme3.scene.control.Control;
 
 
 
@@ -178,6 +179,10 @@ public class AIController extends AbstractControl {
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
        // throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Control cloneForSpatial(Spatial spatial) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 

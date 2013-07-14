@@ -337,7 +337,7 @@ public class InGameState extends AbstractAppState implements ScreenController
             }
     }
     
-    public void adjustStock(int newStock, int playerNumber)
+    public void adjustStock(int newStock, int playerNumber) // Perhaps should check by character instead, and use the respawn method in PlayerControl
     {
         // Adjust alignment for large numbers
         
