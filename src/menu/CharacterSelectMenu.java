@@ -938,7 +938,7 @@ public class CharacterSelectMenu implements ScreenController
     {
         System.out.println("Working?");
         player1.getCharacter().initializeCharacter(app,player1);
-        //player2.getCharacter().initializeCharacter(app,player2);
+        player2.getCharacter().initializeCharacter(app,player2);
         //player3.getCharacter().initializeCharacter(app,player3);
         //player4.getCharacter().initializeCharacter(app,player4);
         Match currentMatch = new Match(player1, player2, player3, player4);

@@ -5,6 +5,8 @@ import AudioNodes.MusicAudioNode;
 import bs.Characters;
 import bs.InGameState;
 import bs.StartState;
+import com.aurellem.capture.Capture;
+import com.aurellem.capture.IsoTimer;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.VideoRecorderAppState;
 import com.jme3.input.KeyInput;
@@ -86,7 +88,7 @@ public class Main extends SimpleApplication
     public void simpleInitApp () 
     {
         
-            //stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
+        stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
         startState = new StartState();
         
         music = new MusicAudioNode(assetManager, "Sounds/Music/Fire and Ice.wav", true);

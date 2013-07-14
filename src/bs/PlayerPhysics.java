@@ -43,26 +43,33 @@ public class PlayerPhysics implements PhysicsCollisionListener
     private Spatial model;
     private InputManager im;
     private PlayerControl pc;
-    private Node playerNode = new Node("Player");
+    private Node playerNode; 
     private Vector3f extent;
     private CapsuleCollisionShape character;
     private CharacterControl player;
     private BulletAppState bulletAppState;
     private Camera cam;
     private Player menuPlayer;
+    private AIController aicontroller;
+    private IdleMovement idling;
+    private EnemyMoveAttack attacking;
+    private Node rootNode;
+    private Node shootables;
+
 
     /* Player class builds player with proper inputs, name, etc.
      * Haven't worked out the passing of data nor the inputs, 
      * but online docs should help. Look at PlayerControl for
      * logic, this is merely setup
      */
-    PlayerPhysics(Player p, BulletAppState bas, InputManager ipm, Camera cm, boolean exists) 
+    PlayerPhysics(Node root, Player p, BulletAppState bas, InputManager ipm, Camera cm, boolean exists) 
     {
 
         bulletAppState = bas;
         im = ipm;
         cam = cm;
         menuPlayer = p;
+        rootNode = root;
         //If the character chosen is the same, generate a clone for its model
         if(exists)
         {
@@ -76,11 +83,27 @@ public class PlayerPhysics implements PhysicsCollisionListener
         //attach that control and add it to the physics space listener
         extent = ((BoundingBox) model.getWorldBound()).getExtent(new Vector3f());
         model.setLocalTranslation(new Vector3f(0f,-extent.getY(),0f));
+       // model.rotate(0,3.14f/2f,0);
+        playerNode = new Node("Player");
         playerNode.attachChild(model);
         setupCharacterControl();
-        pc = new PlayerControl(p,model,im, player, cam);
-        playerNode.addControl(pc);
-        bulletAppState.getPhysicsSpace().addCollisionListener(this);
+        
+        
+        //For dev purposes only (AI), make player 2 without controls
+        if(!p.toString().equals("Player2")){
+            pc = new PlayerControl(p,model,im, player, cam);
+            playerNode.addControl(pc);
+            playerNode.setUserData("tag","target");
+        }   else {
+            idling = new IdleMovement(model); 
+            aicontroller = new AIController(shootables, rootNode,bulletAppState);
+            attacking = new EnemyMoveAttack(model,rootNode, aicontroller);
+            playerNode.addControl(idling);
+            playerNode.addControl(attacking);
+            playerNode.addControl(aicontroller);
+        }
+        bulletAppState.getPhysicsSpace().add(playerNode);
+        rootNode.attachChild(playerNode);
         
     }
     
@@ -106,7 +129,7 @@ public class PlayerPhysics implements PhysicsCollisionListener
     {
         character = new CapsuleCollisionShape(extent.getZ() + 0.7f, extent.getY(), 1);
         player = new CharacterControl(character, 1f);
-       
+        player.setViewDirection(new Vector3f(1,0,0));
         playerNode.addControl(player);
         bulletAppState.getPhysicsSpace().add(player);
         player.setGravity(menuPlayer.getCharacter().getWeight());
