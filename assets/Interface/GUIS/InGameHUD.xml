@@ -8,8 +8,8 @@
         <layer id="constant" childLayout="absolute">
             
             <panel id="Player1StatusConstantPanel" width="18.75%" height="20%" x="5%" y="75%" childLayout="absolute">
-                <panel id="Player1ImagePanel" width="40%" height="70%" x="0%" y="15%" childLayout="vertical">
-                    <image id="Player1Image" filename="Interface/CharacterSelect/SelectTahu.png" width="100%" height="100%" />
+                <panel id="Player1AvatarPanel" width="40%" height="70%" x="0%" y="15%" childLayout="vertical">
+                    <image id="Player1Avatar" filename="Interface/CharacterInGame/Tahu/AvatarStandard.png" width="100%" height="100%" />
                 </panel>
                 <panel id="Player1NamePanel" width="100%" height="15%" x="0%" y="85%" childLayout="vertical">
                     <text id="Player1Name" font="Interface/Fonts/1942report16.fnt" text="Tahu" align="center" valign="center" />
@@ -20,8 +20,8 @@
             </panel>
             
             <panel id="Player2StatusConstantPanel" width="18.75%" height="20%" x="28.75%" y="75%" childLayout="absolute">
-                <panel id="Player2ImagePanel" width="40%" height="70%" x="0%" y="15%" childLayout="vertical">
-                    <image id="Player2Image" filename="Interface/CharacterSelect/SelectTahu.png" width="100%" height="100%" />
+                <panel id="Player2AvatarPanel" width="40%" height="70%" x="0%" y="15%" childLayout="vertical">
+                    <image id="Player2Avatar" filename="Interface/CharacterInGame/Tahu/AvatarStandard.png" width="100%" height="100%" />
                 </panel>
                 <panel id="Player2NamePanel" width="100%" height="15%" x="0%" y="85%" childLayout="vertical">
                     <text id="Player2Name" font="Interface/Fonts/1942report16.fnt" text="Tahu" align="center" valign="center" />
@@ -32,8 +32,8 @@
             </panel>
             
             <panel id="Player3StatusConstantPanel" width="18.75%" height="20%" x="52.5%" y="75%" childLayout="absolute">
-                <panel id="Player3ImagePanel" width="40%" height="70%" x="0%" y="15%" childLayout="vertical">
-                    <image id="Player3Image" filename="Interface/CharacterSelect/SelectTahu.png" width="100%" height="100%" />
+                <panel id="Player3AvatarPanel" width="40%" height="70%" x="0%" y="15%" childLayout="vertical">
+                    <image id="Player3Avatar" filename="Interface/CharacterInGame/Tahu/AvatarStandard.png" width="100%" height="100%" />
                 </panel>
                 <panel id="Player3NamePanel" width="100%" height="15%" x="0%" y="85%" childLayout="vertical">
                     <text id="Player3Name" font="Interface/Fonts/1942report16.fnt" text="Tahu" align="center" valign="center" />
@@ -44,8 +44,8 @@
             </panel>
             
             <panel id="Player4StatusConstantPanel" width="18.75%" height="20%" x="76.25%" y="75%" childLayout="absolute">
-                <panel id="Player4ImagePanel" width="40%" height="70%" x="0%" y="15%" childLayout="vertical">
-                    <image id="Player4Image" filename="Interface/CharacterSelect/SelectTahu.png" width="100%" height="100%" />
+                <panel id="Player4AvatarPanel" width="40%" height="70%" x="0%" y="15%" childLayout="vertical">
+                    <image id="Player4Avatar" filename="Interface/CharacterInGame/Tahu/AvatarStandard.png" width="100%" height="100%" />
                 </panel>
                 <panel id="Player4NamePanel" width="100%" height="15%" x="0%" y="85%" childLayout="vertical">
                     <text id="Player4Name" font="Interface/Fonts/1942report16.fnt" text="Tahu" align="center" valign="center" />
@@ -181,13 +181,13 @@
             
             <panel id="TimerBox" width="40%" height="5%" x="30%" y="5%" childLayout="vertical">
                 <!-- Probably should be 24 -->
-                <text id="CurrentTime" font="Interface/Fonts/1942report32.fnt" text="0.00" align="center" valign="center" />
+                <text id="CurrentTime" font="Interface/Fonts/1942report16.fnt" text="0.00" align="center" valign="center" />
             </panel>
             
             <panel id="Player1StatusOverlayPanel" width="18.75%" height="20%" x="5%" y="75%" childLayout="absolute">
 
                 <panel id="Player1DamagePanel" width="60%" height="40%" x="40%" y="45%" childLayout="vertical">
-                    <text id="Player1Damage" font="Interface/Fonts/1942report48.fnt" text="0%" align="center" valign="center" />
+                    <text id="Player1Damage" font="Interface/Fonts/1942report48_bold_num.fnt" text="0%" align="center" valign="center" />
                 </panel>
                 <!-- When higher than 5 stock, panels 1, 3, 4, and 5 will have no image, but 3 and 4 will have X and # respectively. 
                      When 5 stock, all will have image, and will disappear as stock drops. -->
@@ -216,7 +216,7 @@
             
             <panel id="Player2StatusOverlayPanel" width="18.75%" height="20%" x="28.75%" y="75%" childLayout="absolute">
                   <panel id="Player2DamagePanel" width="60%" height="40%" x="40%" y="45%" childLayout="vertical">
-                    <text id="Player2Damage" font="Interface/Fonts/1942report48.fnt" text="0%" align="center" valign="center" />
+                    <text id="Player2Damage" font="Interface/Fonts/1942report48_bold_num.fnt" text="999%" align="center" valign="center" />
                 </panel>
                 <!-- Add some padding along the horizontal axis -->
                 <panel id="Player2ProgressPanel" width="60%" height="30%" x="40%" y="15%" childLayout="absolute">
@@ -243,7 +243,7 @@
             
             <panel id="Player3StatusOverlayPanel" width="18.75%" height="20%" x="52.5%" y="75%" childLayout="absolute">
                 <panel id="Player3DamagePanel" width="60%" height="40%" x="40%" y="45%" childLayout="vertical">
-                    <text id="Player3Damage" font="Interface/Fonts/1942report48.fnt" text="0%" align="center" valign="center" />
+                    <text id="Player3Damage" font="Interface/Fonts/1942report48_bold_num.fnt" text="0%" align="center" valign="center" />
                 </panel>
                 <!-- Add some padding along the horizontal axis -->
                 <panel id="Player3ProgressPanel" width="60%" height="30%" x="40%" y="15%" childLayout="absolute">
@@ -270,7 +270,7 @@
             
             <panel id="Player4StatusOverlayPanel" width="18.75%" height="20%" x="76.25%" y="75%" childLayout="absolute">
                 <panel id="Player4DamagePanel" width="60%" height="40%" x="40%" y="45%" childLayout="vertical">
-                    <text id="Player4Damage" font="Interface/Fonts/1942report48.fnt" text="0%" align="center" valign="center" />
+                    <text id="Player4Damage" font="Interface/Fonts/1942report48_bold_num.fnt" text="0%" align="center" valign="center" />
                 </panel>
                 <!-- Add some padding along the horizontal axis -->
                 <panel id="Player4ProgressPanel" width="60%" height="30%" x="40%" y="15%" childLayout="absolute">

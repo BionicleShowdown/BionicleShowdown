@@ -78,7 +78,11 @@ public class InGameState extends AbstractAppState implements ScreenController
     private boolean isStockMatch = false;
     
     // Time Options
-//    private Timer gameTimer;
+//    private LwjglTimer gameTimer;
+    private String currentTime;
+    private int matchDuration = 63;
+    
+    private boolean isTimeMatch = false;
 
     public InGameState() 
     {
@@ -108,7 +112,8 @@ public class InGameState extends AbstractAppState implements ScreenController
         this.guiViewPort = this.app.getViewPort();
         this.cam = this.app.getCamera();
         
-        time = new LwjglTimer();        
+        time = new LwjglTimer();  
+//        gameTimer = new LwjglTimer();
         
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
@@ -259,6 +264,10 @@ public class InGameState extends AbstractAppState implements ScreenController
 //            music.play();
 //        }
         
+        time.update();
+        currentTime = calculateTime(time.getTimeInSeconds());
+        screen.findElementByName("CurrentTime").getRenderer(TextRenderer.class).setText("" + currentTime + "");
+        
     }
 
     @Override
@@ -393,8 +402,98 @@ public class InGameState extends AbstractAppState implements ScreenController
             screen.findElementByName("Player" + playerNumber + "StockIcon1").hide();
             screen.findElementByName("Player" + playerNumber + "StatusUnderlayPanel").hide();
             screen.findElementByName("Player" + playerNumber + "StatusOverlayPanel").hide();
-            screen.findElementByName("Player" + playerNumber + "ImagePanel").hide();
+            screen.findElementByName("Player" + playerNumber + "AvatarPanel").hide();
             screen.findElementByName("Player" + playerNumber + "NamePanel").hide();
         }
     }
+
+    private String calculateTime(float time) 
+    {
+        int totalSecondsRemaining = matchDuration - (int) time; 
+        
+        if (totalSecondsRemaining <= 0)
+        {
+            return "";
+        }
+        
+        float millisecondsPassed = time - (int) time;
+        
+        int hoursRemaining = totalSecondsRemaining / 3600;
+        int minutesRemaining = (totalSecondsRemaining / 60) - (hoursRemaining * 60);
+        int secondsRemaining = totalSecondsRemaining - (minutesRemaining * 60) - (hoursRemaining * 3600);
+        int millisecondsRemaining = 100 - (int) (millisecondsPassed * 100);
+        
+        
+        String hours = "";
+        String minutes = "";
+        String seconds = "";
+        String milliseconds = "";
+        
+        if (hoursRemaining > 0)
+        {
+            hours = "" + hoursRemaining + ":";
+        }
+        if (minutesRemaining < 10)
+        {
+            minutes = "0" + minutesRemaining + ":";
+        }
+        else
+        {
+            minutes = "" + minutesRemaining + ":";
+        }
+        if (secondsRemaining < 10)
+        {
+            seconds = "0" + secondsRemaining + ":";
+        }
+        else
+        {
+            seconds = "" + secondsRemaining + ":";
+        }
+        if (millisecondsRemaining < 10)
+        {
+            milliseconds = "0" + millisecondsRemaining;
+        }
+        else
+        {
+            milliseconds = "" + millisecondsRemaining + "";
+        }
+        
+        return hours + minutes + seconds + milliseconds;
+        
+//        int totalTimeInSeconds = (int) time;
+//        int totalTimeInMinutes = (int) (totalTimeInSeconds / 60);
+//        int totalTimeInHours = (int) (totalTimeInMinutes / 60);
+//        
+//        int timeInHours = totalTimeInHours;
+//        int timeInMinutes = totalTimeInMinutes - (totalTimeInHours * 60);
+//        int timeInSeconds = totalTimeInSeconds - (totalTimeInMinutes * 60);
+//        
+//        String hours = "";
+//        String minutes = "";
+//        String seconds = "";
+//        
+//        if (timeInHours > 0)
+//        {
+//            hours = "" + timeInHours + ":";
+//        }
+//        if (timeInMinutes < 10)
+//        {
+//            minutes = "0" + timeInMinutes + ":";
+//        }
+//        else
+//        {
+//            minutes = "" + timeInMinutes + ":";
+//        }
+//        if (timeInSeconds < 10)
+//        {
+//            minutes = "0" + timeInSeconds;
+//        }
+//        else
+//        {
+//            seconds = "" + timeInSeconds + "";
+//        }
+//        return hours + minutes + seconds;
+    }
+    
+    
 }
