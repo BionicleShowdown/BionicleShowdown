@@ -47,7 +47,8 @@ public class Main extends SimpleApplication
     private static AppSettings settings = new AppSettings(true); // Made this outside of main method so it could be acquired with getSettings()
     
     //Temp Input Mappigns for testing
-    public static int[] player1Mappings = new int[]{KeyInput.KEY_W,KeyInput.KEY_A,KeyInput.KEY_D,KeyInput.KEY_1,KeyInput.KEY_S,KeyInput.KEY_O};
+    public static int[] player1Mappings = new int[]{KeyInput.KEY_W,KeyInput.KEY_A,KeyInput.KEY_D,
+        KeyInput.KEY_1,KeyInput.KEY_S,KeyInput.KEY_O,KeyInput.KEY_2,KeyInput.KEY_P};
 
 
     public static void main(String[] args) throws IOException
@@ -58,6 +59,7 @@ public class Main extends SimpleApplication
         settings.setResolution(800, 600);
         settings.setUseInput(true);
         settings.setTitle("Bionicle Showdown");
+        
         settings.setSettingsDialogImage("Textures/Menu/FullVoidLogo.png");
         SimpleApplication app = new Main();
         
@@ -88,9 +90,9 @@ public class Main extends SimpleApplication
     public void simpleInitApp () 
     {
         
-        stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
+        //stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
         startState = new StartState();
-        
+        setDisplayStatView(false);
         music = new MusicAudioNode(assetManager, "Sounds/Music/Fire and Ice.wav", true);
         music.play();
 

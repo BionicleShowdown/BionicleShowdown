@@ -57,6 +57,18 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private ComboMoveExecution groundAAAExec;
     private ComboMove downTilt;
     private ComboMoveExecution downTiltExec;
+    private ComboMove sideTilt;
+    private ComboMoveExecution sideTiltExec;
+    private ComboMove neutralB;
+    private ComboMoveExecution neutralBExec;
+    private ComboMove sideB;
+    private ComboMoveExecution sideBExec;
+    private ComboMove downB;
+    private ComboMoveExecution downBExec;
+    private ComboMove upB;
+    private ComboMoveExecution upBExec;
+    
+    
     
     private HashSet<String> pressedMappings = new HashSet<String>();
     private List<ComboMove> invokedMoves = new ArrayList<ComboMove>();
@@ -111,6 +123,11 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         groundAAAExec.updateExpiration(time);
         upTiltExec.updateExpiration(time);
         downTiltExec.updateExpiration(time);
+        sideTiltExec.updateExpiration(time);
+        neutralBExec.updateExpiration(time);
+        downBExec.updateExpiration(time);
+        sideBExec.updateExpiration(time);
+        upBExec.updateExpiration(time);
 
 
         if (!character.onGround()) {
@@ -180,9 +197,25 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
             else if(downTiltExec.updateState(pressedMappings, time)) {
                 invokedMoves.add(downTilt);
             }
-            else if (groundAExec.updateState(pressedMappings, time) && character.onGround()) {
+            else if(sideTiltExec.updateState(pressedMappings, time)) {
+                invokedMoves.add(sideTilt);
+            }
+            else if(downBExec.updateState(pressedMappings, time)) {
+                invokedMoves.add(downB);
+            }
+            else if(upBExec.updateState(pressedMappings, time)) {
+                invokedMoves.add(upB);
+            }
+            else if (sideBExec.updateState(pressedMappings, time)) {
+                invokedMoves.add(sideB);
+            }
+            else if(neutralBExec.updateState(pressedMappings, time)) {
+                invokedMoves.add(neutralB);
+            }
+            else if(groundAExec.updateState(pressedMappings, time) && character.onGround()) {
                 invokedMoves.add(groundA);
             }
+           
         }
 
         if(currentMove != null && currentMove.getMoveName().equals(groundA.getMoveName())){
@@ -421,8 +454,10 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         inputManager.addMapping("Jump", new KeyTrigger(Main.player1Mappings[0]));
         inputManager.addMapping("Down", new KeyTrigger(Main.player1Mappings[4]));
         inputManager.addMapping("UpAction", new KeyTrigger(Main.player1Mappings[3]));
+        inputManager.addMapping("RightLeftAction", new KeyTrigger(Main.player1Mappings[6]));
+        inputManager.addMapping("Special", new KeyTrigger(Main.player1Mappings[7]));
         inputManager.addMapping("Normal Attack",new KeyTrigger(Main.player1Mappings[5]));
-        inputManager.addListener(this, "Right","Left","Jump","Normal Attack", "UpAction", "Down");
+        inputManager.addListener(this, "Right","Left","Jump","Normal Attack", "UpAction", "Down","RightLeftAction","Special");
         
         groundA = new ComboMove("First A");
         groundA.press("Normal Attack").done();   
@@ -448,11 +483,41 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         upTilt.setPriority(0.1f);
         upTiltExec = new ComboMoveExecution(upTilt);
         
-        downTilt = new ComboMove("D Tilt");
+        downTilt = new ComboMove("DTilt");
         downTilt.press("Down","Normal Attack").done();
         downTilt.setUseFinalState(true);
         downTilt.setPriority(0.1f);
         downTiltExec = new ComboMoveExecution(downTilt);
+        
+        sideTilt = new ComboMove("F Tilt");
+        sideTilt.press("RightLeftAction","Normal Attack").done();
+        sideTilt.setUseFinalState(true);
+        sideTilt.setPriority(0.1f);
+        sideTiltExec = new ComboMoveExecution(sideTilt);
+        
+        neutralB = new ComboMove("Neutral B");
+        neutralB.press("Special").done();
+        neutralB.setUseFinalState(true);
+        neutralB.setPriority(0.1f);
+        neutralBExec = new ComboMoveExecution(neutralB);
+        
+        sideB = new ComboMove("Side B");
+        sideB.press("RightLeftAction","Special").done();
+        sideB.setUseFinalState(true);
+        sideB.setPriority(0.1f);
+        sideBExec = new ComboMoveExecution(sideB);
+        
+        downB = new ComboMove("Down B");
+        downB.press("Down","Special").done();
+        downB.setUseFinalState(true);
+        downB.setPriority(0.1f);
+        downBExec = new ComboMoveExecution(downB);
+        
+        upB = new ComboMove("Up B");
+        upB.press("UpAction","Special").done();
+        upB.setUseFinalState(true);
+        upB.setPriority(0.1f);
+        upBExec = new ComboMoveExecution(upB);
         
     }
 
