@@ -181,7 +181,7 @@
             
             <panel id="TimerBox" width="40%" height="5%" x="30%" y="5%" childLayout="vertical">
                 <!-- Probably should be 24 -->
-                <text id="CurrentTime" font="Interface/Fonts/1942report16.fnt" text="0.00" align="center" valign="center" />
+                <text id="CurrentTime" font="Interface/Fonts/1942report32.fnt" text="0.00" align="center" valign="center" />
             </panel>
             
             <panel id="Player1StatusOverlayPanel" width="18.75%" height="20%" x="5%" y="75%" childLayout="absolute">
