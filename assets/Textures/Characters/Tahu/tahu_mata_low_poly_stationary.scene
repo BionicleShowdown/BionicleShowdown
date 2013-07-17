@@ -1,9 +1,9 @@
-<scene exported_by="JSC" formatVersion="1.0.1" previous_export_time="0" export_time="1367169773.373" >
+<scene exported_by="JSC" formatVersion="1.0.1" previous_export_time="1374025778.026" export_time="1374026381.728" >
   <nodes >
     <node name="Camera" >
-      <position y="19.141663" x="60.909039" z="32.654602" />
-      <rotation qy="0.409085" qx="0.576843" qz="-0.362802" qw="0.606858" />
-      <scale y="3.134259" x="3.134258" z="3.134259" />
+      <position y="11.107471" x="61.467598" z="0.685394" />
+      <rotation qy="0.499804" qx="0.499076" qz="-0.503492" qw="0.497609" />
+      <scale y="3.134258" x="3.134258" z="3.134259" />
       <game >
         <sensors />
         <actuators />
