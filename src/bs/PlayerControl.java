@@ -67,6 +67,8 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private ComboMoveExecution downBExec;
     private ComboMove upB;
     private ComboMoveExecution upBExec;
+    private ComboMove sideDodge;
+    private ComboMoveExecution sideDodgeExec;
     
     
     
@@ -128,6 +130,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         downBExec.updateExpiration(time);
         sideBExec.updateExpiration(time);
         upBExec.updateExpiration(time);
+        sideDodgeExec.updateExpiration(time);
 
 
         if (!character.onGround()) {
@@ -211,6 +214,9 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
             }
             else if(neutralBExec.updateState(pressedMappings, time)) {
                 invokedMoves.add(neutralB);
+            }
+            else if(sideDodgeExec.updateState(pressedMappings, time)) {
+                invokedMoves.add(sideDodge);
             }
             else if(groundAExec.updateState(pressedMappings, time) && character.onGround()) {
                 invokedMoves.add(groundA);
@@ -404,6 +410,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
             time ++;
             //character.setKinematic(true);
             currentMoveCastTime -= tpf;
+            
             if(currentMove.getMoveName().equals("First A") && time < 50){
                 if(facingLeft){
                     walkDirection.addLocal(camLeft.multLocal(0.2f));
@@ -423,6 +430,8 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
                 } else {
                     walkDirection.addLocal(camLeft.negate().multLocal(0.2f));
                 }
+            } else if("Up B".equals(currentMove.getMoveName())){
+                walkDirection = new Vector3f(0,1.2f,0);
             } else {
                 walkDirection = new Vector3f(0,0,0);
             }
@@ -457,7 +466,8 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         inputManager.addMapping("RightLeftAction", new KeyTrigger(Main.player1Mappings[6]));
         inputManager.addMapping("Special", new KeyTrigger(Main.player1Mappings[7]));
         inputManager.addMapping("Normal Attack",new KeyTrigger(Main.player1Mappings[5]));
-        inputManager.addListener(this, "Right","Left","Jump","Normal Attack", "UpAction", "Down","RightLeftAction","Special");
+        inputManager.addMapping("Dodge",new KeyTrigger(Main.player1Mappings[8]));
+        inputManager.addListener(this, "Right","Left","Jump","Normal Attack", "UpAction", "Down","RightLeftAction","Special","Dodge");
         
         groundA = new ComboMove("First A");
         groundA.press("Normal Attack").done();   
@@ -518,6 +528,12 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         upB.setUseFinalState(true);
         upB.setPriority(0.1f);
         upBExec = new ComboMoveExecution(upB);
+        
+        sideDodge = new ComboMove("Side Dodge");
+        sideDodge.press("Down","Dodge").done();
+        sideDodge.setUseFinalState(true);
+        sideDodge.setPriority(0.1f);
+        sideDodgeExec = new ComboMoveExecution(sideDodge);
         
     }
 

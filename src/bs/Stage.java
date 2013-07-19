@@ -157,8 +157,8 @@ public class Stage implements PhysicsCollisionListener {
                             event.getNodeA().setUserData("ledgeGrabbed", true);
                         }
                     } else if ((Boolean) event.getNodeA().getUserData("ledgeGrabbed") == true){
-                        System.out.println("Node A: " + event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge());
-                        if(!event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge()){
+                        System.out.println("Node A: " + event.getNodeB().getName());
+                        if(!event.getNodeB().getName().equals("platform") && !event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge()){
                             event.getNodeA().setUserData("ledgeGrabbed", false);
                         }
                     }

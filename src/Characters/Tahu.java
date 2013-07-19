@@ -26,6 +26,7 @@ public class Tahu extends PlayableCharacter
         weight = 90;
         fallSpeed = 30;
         jumpSpeed = 30;
+        maxSlope = 1.5f;
     }
     
     public static void unlockCostume(String unlockedCostume)

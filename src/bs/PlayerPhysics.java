@@ -135,7 +135,7 @@ public class PlayerPhysics implements PhysicsCollisionListener
         player.setGravity(menuPlayer.getCharacter().getWeight());
         player.setJumpSpeed(menuPlayer.getCharacter().getJumpSpeed());
         player.setFallSpeed(menuPlayer.getCharacter().getFallSpeed());
-
+        player.setMaxSlope(menuPlayer.getCharacter().getMaxSlope());
     }
 
     /* Setup specifc features of player */

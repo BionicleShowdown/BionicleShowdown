@@ -48,7 +48,7 @@ public class Main extends SimpleApplication
     
     //Temp Input Mappigns for testing
     public static int[] player1Mappings = new int[]{KeyInput.KEY_W,KeyInput.KEY_A,KeyInput.KEY_D,
-        KeyInput.KEY_1,KeyInput.KEY_S,KeyInput.KEY_O,KeyInput.KEY_2,KeyInput.KEY_P};
+        KeyInput.KEY_1,KeyInput.KEY_S,KeyInput.KEY_O,KeyInput.KEY_2,KeyInput.KEY_P,KeyInput.KEY_LBRACKET};
 
 
     public static void main(String[] args) throws IOException
