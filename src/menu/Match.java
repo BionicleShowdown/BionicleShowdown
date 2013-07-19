@@ -13,11 +13,17 @@ import Players.Player;
  */
 public class Match 
 {
+    /* Match Players */
     private Player player1 = null;
     private Player player2 = null;
     private Player player3 = null;
     private Player player4 = null;
+    
+    /* Match Type */
     private int stock;
+    private int time; // Time in seconds.
+    private int widgets;
+    
     // Extend into FFAMatch and TeamMatch?
     // Includes: Players, Teams, Gametype, Game settings, Statistics
     // Gets filled in with Statistics post-game, then gets passed to the stats menu
@@ -60,11 +66,35 @@ public class Match
     {
         if (stock != 0)
         {
-            return false;
+            return true;
         }
         else
         {
+            return false;
+        }
+    }
+    
+    public boolean isTimeMatch()
+    {
+        if (time != 0)
+        {
             return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    public boolean isWidgetMatch()
+    {
+        if (widgets != 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
     
@@ -73,9 +103,29 @@ public class Match
         return stock;
     }
     
+    public int getTime()
+    {
+        return time;
+    }
+    
+    public int getWidgets()
+    {
+        return widgets;
+    }
+    
     public void setStock(int newStock)
     {
         stock = newStock;
+    }
+    
+    public void setTime(int newTime)
+    {
+        time = newTime;
+    }
+    
+    public void setWidgets(int newWidgets)
+    {
+        widgets = newWidgets;
     }
     
     // Do same for Time and Widget

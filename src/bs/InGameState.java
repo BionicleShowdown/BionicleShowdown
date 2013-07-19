@@ -71,6 +71,8 @@ public class InGameState extends AbstractAppState implements ScreenController
     
     private Match currentMatch;
     
+    private int numberOfPlayers = 2;
+    
     // Stock Options (no, not the financial kind :P)
     private int initialStock = 10;
     public int currentStock = initialStock;
@@ -78,7 +80,11 @@ public class InGameState extends AbstractAppState implements ScreenController
     private boolean isStockMatch = false;
     
     // Time Options
-//    private Timer gameTimer;
+//    private LwjglTimer gameTimer;
+    private String currentTime;
+    private int matchDuration = 120;
+    
+    private boolean isTimeMatch = false;
 
     public InGameState() 
     {
@@ -90,6 +96,8 @@ public class InGameState extends AbstractAppState implements ScreenController
         this.currentMatch = currentMatch;
         isStockMatch = currentMatch.isStockMatch();
         initialStock = currentMatch.getStock();
+        isTimeMatch = currentMatch.isTimeMatch();
+        matchDuration = currentMatch.getTime();
     }
 
 
@@ -108,7 +116,8 @@ public class InGameState extends AbstractAppState implements ScreenController
         this.guiViewPort = this.app.getViewPort();
         this.cam = this.app.getCamera();
         
-        time = new LwjglTimer();        
+        time = new LwjglTimer();  
+//        gameTimer = new LwjglTimer();
         
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
@@ -259,6 +268,10 @@ public class InGameState extends AbstractAppState implements ScreenController
 //            music.play();
 //        }
         
+        time.update();
+        currentTime = calculateTime(time.getTimeInSeconds());
+        screen.findElementByName("CurrentTime").getRenderer(TextRenderer.class).setText("" + currentTime + "");
+        
     }
 
     @Override
@@ -301,6 +314,7 @@ public class InGameState extends AbstractAppState implements ScreenController
     public void guiInitiate()
     {
         setStockImageHeight();
+        setStatusPanelLocations();
     }
     
     public void setStockImageHeight()
@@ -318,6 +332,49 @@ public class InGameState extends AbstractAppState implements ScreenController
             }  
         }
         
+    }
+    
+    public void setStatusPanelLocations()
+    {
+        if (numberOfPlayers == 2)
+        {
+            screen.findElementByName("Player1StatusConstantPanel").setConstraintX(new SizeValue("24.0583%"));
+            screen.findElementByName("Player1StatusConstantPanel").getParent().layoutElements();
+            screen.findElementByName("Player1StatusUnderlayPanel").setConstraintX(new SizeValue("24.0583%"));
+            screen.findElementByName("Player1StatusUnderlayPanel").getParent().layoutElements();
+            screen.findElementByName("Player1StatusOverlayPanel").setConstraintX(new SizeValue("24.0583%"));
+            screen.findElementByName("Player1StatusOverlayPanel").getParent().layoutElements();
+            
+            screen.findElementByName("Player2StatusConstantPanel").setConstraintX(new SizeValue("57.2916%"));
+            screen.findElementByName("Player2StatusConstantPanel").getParent().layoutElements();
+            screen.findElementByName("Player2StatusUnderlayPanel").setConstraintX(new SizeValue("57.2916%"));
+            screen.findElementByName("Player2StatusUnderlayPanel").getParent().layoutElements();
+            screen.findElementByName("Player2StatusOverlayPanel").setConstraintX(new SizeValue("57.2916%"));
+            screen.findElementByName("Player2StatusOverlayPanel").getParent().layoutElements();
+        }
+        else if (numberOfPlayers == 3)
+        {
+            screen.findElementByName("Player1StatusConstantPanel").setConstraintX(new SizeValue("15.625%"));
+            screen.findElementByName("Player1StatusConstantPanel").getParent().layoutElements();
+            screen.findElementByName("Player1StatusUnderlayPanel").setConstraintX(new SizeValue("15.625%"));
+            screen.findElementByName("Player1StatusUnderlayPanel").getParent().layoutElements();
+            screen.findElementByName("Player1StatusOverlayPanel").setConstraintX(new SizeValue("15.625%"));
+            screen.findElementByName("Player1StatusOverlayPanel").getParent().layoutElements();
+            
+            screen.findElementByName("Player2StatusConstantPanel").setConstraintX(new SizeValue("40.625%"));
+            screen.findElementByName("Player2StatusConstantPanel").getParent().layoutElements();
+            screen.findElementByName("Player2StatusUnderlayPanel").setConstraintX(new SizeValue("40.625%"));
+            screen.findElementByName("Player2StatusUnderlayPanel").getParent().layoutElements();
+            screen.findElementByName("Player2StatusOverlayPanel").setConstraintX(new SizeValue("40.625%"));
+            screen.findElementByName("Player2StatusOverlayPanel").getParent().layoutElements();
+            
+            screen.findElementByName("Player3StatusConstantPanel").setConstraintX(new SizeValue("65.625%"));
+            screen.findElementByName("Player3StatusConstantPanel").getParent().layoutElements();
+            screen.findElementByName("Player3StatusUnderlayPanel").setConstraintX(new SizeValue("65.625%"));
+            screen.findElementByName("Player3StatusUnderlayPanel").getParent().layoutElements();
+            screen.findElementByName("Player3StatusOverlayPanel").setConstraintX(new SizeValue("65.625%"));
+            screen.findElementByName("Player3StatusOverlayPanel").getParent().layoutElements();
+        }
     }
     
     public void playerStockInitialize()
@@ -393,8 +450,98 @@ public class InGameState extends AbstractAppState implements ScreenController
             screen.findElementByName("Player" + playerNumber + "StockIcon1").hide();
             screen.findElementByName("Player" + playerNumber + "StatusUnderlayPanel").hide();
             screen.findElementByName("Player" + playerNumber + "StatusOverlayPanel").hide();
-            screen.findElementByName("Player" + playerNumber + "ImagePanel").hide();
+            screen.findElementByName("Player" + playerNumber + "AvatarPanel").hide();
             screen.findElementByName("Player" + playerNumber + "NamePanel").hide();
         }
     }
+
+    private String calculateTime(float time) 
+    {
+        int totalSecondsRemaining = matchDuration - (int) time; 
+        
+        if (totalSecondsRemaining <= 0)
+        {
+            return "";
+        }
+        
+        float millisecondsPassed = time - (int) time;
+        
+        int hoursRemaining = totalSecondsRemaining / 3600;
+        int minutesRemaining = (totalSecondsRemaining / 60) - (hoursRemaining * 60);
+        int secondsRemaining = totalSecondsRemaining - (minutesRemaining * 60) - (hoursRemaining * 3600);
+        int millisecondsRemaining = 100 - (int) (millisecondsPassed * 100);
+        
+        
+        String hours = "";
+        String minutes = "";
+        String seconds = "";
+        String milliseconds = "";
+        
+        if (hoursRemaining > 0)
+        {
+            hours = "" + hoursRemaining + ":";
+        }
+        if (minutesRemaining < 10)
+        {
+            minutes = "0" + minutesRemaining + ":";
+        }
+        else
+        {
+            minutes = "" + minutesRemaining + ":";
+        }
+        if (secondsRemaining < 10)
+        {
+            seconds = "0" + secondsRemaining + ":";
+        }
+        else
+        {
+            seconds = "" + secondsRemaining + ":";
+        }
+        if (millisecondsRemaining < 10)
+        {
+            milliseconds = "0" + millisecondsRemaining;
+        }
+        else
+        {
+            milliseconds = "" + millisecondsRemaining + "";
+        }
+        
+        return hours + minutes + seconds + milliseconds;
+        
+//        int totalTimeInSeconds = (int) time;
+//        int totalTimeInMinutes = (int) (totalTimeInSeconds / 60);
+//        int totalTimeInHours = (int) (totalTimeInMinutes / 60);
+//        
+//        int timeInHours = totalTimeInHours;
+//        int timeInMinutes = totalTimeInMinutes - (totalTimeInHours * 60);
+//        int timeInSeconds = totalTimeInSeconds - (totalTimeInMinutes * 60);
+//        
+//        String hours = "";
+//        String minutes = "";
+//        String seconds = "";
+//        
+//        if (timeInHours > 0)
+//        {
+//            hours = "" + timeInHours + ":";
+//        }
+//        if (timeInMinutes < 10)
+//        {
+//            minutes = "0" + timeInMinutes + ":";
+//        }
+//        else
+//        {
+//            minutes = "" + timeInMinutes + ":";
+//        }
+//        if (timeInSeconds < 10)
+//        {
+//            minutes = "0" + timeInSeconds;
+//        }
+//        else
+//        {
+//            seconds = "" + timeInSeconds + "";
+//        }
+//        return hours + minutes + seconds;
+    }
+    
+    
 }
