@@ -943,7 +943,8 @@ public class CharacterSelectMenu implements ScreenController
         //player4.getCharacter().initializeCharacter(app,player4);
         Match currentMatch = new Match(player1, player2, player3, player4);
         
-        currentMatch.setStock(5);
+        currentMatch.setStock(7);
+        currentMatch.setTime(65);
         
         inGameState = new InGameState(currentMatch);
         stateManager.detach(mainMenu);

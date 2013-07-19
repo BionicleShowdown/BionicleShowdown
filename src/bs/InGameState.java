@@ -71,6 +71,8 @@ public class InGameState extends AbstractAppState implements ScreenController
     
     private Match currentMatch;
     
+    private int numberOfPlayers = 2;
+    
     // Stock Options (no, not the financial kind :P)
     private int initialStock = 10;
     public int currentStock = initialStock;
@@ -80,7 +82,7 @@ public class InGameState extends AbstractAppState implements ScreenController
     // Time Options
 //    private LwjglTimer gameTimer;
     private String currentTime;
-    private int matchDuration = 63;
+    private int matchDuration = 120;
     
     private boolean isTimeMatch = false;
 
@@ -94,6 +96,8 @@ public class InGameState extends AbstractAppState implements ScreenController
         this.currentMatch = currentMatch;
         isStockMatch = currentMatch.isStockMatch();
         initialStock = currentMatch.getStock();
+        isTimeMatch = currentMatch.isTimeMatch();
+        matchDuration = currentMatch.getTime();
     }
 
 
@@ -310,6 +314,7 @@ public class InGameState extends AbstractAppState implements ScreenController
     public void guiInitiate()
     {
         setStockImageHeight();
+        setStatusPanelLocations();
     }
     
     public void setStockImageHeight()
@@ -327,6 +332,49 @@ public class InGameState extends AbstractAppState implements ScreenController
             }  
         }
         
+    }
+    
+    public void setStatusPanelLocations()
+    {
+        if (numberOfPlayers == 2)
+        {
+            screen.findElementByName("Player1StatusConstantPanel").setConstraintX(new SizeValue("24.0583%"));
+            screen.findElementByName("Player1StatusConstantPanel").getParent().layoutElements();
+            screen.findElementByName("Player1StatusUnderlayPanel").setConstraintX(new SizeValue("24.0583%"));
+            screen.findElementByName("Player1StatusUnderlayPanel").getParent().layoutElements();
+            screen.findElementByName("Player1StatusOverlayPanel").setConstraintX(new SizeValue("24.0583%"));
+            screen.findElementByName("Player1StatusOverlayPanel").getParent().layoutElements();
+            
+            screen.findElementByName("Player2StatusConstantPanel").setConstraintX(new SizeValue("57.2916%"));
+            screen.findElementByName("Player2StatusConstantPanel").getParent().layoutElements();
+            screen.findElementByName("Player2StatusUnderlayPanel").setConstraintX(new SizeValue("57.2916%"));
+            screen.findElementByName("Player2StatusUnderlayPanel").getParent().layoutElements();
+            screen.findElementByName("Player2StatusOverlayPanel").setConstraintX(new SizeValue("57.2916%"));
+            screen.findElementByName("Player2StatusOverlayPanel").getParent().layoutElements();
+        }
+        else if (numberOfPlayers == 3)
+        {
+            screen.findElementByName("Player1StatusConstantPanel").setConstraintX(new SizeValue("15.625%"));
+            screen.findElementByName("Player1StatusConstantPanel").getParent().layoutElements();
+            screen.findElementByName("Player1StatusUnderlayPanel").setConstraintX(new SizeValue("15.625%"));
+            screen.findElementByName("Player1StatusUnderlayPanel").getParent().layoutElements();
+            screen.findElementByName("Player1StatusOverlayPanel").setConstraintX(new SizeValue("15.625%"));
+            screen.findElementByName("Player1StatusOverlayPanel").getParent().layoutElements();
+            
+            screen.findElementByName("Player2StatusConstantPanel").setConstraintX(new SizeValue("40.625%"));
+            screen.findElementByName("Player2StatusConstantPanel").getParent().layoutElements();
+            screen.findElementByName("Player2StatusUnderlayPanel").setConstraintX(new SizeValue("40.625%"));
+            screen.findElementByName("Player2StatusUnderlayPanel").getParent().layoutElements();
+            screen.findElementByName("Player2StatusOverlayPanel").setConstraintX(new SizeValue("40.625%"));
+            screen.findElementByName("Player2StatusOverlayPanel").getParent().layoutElements();
+            
+            screen.findElementByName("Player3StatusConstantPanel").setConstraintX(new SizeValue("65.625%"));
+            screen.findElementByName("Player3StatusConstantPanel").getParent().layoutElements();
+            screen.findElementByName("Player3StatusUnderlayPanel").setConstraintX(new SizeValue("65.625%"));
+            screen.findElementByName("Player3StatusUnderlayPanel").getParent().layoutElements();
+            screen.findElementByName("Player3StatusOverlayPanel").setConstraintX(new SizeValue("65.625%"));
+            screen.findElementByName("Player3StatusOverlayPanel").getParent().layoutElements();
+        }
     }
     
     public void playerStockInitialize()
