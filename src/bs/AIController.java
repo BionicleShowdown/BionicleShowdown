@@ -45,6 +45,9 @@ public class AIController extends AbstractControl {
 
     private BulletAppState bulletAppState;
     private float distance = 100f;
+    
+    private int stock = 3;
+
     /*function Awake () {
     //On Awake collects position, rotation, and scale relative to executer of the script
     character = transform;
@@ -70,6 +73,35 @@ public class AIController extends AbstractControl {
         rootNode = root;        
     }
     
+    public void respawn(Spatial event, Node respawn, BulletAppState bas){
+        //if players lives are greater than 1
+        
+        if(stock > 0){
+            stock--;
+            respawn.attachChild(event);
+            container.setPhysicsLocation(respawn.getWorldTranslation());
+        } else {
+            event.removeFromParent();
+            bas.getPhysicsSpace().remove(event);
+        }
+        
+    }
+    public void decreaseStock() {
+        stock--;
+    }
+
+    public void increaseStock() {
+        stock++;
+    }
+
+    public int getStock() {
+        return (stock);
+    }
+    
+    public void setStock(int newStock)
+    {
+        stock = newStock;
+    }
     //This is the initialization of the control for the AI
         @Override
     public void setSpatial(Spatial spatial) {

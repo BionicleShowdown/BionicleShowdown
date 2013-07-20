@@ -29,5 +29,10 @@ public class HumanPlayer extends Player
     {
         super(playerNumber, "Human", currentCharacter, currentCostume, currentTeam);
     }
+    
+    public String getType(){
+        return("Human");
+    }
+
 
 }

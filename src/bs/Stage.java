@@ -165,20 +165,22 @@ public class Stage implements PhysicsCollisionListener {
                 } else if (event.getNodeB().getName().equals("ledgeNode") && (Integer) event.getNodeB().getUserData("Number") == i) {
                     if ((Boolean) event.getNodeB().getUserData("ledgeGrabbed") == false && !event.getNodeA().getName().equals("platform")) {
                         logger.log(Level.WARNING, "Ledge {0} hit", new Object[]{i});
-                        if(event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge()){
-                            event.getNodeB().setUserData("ledgeGrabbed", true);
-                        } else {
-                            event.getNodeA().getControl(PlayerControl.class).resetGravity();
+                        if(event.getNodeA().getControl(PlayerControl.class) != null){
+                            if(event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge()){
+                                event.getNodeB().setUserData("ledgeGrabbed", true);
+                            } else {
+                                event.getNodeA().getControl(PlayerControl.class).resetGravity();
+                            }
+                            event.getNodeA().getControl(PlayerControl.class).grabLedge((Spatial)event.getNodeB());
+                            event.getNodeB().setUserData("playerGrabbing",event.getNodeA().getControl(PlayerControl.class).getNumber());
+                            System.out.println("PlayerControl " + event.getNodeA().getControl(PlayerControl.class));
                         }
-                        event.getNodeA().getControl(PlayerControl.class).grabLedge((Spatial)event.getNodeB());
-                        event.getNodeB().setUserData("playerGrabbing",event.getNodeA().getControl(PlayerControl.class).getNumber());
-                        System.out.println("PlayerControl " + event.getNodeA().getControl(PlayerControl.class));
-
-
                     }else if ((Boolean) event.getNodeB().getUserData("ledgeGrabbed") == true){
-                        System.out.println("Node B: " + event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge());
-                        if(!event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge()){                      
-                            event.getNodeB().setUserData("ledgeGrabbed", false);
+                        if(event.getNodeA().getControl(PlayerControl.class) != null){
+                            System.out.println("Node A: " + event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge());
+                            if(!event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge()){                      
+                                event.getNodeB().setUserData("ledgeGrabbed", false);
+                            }
                         }
                     }
                 }
@@ -201,8 +203,12 @@ public class Stage implements PhysicsCollisionListener {
                     if(timer.getTime() > 10 || event.getNodeA() != lastCollided){
                         lastCollided = event.getNodeA();
                         timer.reset();
-                        event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
-                        logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
+                        if(event.getNodeA().getControl(PlayerControl.class) != null){
+                            event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
+                            logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
+                        } else {
+                            event.getNodeA().getControl(AIController.class).respawn(event.getNodeA(),respawnNode,bulletAppState);
+                        }
                         currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
                     }
                 }
