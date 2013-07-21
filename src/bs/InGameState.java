@@ -29,7 +29,9 @@ import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 import com.jme3.system.lwjgl.LwjglTimer;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.elements.render.TextRenderer;
+import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.tools.SizeValue;
@@ -148,7 +150,7 @@ public class InGameState extends AbstractAppState implements ScreenController
         //Initialize GUI
         guiInitiate();
         playerStockInitialize();
-        adjustStock(initialStock, 1);
+//        adjustStock(initialStock, 1);
         
         //Rotate the camera to start position
         cam.setLocation(new Vector3f(0, 10, 70));
@@ -313,8 +315,10 @@ public class InGameState extends AbstractAppState implements ScreenController
     
     public void guiInitiate()
     {
-        setStockImageHeight();
         setStatusPanelLocations();
+        setStockImageHeight();
+        setPlayerAvatars();
+        setPlayerEmblems();
     }
     
     public void setStockImageHeight()
@@ -329,9 +333,50 @@ public class InGameState extends AbstractAppState implements ScreenController
                 image = "Player" + i + "StockIcon" + j;
                 screen.findElementByName(image).setConstraintHeight(new SizeValue(width));
                 screen.findElementByName(image).getParent().layoutElements();
+                
+                if (players[i - 1] != null)
+                {
+                    NiftyImage icon = nifty.getRenderEngine().createImage("Interface/CharacterInGame/StockIcon/" + players[i - 1].getMenuPlayer().costume + ".png", false);
+                    screen.findElementByName(image).getRenderer(ImageRenderer.class).setImage(icon);
+                }
+                
             }  
         }
         
+    }
+    
+    public void setPlayerAvatars()
+    {
+        String image = "";
+        
+        for (int i = 1; i <= 4; i++) 
+        {
+            image = "Player" + i + "Avatar";
+            
+            if (players[i - 1] != null)
+            {
+                NiftyImage emblem = nifty.getRenderEngine().createImage("Interface/CharacterInGame/Avatar/" + players[i - 1].getMenuPlayer().costume + ".png", false);
+                screen.findElementByName(image).getRenderer(ImageRenderer.class).setImage(emblem);
+            }
+            
+        }
+    }
+    
+    public void setPlayerEmblems()
+    {
+        String image = "";
+        
+        for (int i = 1; i <= 4; i++) 
+        {
+            image = "Player" + i + "Emblem";
+            
+            if (players[i - 1] != null)
+            {
+                NiftyImage emblem = nifty.getRenderEngine().createImage("Interface/CharacterInGame/Emblem/" + players[i - 1].getMenuPlayer().costume + ".png", false);
+                screen.findElementByName(image).getRenderer(ImageRenderer.class).setImage(emblem);
+            }
+            
+        }
     }
     
     public void setStatusPanelLocations()
@@ -384,6 +429,7 @@ public class InGameState extends AbstractAppState implements ScreenController
                 if (players[j] != null)
                 {
                     players[j].setStock(initialStock);
+                    adjustStock(initialStock, j + 1);
                 }
                 else
                 {

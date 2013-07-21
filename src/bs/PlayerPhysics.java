@@ -113,6 +113,12 @@ public class PlayerPhysics implements PhysicsCollisionListener
         return (playerNode);
     }
     
+    /* Returns the menu player. */
+    public Player getMenuPlayer()
+    {
+        return menuPlayer;
+    }
+    
     /*Return CharacterControl */
     public CharacterControl getCharacterControl() 
     {
