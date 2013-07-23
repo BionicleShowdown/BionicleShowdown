@@ -551,7 +551,14 @@ public class StandardMatchState extends InGameState implements ScreenController
         }
         else
         {
-            milliseconds = "" + millisecondsRemaining + "";
+            if (millisecondsRemaining == 100)
+            {
+                milliseconds = "00";
+            }
+            else
+            {
+                milliseconds = "" + millisecondsRemaining + "";
+            } 
         }
         
         return hours + minutes + seconds + milliseconds;
