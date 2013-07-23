@@ -10,7 +10,7 @@ import Characters.Tahu;
 import Characters.Kopaka;
 import Characters.PlayableCharacter;
 import Characters.RandomCharacter;
-import bs.InGameState;
+import bs.StandardMatchState;
 import bs.StartState;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -69,7 +69,7 @@ public class CharacterSelectMenu implements ScreenController
     private AudioRenderer audioRenderer;
     private ViewPort guiViewPort;
     private AppStateManager stateManager;
-    private InGameState inGameState;
+    private StandardMatchState standardMatchState;
     private MainMenu mainMenu;
     
     StartState startState;
@@ -946,9 +946,9 @@ public class CharacterSelectMenu implements ScreenController
         currentMatch.setStock(7);
         currentMatch.setTime(65);
         
-        inGameState = new InGameState(currentMatch);
+        standardMatchState = new StandardMatchState(currentMatch);
         stateManager.detach(mainMenu);
-        stateManager.attach(inGameState);
+        stateManager.attach(standardMatchState);
     }
     
     

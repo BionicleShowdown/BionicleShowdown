@@ -87,17 +87,21 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private float startJumpSpeed;
     private String number;
     
+    private InGameState sourceState;
+    
     
     
 
     /* PlayerControl will manage input and collision logic */
-    PlayerControl(Player p,Spatial s,InputManager input, CharacterControl cc, Camera cm) {
+    PlayerControl(Player p,Spatial s,InputManager input, CharacterControl cc, Camera cm, InGameState ss) 
+    {
         model = s;
         character = cc;
         inputManager = input;
         initKeys();
         health = 0;
         cam = cm;
+        sourceState = ss;
         number = p.playerNumber;
         startGravity = character.getGravity();
         startFallSpeed = character.getFallSpeed();
@@ -318,16 +322,24 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     public void respawn(Spatial event, Node respawn, BulletAppState bas){
         //if players lives are greater than 1
         
-        if(stock > 0){
-            if(!"Idle".equals(animationChannel.getAnimationName())){
+        stock--; // Moved this up, as stock would technically be removed before verifying they're still alive
+        sourceState.adjustStock(stock, number);
+        
+        if(stock > 0)
+        {
+            if(!"Idle".equals(animationChannel.getAnimationName()))
+            {
                 animationChannel.setAnim("Idle", .2f);
             }
             left = false;
             right = false;
-            stock--;
+//            stock--;
+//            sourceState.adjustStock(stock, number);
             respawn.attachChild(event);
             character.setPhysicsLocation(respawn.getWorldTranslation());
-        } else {
+        } 
+        else 
+        {
             event.removeFromParent();
             bas.getPhysicsSpace().remove(event);
         }

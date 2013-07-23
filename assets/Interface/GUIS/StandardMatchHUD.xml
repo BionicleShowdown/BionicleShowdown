@@ -3,7 +3,7 @@
     <!-- +++++++++++++++++++++++++++++++++++++++ -->
     <!-- start screen -->
     <!-- +++++++++++++++++++++++++++++++++++++++ -->
-    <screen id="inGameHud" controller="bs.InGameState">
+    <screen id="standardMatchHud" controller="bs.StandardMatchState">
         
         <layer id="constant" childLayout="absolute">
             

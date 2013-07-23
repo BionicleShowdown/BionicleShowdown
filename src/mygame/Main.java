@@ -3,7 +3,7 @@ package mygame;
 
 import AudioNodes.MusicAudioNode;
 import bs.Characters;
-import bs.InGameState;
+import bs.StandardMatchState;
 import bs.StartState;
 import com.aurellem.capture.Capture;
 import com.aurellem.capture.IsoTimer;

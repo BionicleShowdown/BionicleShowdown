@@ -55,6 +55,8 @@ public class PlayerPhysics implements PhysicsCollisionListener
     private EnemyMoveAttack attacking;
     private Node rootNode;
     private Node shootables;
+    
+    private InGameState sourceState;
 
 
     /* Player class builds player with proper inputs, name, etc.
@@ -62,7 +64,7 @@ public class PlayerPhysics implements PhysicsCollisionListener
      * but online docs should help. Look at PlayerControl for
      * logic, this is merely setup
      */
-    PlayerPhysics(Node root, Player p, BulletAppState bas, InputManager ipm, Camera cm, boolean exists) 
+    PlayerPhysics(Node root, Player p, BulletAppState bas, InputManager ipm, Camera cm, InGameState ss, boolean exists) 
     {
 
         bulletAppState = bas;
@@ -70,6 +72,7 @@ public class PlayerPhysics implements PhysicsCollisionListener
         cam = cm;
         menuPlayer = p;
         rootNode = root;
+        sourceState = ss;
         //If the character chosen is the same, generate a clone for its model
         if(exists)
         {
@@ -91,7 +94,7 @@ public class PlayerPhysics implements PhysicsCollisionListener
         
         //For dev purposes only (AI), make player 2 without controls
         if(!p.toString().equals("Player2")){
-            pc = new PlayerControl(p,model,im, player, cam);
+            pc = new PlayerControl(p,model,im, player, cam, sourceState);
             playerNode.addControl(pc);
             playerNode.setUserData("tag","target");
         }   else {
@@ -158,7 +161,7 @@ public class PlayerPhysics implements PhysicsCollisionListener
         {
             return;
         }
-        pc.setStock(newStock - 1);
+        pc.setStock(newStock);
     }
 
     public void collision(PhysicsCollisionEvent event) {
