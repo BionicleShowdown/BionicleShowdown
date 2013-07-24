@@ -24,6 +24,8 @@ public class Match
     private int time; // Time in seconds.
     private int widgets;
     
+    private boolean isBeingBalanced = false;
+    
     // Extend into FFAMatch and TeamMatch?
     // Includes: Players, Teams, Gametype, Game settings, Statistics
     // Gets filled in with Statistics post-game, then gets passed to the stats menu
@@ -60,6 +62,11 @@ public class Match
     public Player getPlayer4()
     {
         return player4;
+    }
+    
+    public boolean isBeingBalanced()
+    {
+        return isBeingBalanced;
     }
     
     public boolean isStockMatch()
@@ -111,6 +118,11 @@ public class Match
     public int getWidgets()
     {
         return widgets;
+    }
+    
+    public void setBalance(boolean balance)
+    {
+        isBeingBalanced = balance;
     }
     
     public void setStock(int newStock)

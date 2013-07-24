@@ -549,4 +549,47 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         return null;
 //        throw new UnsupportedOperationException("Not supported yet.");
     }
+    
+    
+    
+    public float getMoveSpeed()
+    {
+        return startMoveSpeed;
+    }
+    
+    public float getJumpSpeed()
+    {
+        return startJumpSpeed;
+    }
+    
+    public float getFallSpeed()
+    {
+        return startFallSpeed;
+    }
+    
+    public float getWeight()
+    {
+        return startGravity;
+    }
+    
+    
+    public void setMoveSpeed(float newSpeed)
+    {
+        startMoveSpeed = newSpeed;
+    }
+    
+    public void setJumpSpeed(float newSpeed)
+    {
+        startJumpSpeed = newSpeed;
+    }
+    
+    public void setFallSpeed(float newSpeed)
+    {
+        startFallSpeed = newSpeed;
+    }
+    
+    public void setWeight(float newWeight)
+    {
+        startGravity = newWeight;
+    }
 }

@@ -128,7 +128,10 @@ public class PlayerPhysics implements PhysicsCollisionListener
         return (player);
     }
 
-    
+    public PlayerControl getPlayerControl()
+    {
+        return pc;
+    }
     
     
     /* Setup CharacterControl

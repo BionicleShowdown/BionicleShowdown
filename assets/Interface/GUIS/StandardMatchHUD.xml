@@ -184,6 +184,52 @@
                 <text id="CurrentTime" font="Interface/Fonts/1942report32.fnt" text="0.00" align="center" valign="center" />
             </panel>
             
+            <panel id="BalanceControl" width="35%" height="20%" x="65%" y="5%" childLayout="absolute">
+                <panel id="BalanceControlNames" width="20%" height="100%" x="0%" y="0%" childLayout="absolute">
+                    <panel id="MoveNamePanel" width="100%" height="25%" x="0%" y="0%" childLayout="center">
+                        <text id="MoveName" font="Interface/Fonts/1942report16.fnt" text="Run" align="center"/> 
+                    </panel>
+                    <panel id="JumpNamePanel" width="100%" height="25%" x="0%" y="25%" childLayout="center">
+                        <text id="JumpName" font="Interface/Fonts/1942report16.fnt" text="Jump" align="center"/> 
+                    </panel>
+                    <panel id="FallNamePanel" width="100%" height="25%" x="0%" y="50%" childLayout="center">
+                        <text id="FallName" font="Interface/Fonts/1942report16.fnt" text="Fall" align="center"/> 
+                    </panel>
+                    <panel id="WeightNamePanel" width="100%" height="25%" x="0%" y="75%" childLayout="center">
+                        <text id="WeightName" font="Interface/Fonts/1942report16.fnt" text="Weight" align="center"/> 
+                    </panel>
+                </panel>
+                <panel id="BalanceControlSliders" width="60%" height="100%" x="20%" y="0%" childLayout="absolute">
+                    <panel id="MoveSlidePanel" width="100%" height="25%" x="0%" y="0%" childLayout="center">
+                        <control id="MoveSlide" name="horizontalSlider" width="100%" min="0" max="10" initial="1.0" stepSize="0.1" buttonStepSize="0.1" valign="center"/>
+                    </panel>
+                    <panel id="JumpSlidePanel" width="100%" height="25%" x="0%" y="25%" childLayout="center">
+                        <control id="JumpSlide" name="horizontalSlider" width="100%" min="0" max="100" initial="30.0" stepSize="0.1" buttonStepSize="0.1" valign="center"/>
+                    </panel>
+                    <panel id="FallSlidePanel" width="100%" height="25%" x="0%" y="50%" childLayout="center">
+                        <control id="FallSlide" name="horizontalSlider" width="100%" min="0" max="100" initial="30.0" stepSize="0.1" buttonStepSize="0.1" valign="center"/>
+                    </panel>
+                    <panel id="WeightSlidePanel" width="100%" height="25%" x="0%" y="75%" childLayout="center">
+                        <control id="WeightSlide" name="horizontalSlider" width="100%" min="0" max="100" initial="90.0" stepSize="0.1" buttonStepSize="0.1" valign="center"/>
+                    </panel>
+                </panel>
+                <panel id="BalanceControlNumbers" width="20%" height="100%" x="80%" y="0%" childLayout="absolute">
+                    <panel id="MoveSpeedPanel" width="100%" height="25%" x="0%" y="0%" childLayout="center">
+                        <text id="MoveSpeed" font="Interface/Fonts/1942report16.fnt" text="0" align="center"/>
+                    </panel>
+                    <panel id="JumpSpeedPanel" width="100%" height="25%" x="0%" y="25%" childLayout="center">
+                        <text id="JumpSpeed" font="Interface/Fonts/1942report16.fnt" text="0" align="center"/>
+                    </panel>
+                    <panel id="FallSpeedPanel" width="100%" height="25%" x="0%" y="50%" childLayout="center">
+                        <text id="FallSpeed" font="Interface/Fonts/1942report16.fnt" text="0" align="center"/>
+                    </panel>
+                    <panel id="WeightPanel" width="100%" height="25%" x="0%" y="75%" childLayout="center">
+                        <text id="Weight" font="Interface/Fonts/1942report16.fnt" text="0" align="center"/>
+                    </panel>
+                </panel>
+            </panel>
+            
+            
             <panel id="Player1StatusOverlayPanel" width="18.75%" height="20%" x="5%" y="75%" childLayout="absolute">
 
                 <panel id="Player1DamagePanel" width="60%" height="40%" x="40%" y="45%" childLayout="vertical">

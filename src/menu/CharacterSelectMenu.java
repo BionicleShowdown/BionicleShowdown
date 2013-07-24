@@ -946,6 +946,16 @@ public class CharacterSelectMenu implements ScreenController
         currentMatch.setStock(7);
         currentMatch.setTime(65);
         
+        if (player1.playerType.equals("CPU"))
+        {
+            currentMatch.setBalance(true);
+        }
+        else
+        {
+            currentMatch.setBalance(false);
+        }
+        
+        
         standardMatchState = new StandardMatchState(currentMatch);
         stateManager.detach(mainMenu);
         stateManager.attach(standardMatchState);
