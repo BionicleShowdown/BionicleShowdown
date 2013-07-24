@@ -61,7 +61,7 @@ public class PlayableCharacter
     public int getJumpSpeed(){
         return jumpSpeed;
     }
-    public int getSpeed()
+    public int getMoveSpeed()
     {
         return moveSpeed;
     }

@@ -37,6 +37,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import javax.imageio.ImageIO;
 import jme3tools.converters.ImageToAwt;
@@ -215,6 +216,17 @@ public class MainMenu extends AbstractAppState implements ScreenController
         {
             System.out.println("Clickable.");
             System.out.println("Extra-ing.");
+            
+            Calendar calendar = Calendar.getInstance();
+            System.out.println(calendar.getTime());
+            int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
+            int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+            int minute = Calendar.getInstance().get(Calendar.MINUTE);
+            int second = Calendar.getInstance().get(Calendar.SECOND);
+            System.out.println(Calendar.getInstance().getTimeZone());
+            System.out.println(month + "/" + day + "/" + year + " at " + hour + ":" + minute + ":" + second);
         }
         else
         {
