@@ -5,7 +5,7 @@ import Characters.Tahu;
 import Characters.Kopaka;
 import Characters.PlayableCharacter;
 import Characters.RandomCharacter;
-import bs.InGameState;
+import bs.StandardMatchState;
 import bs.StartState;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -59,7 +59,7 @@ public class MainMenu extends AbstractAppState implements ScreenController
     private AudioRenderer audioRenderer;
     private ViewPort guiViewPort;
     private AppStateManager stateManager;
-    private InGameState inGameState;
+    private StandardMatchState inGameState;
     private CharacterSelectMenu characterSelectMenu;
     
     StartState startState;

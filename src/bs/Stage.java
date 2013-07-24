@@ -55,7 +55,7 @@ public class Stage implements PhysicsCollisionListener {
     private int ledgeCount = 0;
     private ArrayList ledges = new ArrayList();
     
-    private InGameState currentInGameState;
+    private StandardMatchState currentInGameState;
 
     /*Constructor accepts a spatial (yet to be implemented) for the stage
      * and the height and width of the stage from
@@ -111,7 +111,7 @@ public class Stage implements PhysicsCollisionListener {
         return (respawnNode);
     }
     
-    public void setInGameState(InGameState state)
+    public void setInGameState(StandardMatchState state)
     {
         currentInGameState = state;
     }
@@ -194,7 +194,7 @@ public class Stage implements PhysicsCollisionListener {
                         timer.reset();
                         event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
                         logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
-                        currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
+                        
                     }
                 }
             } else if (event.getNodeB().getName().equals("bottomBoundingBoxNode")) {
@@ -209,7 +209,9 @@ public class Stage implements PhysicsCollisionListener {
                         } else {
                             event.getNodeA().getControl(AIController.class).respawn(event.getNodeA(),respawnNode,bulletAppState);
                         }
-                        currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
+                        //currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
+                        event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
+                        logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
                     }
                 }
             }
@@ -221,7 +223,7 @@ public class Stage implements PhysicsCollisionListener {
                         timer.reset();
                         event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
                         logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
-                        currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
+                        
                     }
                 }
             } else if (event.getNodeB().getName().equals("topBoundingBoxNode")) {
@@ -232,7 +234,7 @@ public class Stage implements PhysicsCollisionListener {
                         timer.reset();
                         event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
                         logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
-                        currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
+                        
                     }
                 }
             }
@@ -244,7 +246,7 @@ public class Stage implements PhysicsCollisionListener {
                         timer.reset();
                         event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
                         logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
-                        currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
+                        
                     }
                 }
             } else if (event.getNodeB().getName().equals("rightBoundingBoxNode")) {
@@ -255,7 +257,7 @@ public class Stage implements PhysicsCollisionListener {
                         timer.reset();
                         event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
                         logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
-                        currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
+                        
                     }
                 }
             }
@@ -267,7 +269,7 @@ public class Stage implements PhysicsCollisionListener {
                         timer.reset();
                         event.getNodeB().getControl(PlayerControl.class).respawn(event.getNodeB(),respawnNode,bulletAppState);     
                         logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeB().getControl(PlayerControl.class).getStock()});
-                        currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
+                        
                     }
                 }
             } else if (event.getNodeB().getName().equals("rightBoundingBoxNode")) {
@@ -278,7 +280,7 @@ public class Stage implements PhysicsCollisionListener {
                         timer.reset();
                         event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
                         logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
-                        currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
+                        
                     }
 
                 }
