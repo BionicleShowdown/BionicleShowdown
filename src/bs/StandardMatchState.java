@@ -29,6 +29,9 @@ import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 import com.jme3.system.lwjgl.LwjglTimer;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.NiftyEventSubscriber;
+import de.lessvoid.nifty.controls.Slider;
+import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
@@ -152,6 +155,9 @@ public class StandardMatchState extends InGameState implements ScreenController
         //Initialize GUI
         guiInitiate();
         playerStockInitialize();
+        balanceSetup();
+        
+        
 //        adjustStock(initialStock, 1);
         
         //Rotate the camera to start position
@@ -596,6 +602,88 @@ public class StandardMatchState extends InGameState implements ScreenController
 //            seconds = "" + timeInSeconds + "";
 //        }
 //        return hours + minutes + seconds;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    /* The following are related only to the balancing tools. */
+    
+    @NiftyEventSubscriber(id="MoveSlide")
+    public void moveSlideAdjust(String id, SliderChangedEvent event)
+    {
+        players[0].getPlayerControl().setMoveSpeed(event.getValue());
+        
+//        int speed = (int) (event.getValue() * 100);
+//        float roundSpeed = speed / 100f;
+        
+        screen.findElementByName("MoveSpeed").getRenderer(TextRenderer.class).setText("" + roundVal(event.getValue()) + "");
+    }
+    
+    @NiftyEventSubscriber(id="JumpSlide")
+    public void jumpSlideAdjust(String id, SliderChangedEvent event)
+    {
+//        players[0].getPlayerControl().setJumpSpeed(event.getValue());
+        players[0].getCharacterControl().setJumpSpeed(event.getValue());
+//        int speed = (int) (event.getValue() * 100);
+//        float roundSpeed = speed / 100f;
+        
+        screen.findElementByName("JumpSpeed").getRenderer(TextRenderer.class).setText("" + roundVal(event.getValue()) + "");
+    }
+    
+    @NiftyEventSubscriber(id="FallSlide")
+    public void fallSlideAdjust(String id, SliderChangedEvent event)
+    {
+//        players[0].getPlayerControl().setFallSpeed(event.getValue());
+        players[0].getCharacterControl().setFallSpeed(event.getValue());
+        
+//        int speed = (int) (event.getValue() * 100);
+//        float roundSpeed = speed / 100f;
+        
+        screen.findElementByName("FallSpeed").getRenderer(TextRenderer.class).setText("" + roundVal(event.getValue()) + "");
+    }
+    
+    @NiftyEventSubscriber(id="WeightSlide")
+    public void weightSlideAdjust(String id, SliderChangedEvent event)
+    {
+//        players[0].getPlayerControl().setWeight(event.getValue());
+        players[0].getCharacterControl().setGravity(event.getValue());
+        
+//        int speed = (int) (event.getValue() * 100);
+//        float roundWeight = speed / 100f;
+        
+        screen.findElementByName("Weight").getRenderer(TextRenderer.class).setText("" + roundVal(event.getValue()) + "");
+    }
+
+    private void balanceSetup() 
+    {
+        if (currentMatch.isBeingBalanced())
+        {
+            screen.findNiftyControl("MoveSlide", Slider.class).setValue(players[0].getPlayerControl().getMoveSpeed());
+            screen.findElementByName("MoveSpeed").getRenderer(TextRenderer.class).setText("" + roundVal(players[0].getPlayerControl().getMoveSpeed()) + "");
+            screen.findNiftyControl("JumpSlide", Slider.class).setValue(players[0].getPlayerControl().getJumpSpeed());
+            screen.findElementByName("JumpSpeed").getRenderer(TextRenderer.class).setText("" + roundVal(players[0].getPlayerControl().getJumpSpeed()) + "");
+            screen.findNiftyControl("FallSlide", Slider.class).setValue(players[0].getPlayerControl().getFallSpeed());
+            screen.findElementByName("FallSpeed").getRenderer(TextRenderer.class).setText("" + roundVal(players[0].getPlayerControl().getFallSpeed()) + "");
+            screen.findNiftyControl("WeightSlide", Slider.class).setValue(players[0].getPlayerControl().getWeight());
+            screen.findElementByName("Weight").getRenderer(TextRenderer.class).setText("" + roundVal(players[0].getPlayerControl().getWeight()) + "");
+        }
+        else
+        {
+            screen.findElementByName("BalanceControl").hide();
+            screen.findElementByName("BalanceControl").disable();
+        }
+    }
+    
+    private float roundVal(float num)
+    {
+        int speed = (int) (num * 100);
+//        float roundWeight = speed / 100f;
+        return (speed / 100f);
     }
     
     

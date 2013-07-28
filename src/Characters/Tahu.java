@@ -25,8 +25,8 @@ public class Tahu extends PlayableCharacter
         costumeKeys = tahuCostumes;
         weight = 90;
         fallSpeed = 30;
-        jumpSpeed = 50;
-        moveSpeed = 3;
+        jumpSpeed = 30;
+        moveSpeed = 2;
     }
     
     public static void unlockCostume(String unlockedCostume)
