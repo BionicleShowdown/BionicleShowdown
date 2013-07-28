@@ -5,6 +5,7 @@
 package bs;
 
 
+import Characters.PlayableCharacter;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
@@ -87,9 +88,11 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private float startGravity;
     private float startFallSpeed;
     private float startJumpSpeed;
+    private float startMoveSpeed;
     private String number;
     
     private InGameState sourceState;
+    private PlayableCharacter playerCharacter;
     
     
     
@@ -103,11 +106,13 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         initKeys();
         health = 0;
         cam = cm;
+        playerCharacter = p.currentCharacter;
         sourceState = ss;
         number = p.playerNumber;
         startGravity = character.getGravity();
         startFallSpeed = character.getFallSpeed();
         startJumpSpeed = character.getJumpSpeed();
+        startMoveSpeed = playerCharacter.getMoveSpeed();
         
         animationControl = model.getControl(AnimControl.class);
         animationControl.addListener(this);
@@ -121,6 +126,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         Vector3f camDir = cam.getDirection().clone().multLocal(0.25f);
         Vector3f camLeft = cam.getLeft().clone().multLocal(0.25f);
         camDir.y = 0;
+        camLeft.x = camLeft.x * startMoveSpeed;
         camLeft.y = 0;
         walkDirection.set(0, 0, 0);
         time += tpf;

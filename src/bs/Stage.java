@@ -209,10 +209,7 @@ public class Stage implements PhysicsCollisionListener {
                         } else {
                             event.getNodeA().getControl(AIController.class).respawn(event.getNodeA(),respawnNode,bulletAppState);
                         }
-                        //currentInGameState.adjustStock(currentInGameState.currentStock - 1, currentPlayer);
-                        event.getNodeA().getControl(PlayerControl.class).respawn(event.getNodeA(),respawnNode,bulletAppState);     
-                        logger.log(Level.WARNING, "stock {0} ", new Object[]{event.getNodeA().getControl(PlayerControl.class).getStock()});
-                    }
+                     }
                 }
             }
             if (event.getNodeA().getName().equals("topBoundingBoxNode")) {

@@ -22,4 +22,3 @@ abstract class InGameState extends AbstractAppState
      // This is a procedure that will be filled by those that use it.
     public abstract void adjustStock(int stock, String number);
 }
-//>>>>>>> branch 'master' of https://github.com/BionicleShowdown/BionicleShowdown.git
