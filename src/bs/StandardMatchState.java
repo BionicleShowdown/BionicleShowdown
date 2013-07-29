@@ -261,14 +261,7 @@ public class StandardMatchState extends InGameState implements ScreenController
     @Override
     public void update(float tpf) 
     {
-        for(int i =0; i < ledges.size(); i++){
-            if(((Spatial)ledges.get(i)).getControl(GhostControl.class).getOverlappingCount() == 0 && (Boolean)((Spatial)ledges.get(i)).getUserData("ledgeGrabbed")){
-                ((Spatial)ledges.get(i)).setUserData("ledgeGrabbed",false);
-                players[(Integer)((Spatial)ledges.get(i)).getUserData("playerGrabbing")-1].getPlayer().getControl(PlayerControl.class).resetGravity();
                 
-            }
-        }
-        
         //JME says looping streamed music isn't possible. So instead
         //look for when the music is stopped, create a new
         //instance of that music, and play it again.
@@ -281,7 +274,8 @@ public class StandardMatchState extends InGameState implements ScreenController
         time.update();
         currentTime = calculateTime(time.getTimeInSeconds());
         screen.findElementByName("CurrentTime").getRenderer(TextRenderer.class).setText("" + currentTime + "");
-        
+        screen.findElementByName("Player1Damage").getRenderer(TextRenderer.class).setText(Integer.toString(players[1].getPercent()) + "%");
+
     }
 
     @Override

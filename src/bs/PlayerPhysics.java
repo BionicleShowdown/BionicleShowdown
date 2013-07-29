@@ -30,13 +30,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mygame.Main;
 import Players.Player;
+import com.jme3.bullet.control.GhostControl;
 
 
 /**
  *
  * @author JSC
  */
-public class PlayerPhysics implements PhysicsCollisionListener 
+public class PlayerPhysics extends GhostControl implements PhysicsCollisionListener 
 {
 
     private static final Logger logger = Logger.getLogger(Stage.class.getName());
@@ -55,6 +56,7 @@ public class PlayerPhysics implements PhysicsCollisionListener
     private EnemyMoveAttack attacking;
     private Node rootNode;
     private Node shootables;
+    private int percentage = 0;
     
     private InGameState sourceState;
 
@@ -105,6 +107,10 @@ public class PlayerPhysics implements PhysicsCollisionListener
             playerNode.addControl(attacking);
             playerNode.addControl(aicontroller);
         }
+        GhostControl capsule = new GhostControl(new CapsuleCollisionShape(extent.getZ() + 0.7f, extent.getY(), 1));
+        playerNode.addControl(capsule);
+        bulletAppState.getPhysicsSpace().addCollisionListener(this);
+        bulletAppState.getPhysicsSpace().add(capsule);
         bulletAppState.getPhysicsSpace().add(playerNode);
         rootNode.attachChild(playerNode);
         
@@ -167,6 +173,20 @@ public class PlayerPhysics implements PhysicsCollisionListener
         pc.setStock(newStock);
     }
 
+    @Override
     public void collision(PhysicsCollisionEvent event) {
+       if(event.getNodeA().getControl(AIController.class)!=null && event.getNodeB().getControl(PlayerControl.class)!=null){
+           percentage++;
+       }
+       if(event.getNodeB().getControl(AIController.class)!=null && event.getNodeA().getControl(PlayerControl.class)!=null){
+           percentage++;
+       }
     }
+    
+    public int getPercent(){
+        return percentage;
+    }
+    
+    
+
 }

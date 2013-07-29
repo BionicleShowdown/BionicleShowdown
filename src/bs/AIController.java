@@ -31,7 +31,7 @@ import com.jme3.scene.control.Control;
 
 
 
-public class AIController extends AbstractControl implements PhysicsCollisionListener, AnimEventListener {
+public class AIController extends AbstractControl implements AnimEventListener {
     
     // Public member data
     //Sets other code to be launched
@@ -89,7 +89,6 @@ public class AIController extends AbstractControl implements PhysicsCollisionLis
         rootNode = root;
         model = m;
         number = p.playerNumber;
-        bas.getPhysicsSpace().addCollisionListener(this);
 
     }
     
@@ -268,9 +267,7 @@ public class AIController extends AbstractControl implements PhysicsCollisionLis
         return null;
         //throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    public void collision(PhysicsCollisionEvent event) {
-    }
+   
 
     public boolean isGrabbingLedge(){
         return grabbingLedge;
