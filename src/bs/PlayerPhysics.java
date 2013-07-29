@@ -99,7 +99,7 @@ public class PlayerPhysics implements PhysicsCollisionListener
             playerNode.setUserData("tag","target");
         }   else {
             idling = new IdleMovement(model); 
-            aicontroller = new AIController(shootables, rootNode,bulletAppState);
+            aicontroller = new AIController(p, model, shootables, rootNode,bulletAppState);
             attacking = new EnemyMoveAttack(model,rootNode, aicontroller);
             playerNode.addControl(idling);
             playerNode.addControl(attacking);
@@ -147,7 +147,7 @@ public class PlayerPhysics implements PhysicsCollisionListener
         player.setGravity(menuPlayer.getCharacter().getWeight());
         player.setJumpSpeed(menuPlayer.getCharacter().getJumpSpeed());
         player.setFallSpeed(menuPlayer.getCharacter().getFallSpeed());
-        player.setMaxSlope(menuPlayer.getCharacter().getMaxSlope());
+        //layer.setMaxSlope(menuPlayer.getCharacter().getMaxSlope());
     }
 
     /* Setup specifc features of player */

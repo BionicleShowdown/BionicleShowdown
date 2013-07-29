@@ -184,7 +184,6 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
         if(!"Walk".equals(animationChannel.getAnimationName())){
                 animationChannel.setAnim("Walk",.3f);
         }
-       System.out.println("EMA Updating");
        Vector3f targetDirection = new Vector3f(0,0,0);
        target.getTranslation().subtract(character.getTranslation(),targetDirection);
        targetDirection.y = 0;

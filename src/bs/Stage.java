@@ -143,18 +143,36 @@ public class Stage implements PhysicsCollisionListener {
                 if (event.getNodeA().getName().equals("ledgeNode") && (Integer) event.getNodeA().getUserData("Number") == i) {
                     if ((Boolean) event.getNodeA().getUserData("ledgeGrabbed") == false && !event.getNodeB().getName().equals("platform") ) {
                         logger.log(Level.WARNING, "Ledge {0} hit", new Object[]{i});
-                        if(event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge()){
-                            event.getNodeA().setUserData("ledgeGrabbed", true);
+                        if(event.getNodeA().getControl(PlayerControl.class) != null){
+                            System.out.println("Player");
+                            if(event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge()){
+                                event.getNodeA().setUserData("ledgeGrabbed", true);
+                            } else {
+                                event.getNodeB().getControl(PlayerControl.class).resetGravity();
+                            }
+                            event.getNodeB().getControl(PlayerControl.class).grabLedge((Spatial)event.getNodeA());
+                            event.getNodeA().setUserData("playerGrabbing",event.getNodeB().getControl(PlayerControl.class).getNumber());
+
+                            System.out.println("PlayerControl " + event.getNodeB().getControl(PlayerControl.class));
+
+                            if(event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge()){
+                                event.getNodeA().setUserData("ledgeGrabbed", true);
+                            }
                         } else {
-                            event.getNodeB().getControl(PlayerControl.class).resetGravity();
-                        }
-                        event.getNodeB().getControl(PlayerControl.class).grabLedge((Spatial)event.getNodeA());
-                        event.getNodeA().setUserData("playerGrabbing",event.getNodeB().getControl(PlayerControl.class).getNumber());
+                            System.out.println("CPU");
+                            if(event.getNodeB().getControl(AIController.class).isGrabbingLedge()){
+                                event.getNodeA().setUserData("ledgeGrabbed", true);
+                            } else {
+                                event.getNodeB().getControl(AIController.class).resetGravity();
+                            }
+                            event.getNodeB().getControl(AIController.class).grabLedge((Spatial)event.getNodeA());
+                            event.getNodeA().setUserData("playerGrabbing",event.getNodeB().getControl(AIController.class).getNumber());
 
-                        System.out.println("PlayerControl " + event.getNodeB().getControl(PlayerControl.class));
+                            System.out.println("PlayerControl " + event.getNodeB().getControl(PlayerControl.class));
 
-                        if(event.getNodeB().getControl(PlayerControl.class).isGrabbingLedge()){
-                            event.getNodeA().setUserData("ledgeGrabbed", true);
+                            if(event.getNodeB().getControl(AIController.class).isGrabbingLedge()){
+                                event.getNodeA().setUserData("ledgeGrabbed", true);
+                            }
                         }
                     } else if ((Boolean) event.getNodeA().getUserData("ledgeGrabbed") == true){
                         System.out.println("Node A: " + event.getNodeB().getName());
@@ -166,6 +184,7 @@ public class Stage implements PhysicsCollisionListener {
                     if ((Boolean) event.getNodeB().getUserData("ledgeGrabbed") == false && !event.getNodeA().getName().equals("platform")) {
                         logger.log(Level.WARNING, "Ledge {0} hit", new Object[]{i});
                         if(event.getNodeA().getControl(PlayerControl.class) != null){
+                            System.out.println("Player");
                             if(event.getNodeA().getControl(PlayerControl.class).isGrabbingLedge()){
                                 event.getNodeB().setUserData("ledgeGrabbed", true);
                             } else {
@@ -174,6 +193,17 @@ public class Stage implements PhysicsCollisionListener {
                             event.getNodeA().getControl(PlayerControl.class).grabLedge((Spatial)event.getNodeB());
                             event.getNodeB().setUserData("playerGrabbing",event.getNodeA().getControl(PlayerControl.class).getNumber());
                             System.out.println("PlayerControl " + event.getNodeA().getControl(PlayerControl.class));
+                        } else {
+                            System.out.println("CPU + 2");
+                            if(event.getNodeA().getControl(AIController.class).isGrabbingLedge()){
+                                event.getNodeB().setUserData("ledgeGrabbed", true);
+                            } else {
+                                System.out.println("Did This");
+                                event.getNodeA().getControl(AIController.class).resetGravity();
+                            }
+                            event.getNodeA().getControl(AIController.class).grabLedge((Spatial)event.getNodeB());
+                            event.getNodeB().setUserData("playerGrabbing",event.getNodeA().getControl(AIController.class).getNumber());
+                            System.out.println("PlayerControl " + event.getNodeA().getControl(AIController.class));
                         }
                     }else if ((Boolean) event.getNodeB().getUserData("ledgeGrabbed") == true){
                         if(event.getNodeA().getControl(PlayerControl.class) != null){
