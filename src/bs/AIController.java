@@ -4,6 +4,11 @@
  */
 package bs;
 
+import Characters.PlayableCharacter;
+import Players.Player;
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.AnimEventListener;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
@@ -26,7 +31,7 @@ import com.jme3.scene.control.Control;
 
 
 
-public class AIController extends AbstractControl {
+public class AIController extends AbstractControl implements PhysicsCollisionListener, AnimEventListener {
     
     // Public member data
     //Sets other code to be launched
@@ -45,6 +50,19 @@ public class AIController extends AbstractControl {
 
     private BulletAppState bulletAppState;
     private float distance = 100f;
+    
+    private int stock = 3;
+    private boolean grabbingLedge = false;
+    private float startGravity;
+    private float startFallSpeed;
+    private float startJumpSpeed;
+    private AnimChannel animationChannel;
+    private AnimControl animationControl;
+    private Spatial model;
+    private String number;
+
+
+
     /*function Awake () {
     //On Awake collects position, rotation, and scale relative to executer of the script
     character = transform;
@@ -61,17 +79,55 @@ public class AIController extends AbstractControl {
         }
     };
     
-    public AIController(Node shoot, Node root, BulletAppState bas){
+    
+    public AIController(Player p,Spatial m,Node shoot, Node root, BulletAppState bas){
         //This is needed for the raycasting. The ray needs to know
         //what items it can collide with, so this group of nodes
         //passed from outside is that group of items.
         bulletAppState = bas;
         shootables = shoot;
-        rootNode = root;        
+        rootNode = root;
+        model = m;
+        number = p.playerNumber;
+        bas.getPhysicsSpace().addCollisionListener(this);
+
     }
     
+    public int getNumber(){
+        return Integer.valueOf((number.charAt(6)))-48;
+    }
+    
+    public void respawn(Spatial event, Node respawn, BulletAppState bas){
+        //if players lives are greater than 1
+        
+        if(stock > 0){
+            stock--;
+            respawn.attachChild(event);
+            container.setPhysicsLocation(respawn.getWorldTranslation());
+        } else {
+            event.removeFromParent();
+            bas.getPhysicsSpace().remove(event);
+        }
+        
+    }
+    public void decreaseStock() {
+        stock--;
+    }
+
+    public void increaseStock() {
+        stock++;
+    }
+
+    public int getStock() {
+        return (stock);
+    }
+    
+    public void setStock(int newStock)
+    {
+        stock = newStock;
+    }
     //This is the initialization of the control for the AI
-        @Override
+    @Override
     public void setSpatial(Spatial spatial) {
       super.setSpatial(spatial);
       behaviourOnLostTrack = spatial.getControl(IdleMovement.class);
@@ -80,6 +136,13 @@ public class AIController extends AbstractControl {
       behaviourOnSpotted.setEnabled(false);
       character = spatial.getWorldTransform();
       container = spatial.getControl(CharacterControl.class);
+      startGravity = container.getGravity();
+      startFallSpeed = container.getFallSpeed();
+      startJumpSpeed = container.getJumpSpeed();
+      animationControl = model.getControl(AnimControl.class);
+      animationControl.addListener(this);
+      System.out.println(animationControl.getNumChannels() + " Channels");
+      animationChannel = animationControl.getChannel(0);
       /*ghost = new GhostControl(new BoxCollisionShape(new Vector3f(6,4,1)));
       Node position = new Node();
       position.addControl(ghost);
@@ -104,11 +167,11 @@ public class AIController extends AbstractControl {
     }
     
     public void collision() {
-        System.out.println(distance);
         if(CanSeeTarget()){
-            if(target_spatial != null && /*&& ghost.getOverlappingObjects().contains(target_spatial.getControl(CharacterControl.class)) &&*/ distance < 12f ){
+            if(target_spatial != null && distance < 12f ){
                 //Triggers OnSpotted
                 OnEnterInterestArea();
+                //System.out.println(ghost);
             }
         } else {
             OnExitInterestArea();
@@ -134,10 +197,23 @@ public class AIController extends AbstractControl {
             return;
         }
         
-        System.out.println("Entered ON SPOTTED");
         if(!behaviourOnSpotted.isEnabled()) {
             behaviourOnSpotted.setEnabled(true);
             behaviourOnLostTrack.setEnabled(false);
+        }
+    }
+    
+    public void grabLedge(Spatial event){
+        System.out.println("Character " + container.getPhysicsLocation().y);
+        System.out.println("Ledge " + event.getWorldTranslation().y);
+        if(container.getPhysicsLocation().y < event.getWorldTranslation().y && !grabbingLedge){
+            
+            
+            grabbingLedge = true;
+            animationChannel.setAnim("Slow Walk");
+            container.setGravity(0);
+            container.setFallSpeed(0);
+            container.setJumpSpeed(0);
         }
     }
     
@@ -148,6 +224,13 @@ public class AIController extends AbstractControl {
             behaviourOnLostTrack.setEnabled(true);
             behaviourOnSpotted.setEnabled(false);
         }
+    }
+    public void resetGravity() {
+        container.setGravity(startGravity);
+        container.setFallSpeed(startFallSpeed);
+        container.setJumpSpeed(startJumpSpeed);
+        grabbingLedge = false;
+        System.out.println("settings are: " + startGravity + " " + startFallSpeed + " " + startJumpSpeed);
     }
     
     public boolean CanSeeTarget(){
@@ -171,7 +254,6 @@ public class AIController extends AbstractControl {
     @Override
     protected void controlUpdate(float tpf) {
         collision();
-        System.out.println("AI ON");
         //CanSeeTarget();
 
     }
@@ -181,9 +263,25 @@ public class AIController extends AbstractControl {
        // throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public Control cloneForSpatial(Spatial spatial) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public void collision(PhysicsCollisionEvent event) {
+    }
+
+    public boolean isGrabbingLedge(){
+        return grabbingLedge;
+    }
+
+    public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 }

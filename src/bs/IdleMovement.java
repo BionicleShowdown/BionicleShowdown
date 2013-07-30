@@ -54,7 +54,6 @@ public class IdleMovement extends AbstractControl implements AnimEventListener{
         if(!"Idle".equals(animationChannel.getAnimationName())){
                 animationChannel.setAnim("Idle",.3f);
         }
-        System.out.println("IDLE ON");
         
     }
 

@@ -141,7 +141,7 @@ public class StandardMatchState extends InGameState implements ScreenController
         //Attach stage
         localRootNode.attachChild(loadStage.getStageNode());
         players[1].getPlayer().getControl(AIController.class).findTarget(); //TO CHANGE AFTER AI TESTING
-        //bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+        bulletAppState.getPhysicsSpace().enableDebug(assetManager);
 
         //Get Main's nifty
         nifty = Main.getNifty();

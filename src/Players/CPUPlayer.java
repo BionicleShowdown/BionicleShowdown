@@ -28,5 +28,8 @@ public class CPUPlayer extends Player {
     {
         super(playerNumber, "CPU", currentCharacter, currentCostume, currentTeam);
     }
+    public String getType(){
+        return("CPU");
+    }
 
 }

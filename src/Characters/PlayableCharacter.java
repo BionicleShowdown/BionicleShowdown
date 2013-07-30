@@ -24,6 +24,7 @@ import menu.Team;
 public class PlayableCharacter 
 {
     public String name;
+    protected float maxSlope;
     protected int weight; // Should this be a Float?
     protected int jumpSpeed; // ySpeed; Calculated from Weight?
     protected int fallSpeed; // Calculated from Weight?
@@ -64,6 +65,10 @@ public class PlayableCharacter
     public int getMoveSpeed()
     {
         return moveSpeed;
+    }
+    public float getMaxSlope()
+    {
+        return maxSlope;
     }
     
     public Spatial getModel()
