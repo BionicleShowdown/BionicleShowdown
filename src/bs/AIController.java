@@ -61,7 +61,7 @@ public class AIController extends AbstractControl implements PhysicsCollisionLis
     private Spatial model;
     private String number;
 
-
+    private InGameState sourceState;
 
     /*function Awake () {
     //On Awake collects position, rotation, and scale relative to executer of the script
@@ -80,7 +80,7 @@ public class AIController extends AbstractControl implements PhysicsCollisionLis
     };
     
     
-    public AIController(Player p,Spatial m,Node shoot, Node root, BulletAppState bas){
+    public AIController(Player p,Spatial m,Node shoot, Node root, BulletAppState bas, InGameState ss){
         //This is needed for the raycasting. The ray needs to know
         //what items it can collide with, so this group of nodes
         //passed from outside is that group of items.
@@ -90,6 +90,7 @@ public class AIController extends AbstractControl implements PhysicsCollisionLis
         model = m;
         number = p.playerNumber;
         bas.getPhysicsSpace().addCollisionListener(this);
+        sourceState = ss;
 
     }
     
@@ -100,8 +101,11 @@ public class AIController extends AbstractControl implements PhysicsCollisionLis
     public void respawn(Spatial event, Node respawn, BulletAppState bas){
         //if players lives are greater than 1
         
+        stock--; // Moved this up, as stock would technically be removed before verifying they're still alive
+        sourceState.adjustStock(stock, number);
+        
         if(stock > 0){
-            stock--;
+//            stock--;
             respawn.attachChild(event);
             container.setPhysicsLocation(respawn.getWorldTranslation());
         } else {
