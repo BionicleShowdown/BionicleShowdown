@@ -848,10 +848,10 @@ public class CharacterSelectMenu implements ScreenController
         int p4Y = player4Dropper.getY();
         
         currentMatch.addDropperPositions(p1X, p1Y, p2X, p2Y, p3X, p3Y, p4X, p4Y);
-        currentMatch.setTeamType(teamType);
+        currentMatch.getMatchSettings().setTeamType(teamType);
         
-        matchSettingsMenu = new MatchSettingsMenu();
-        matchSettingsMenu.initiate(app, currentMatch);
+        matchSettingsMenu = new MatchSettingsMenu(currentMatch);
+        matchSettingsMenu.initiate(app);
     }
     
     public void nullifyAndResetCostumesAndTeams()
@@ -983,8 +983,8 @@ public class CharacterSelectMenu implements ScreenController
         if (currentMatch == null)
         {
             currentMatch = new Match(player1, player2, player3, player4);
-            currentMatch.setStock(7);
-            currentMatch.setTime(65);
+            currentMatch.getMatchSettings().setStock(7);
+            currentMatch.getMatchSettings().setTime(65);
         }
         else
         {
@@ -1111,7 +1111,7 @@ public class CharacterSelectMenu implements ScreenController
         
         // Reattach teams correctly, switch to Team Match String and Image.
         
-        teamType = currentMatch.getTeamType();
+        teamType = currentMatch.getMatchSettings().getTeamType();
         
         if (teamType.equals("Team Match"))
         {

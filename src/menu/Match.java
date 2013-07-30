@@ -21,13 +21,9 @@ public class Match
     private Player player3 = null;
     private Player player4 = null;
     
-    /* Match Type */
-    private int stock;
-    private int time; // Time in seconds.
-    private int widgets;
-    
     private boolean isBeingBalanced = false;
     
+    private MatchSettings matchSettings  = new MatchSettings();
     private MatchStatistics matchStatistics;
     
     // Extend into FFAMatch and TeamMatch?
@@ -86,75 +82,19 @@ public class Match
         return isBeingBalanced;
     }
     
-    public boolean isStockMatch()
-    {
-        if (stock != 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-    
-    public boolean isTimeMatch()
-    {
-        if (time != 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-    
-    public boolean isWidgetMatch()
-    {
-        if (widgets != 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-    
-    public int getStock()
-    {
-        return stock;
-    }
-    
-    public int getTime()
-    {
-        return time;
-    }
-    
-    public int getWidgets()
-    {
-        return widgets;
-    }
-    
     public void setBalance(boolean balance)
     {
         isBeingBalanced = balance;
     }
     
-    public void setStock(int newStock)
+    public MatchSettings getMatchSettings()
     {
-        stock = newStock;
+        return matchSettings;
     }
     
-    public void setTime(int newTime)
+    public void setMatchSettings(MatchSettings newSettings)
     {
-        time = newTime;
-    }
-    
-    public void setWidgets(int newWidgets)
-    {
-        widgets = newWidgets;
+        this.matchSettings = newSettings;
     }
     
     // Do same for Time and Widget
@@ -171,16 +111,6 @@ public class Match
         this.p3Y = p3Y;
         this.p4X = p4X;
         this.p4Y = p4Y;
-    }
-    
-    public String getTeamType()
-    {
-        return teamType;
-    }
-
-    public void setTeamType(String teamType) 
-    {
-        this.teamType = teamType;
     }
 
     void reloadPlayers(Player player1, Player player2, Player player3, Player player4) 

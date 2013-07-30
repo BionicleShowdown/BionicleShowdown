@@ -48,22 +48,30 @@ public class MatchSettingsMenu implements ScreenController
     private RenderFont fieldFont;
 //    private CharacterSelectMenu characterSelectMenu;
     
-    int stock = 7;
+    int stock = 96;
     
     int hours = 0;
     int minutes = 5;
     int seconds = 0;
     
+    int widgets;
     
     public MatchSettingsMenu()
     {
         
     }
     
-    public void initiate(Application app, Match currentMatch) 
+    public MatchSettingsMenu(Match currentMatch)
+    {
+        this.currentMatch = currentMatch;
+        stock = currentMatch.getMatchSettings().getStock();
+        getTime(currentMatch.getMatchSettings().getTime());
+        widgets = currentMatch.getMatchSettings().getWidgets();
+    }
+    
+    public void initiate(Application app) 
     {
         this.app = (SimpleApplication) app;
-        this.currentMatch = currentMatch;
         this.assetManager = this.app.getAssetManager();
         this.inputManager = this.app.getInputManager();
         this.audioRenderer = this.app.getAudioRenderer();
@@ -82,10 +90,13 @@ public class MatchSettingsMenu implements ScreenController
     public void onStartScreen() 
     {
         fieldFont = nifty.createFont("showdown-style/1942-report-32.fnt");
-        screen.findNiftyControl("StockValue", TextField.class).setText("" + stock + "");
-        screen.findNiftyControl("HourValue", TextField.class).setText("" + hours + "");
-        screen.findNiftyControl("MinuteValue", TextField.class).setText("" + minutes + "");
-        screen.findNiftyControl("SecondValue", TextField.class).setText("" + seconds + "");
+        screen.findNiftyControl("StockValue", CenteredTextField.class).setText("" + stock + "");
+        screen.findNiftyControl("HourValue", CenteredTextField.class).setText("" + hours + "");
+        screen.findNiftyControl("MinuteValue", CenteredTextField.class).setText("" + minutes + "");
+        screen.findNiftyControl("SecondValue", CenteredTextField.class).setText("" + seconds + "");
+        screen.findNiftyControl("WidgetValue", CenteredTextField.class).setText("" + widgets + "");
+        String stockString = "" + stock + "";
+        screen.findNiftyControl("StockValue", CenteredTextField.class).setCursorPosition(stockString.length());
     }
 
     public void onEndScreen() 
@@ -120,11 +131,11 @@ public class MatchSettingsMenu implements ScreenController
             int newStock = new Integer(event.getTextFieldControl().getText());
             System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
             System.out.println(newStock);
-            currentMatch.setStock(newStock);
+            currentMatch.getMatchSettings().setStock(newStock);
         }
         else
         {
-            currentMatch.setStock(0); // Will be changed to something like -1 later, to reflect a lack of stock
+            currentMatch.getMatchSettings().setStock(0); // Will be changed to something like -1 later, to reflect a lack of stock
         }
         
     }
@@ -225,6 +236,13 @@ public class MatchSettingsMenu implements ScreenController
     private void setTime() 
     {
         int currentTime = (hours * 3600) + (minutes * 60) + seconds;
-        currentMatch.setTime(currentTime);
+        currentMatch.getMatchSettings().setTime(currentTime);
+    }
+
+    private void getTime(int time) 
+    {
+        hours = (time / 3600);
+        minutes = ((time - (hours * 3600)) / 60);
+        seconds = ((time - (hours * 3600) - (minutes * 60)));
     }
 }
