@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-controls>
+  <useControls filename="showdown-controls/showdown-controls/nifty-button.xml" />
+  <useControls filename="showdown-controls/showdown-controls/centered-textfield.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-chat-control.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-tabs.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-treebox.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-checkbox.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-console.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-drop-down.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-image-select.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-label.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-textfield.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-menu.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-messagebox.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-scrollbar.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-slider.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-scrollpanel.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-listbox.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-dragndrop.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-window.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-radiobutton.xml" />
+  <useControls filename="showdown-controls/showdown-controls/nifty-hint.xml" />
+</nifty-controls>

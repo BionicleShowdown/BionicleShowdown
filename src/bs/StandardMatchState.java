@@ -327,6 +327,8 @@ public class StandardMatchState extends InGameState implements ScreenController
         setStockImageHeight();
         setPlayerAvatars();
         setPlayerEmblems();
+        // Temporary
+        screen.findElementByName("Player1Damage").getRenderer(TextRenderer.class).setText("10%");
     }
     
     public void setStockImageHeight()

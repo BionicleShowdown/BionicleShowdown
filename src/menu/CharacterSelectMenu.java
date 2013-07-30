@@ -38,6 +38,7 @@ import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import de.lessvoid.nifty.tools.SizeValue;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.DisplayMode;
@@ -71,6 +72,7 @@ public class CharacterSelectMenu implements ScreenController
     private AppStateManager stateManager;
     private StandardMatchState standardMatchState;
     private MainMenu mainMenu;
+    private MatchSettingsMenu matchSettingsMenu;
     
     StartState startState;
     //static menu app = new menu(); // Defined outside of function to allow use in all methods
@@ -106,6 +108,7 @@ public class CharacterSelectMenu implements ScreenController
 //    final PlayableCharacter tahu = new Tahu();
 //    final PlayableCharacter kopaka = new Kopaka();
     
+    Match currentMatch;
     
     /* Records whether the TeamType is Free For All or a Team Match. */
     String teamType = "Free For All";
@@ -118,6 +121,11 @@ public class CharacterSelectMenu implements ScreenController
     public CharacterSelectMenu(MainMenu state)
     {
         this.mainMenu = state;
+    }
+    
+    public CharacterSelectMenu(Match currentMatch)
+    {
+        this.currentMatch = currentMatch;
     }
     
     
@@ -136,9 +144,6 @@ public class CharacterSelectMenu implements ScreenController
 //        nifty.getScreen("CharSelect").getScreenController();
         nifty.setDebugOptionPanelColors(false); // Leave it on true for now, so you can see the costume buttons.
     }
-    
-   
-    
 
     public void bind(Nifty nifty, Screen screen) 
     {
@@ -154,12 +159,19 @@ public class CharacterSelectMenu implements ScreenController
         System.out.println("Screen height is: " + screenHeight + ", Screen width is: " + screenWidth);
         resetVariables(); // Not entirely sure why this is necessary if the Menu is a new instance, but it is.
         disableAndHideDroppers(); // Sets the droppers to not exist until a player isn't null. May start Player 1 as not null to begin with.
-        player1Dropper = new Button(app, "Interface/CharacterSelect/Player1Dropper.png", screen.findElementByName("Player1Dropper"), false);
-        player2Dropper = new Button(app, "Interface/CharacterSelect/Player2Dropper.png", screen.findElementByName("Player2Dropper"), false);
-        player3Dropper = new Button(app, "Interface/CharacterSelect/Player3Dropper.png", screen.findElementByName("Player3Dropper"), false);
-        player4Dropper = new Button(app, "Interface/CharacterSelect/Player4Dropper.png", screen.findElementByName("Player4Dropper"), false);
+        player1Dropper = new Button(app, "Interface/CharacterSelect/Droppers/Player1.png", screen.findElementByName("Player1Dropper"), false);
+        player2Dropper = new Button(app, "Interface/CharacterSelect/Droppers/Player2.png", screen.findElementByName("Player2Dropper"), false);
+        player3Dropper = new Button(app, "Interface/CharacterSelect/Droppers/Player3.png", screen.findElementByName("Player3Dropper"), false);
+        player4Dropper = new Button(app, "Interface/CharacterSelect/Droppers/Player4.png", screen.findElementByName("Player4Dropper"), false);
         setPlayerType("Player1"); // Called twice so Player1 will first appear as the Human type.
         setPlayerType("Player1");
+        
+        
+        if (currentMatch != null)
+        {
+            loadMatch();
+        }
+        
         matchReady();
     }
 
@@ -424,7 +436,7 @@ public class CharacterSelectMenu implements ScreenController
         currentPlayer = temp;
         currentPlayerSelection = currentPlayer.playerNumber;
 //        System.out.println(" to " + temp.playerType);
-        NiftyImage image = nifty.getRenderEngine().createImage("Interface/PlayerSelect/PlayerType" + temp.playerType + ".png", false);
+        NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/PlayerType" + temp.playerType + ".png", false);
         nifty.getCurrentScreen().findElementByName(temp.playerNumber + "Type").getRenderer(ImageRenderer.class).setImage(image);
         matchReady();
     }
@@ -439,7 +451,7 @@ public class CharacterSelectMenu implements ScreenController
             dropper.show();
             dropper.enable();
             System.out.println("Element is currently enabled: " + dropper.isEnabled());
-            NiftyImage image = nifty.getRenderEngine().createImage("Interface/PlayerSelect/" + player.playerNumber + "Select.png", false);
+            NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/" + player.playerNumber + "Select.png", false);
             nifty.getCurrentScreen().findElementByName(player.playerNumber + "Select").getRenderer(ImageRenderer.class).setImage(image);
             System.out.println(player.currentCharacter);
             return new CPUPlayer(player.playerNumber, player.currentCharacter, player.costume, player.team);
@@ -459,7 +471,7 @@ public class CharacterSelectMenu implements ScreenController
             System.out.println(player.playerNumber + "'s team was " + player.team);
             Team.removeMember(player.team, player);
             player.team = "";
-            NiftyImage image = nifty.getRenderEngine().createImage("Interface/PlayerSelect/PlayerNullSelect.png", false);
+            NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/PlayerNullSelect.png", false);
             nifty.getCurrentScreen().findElementByName(player.playerNumber + "Select").getRenderer(ImageRenderer.class).setImage(image);
             System.out.println(player.currentCharacter);
             return new NullPlayer(player.playerNumber);
@@ -787,7 +799,7 @@ public class CharacterSelectMenu implements ScreenController
       if (teamType.equals("Free For All"))
       {
           teamType = "Team Match";
-          NiftyImage image = nifty.getRenderEngine().createImage("Interface/TeamMatch.png", false);
+          NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/TeamMatch.png", false);
           nifty.getCurrentScreen().findElementByName("TeamType").getRenderer(ImageRenderer.class).setImage(image);
           System.out.println("Changing costumes");
 //          setPlayerCostume(player1.playerNumber);
@@ -802,7 +814,7 @@ public class CharacterSelectMenu implements ScreenController
       else
       {
           teamType = "Free For All";
-          NiftyImage image = nifty.getRenderEngine().createImage("Interface/FreeForAll.png", false);
+          NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/FreeForAll.png", false);
           nifty.getCurrentScreen().findElementByName("TeamType").getRenderer(ImageRenderer.class).setImage(image);
           System.out.println("Changing costumes");
 //          setPlayerCostume(player1.playerNumber);
@@ -813,6 +825,33 @@ public class CharacterSelectMenu implements ScreenController
           nullifyAndResetCostumesAndTeams();
           
       }
+    }
+    
+    public void adjustMatchSettings()
+    {
+        printPlayerSelections();
+        
+        currentMatch = new Match(player1, player2, player3, player4);
+        
+        Element player1Dropper = screen.findElementByName("Player1");
+        Element player2Dropper = screen.findElementByName("Player2");
+        Element player3Dropper = screen.findElementByName("Player3");
+        Element player4Dropper = screen.findElementByName("Player4");
+        
+        int p1X = player1Dropper.getX();
+        int p1Y = player1Dropper.getY();
+        int p2X = player2Dropper.getX();
+        int p2Y = player2Dropper.getY();
+        int p3X = player3Dropper.getX();
+        int p3Y = player3Dropper.getY();
+        int p4X = player4Dropper.getX();
+        int p4Y = player4Dropper.getY();
+        
+        currentMatch.addDropperPositions(p1X, p1Y, p2X, p2Y, p3X, p3Y, p4X, p4Y);
+        currentMatch.setTeamType(teamType);
+        
+        matchSettingsMenu = new MatchSettingsMenu();
+        matchSettingsMenu.initiate(app, currentMatch);
     }
     
     public void nullifyAndResetCostumesAndTeams()
@@ -903,14 +942,14 @@ public class CharacterSelectMenu implements ScreenController
         {
             if (numberOfTeams > 1)
             {
-                NiftyImage image = nifty.getRenderEngine().createImage("Interface/MatchReady.png", false);
+                NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/MatchReady.png", false);
                 nifty.getCurrentScreen().findElementByName("StartMatch").getRenderer(ImageRenderer.class).setImage(image);
                 startMatchButton.enable();
                 return true;
             }
             else
             {
-                NiftyImage image = nifty.getRenderEngine().createImage("Interface/MatchNotReady.png", false);
+                NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/MatchNotReady.png", false);
                 nifty.getCurrentScreen().findElementByName("StartMatch").getRenderer(ImageRenderer.class).setImage(image);
                 startMatchButton.disable();
                 return false;  
@@ -919,14 +958,14 @@ public class CharacterSelectMenu implements ScreenController
         
         if (numberOfPlayers > 1)
         {
-            NiftyImage image = nifty.getRenderEngine().createImage("Interface/MatchReady.png", false);
+            NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/MatchReady.png", false);
             nifty.getCurrentScreen().findElementByName("StartMatch").getRenderer(ImageRenderer.class).setImage(image);
             startMatchButton.enable();
             return true;
         }
         else 
         {
-           NiftyImage image = nifty.getRenderEngine().createImage("Interface/MatchNotReady.png", false);
+           NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/MatchNotReady.png", false);
            nifty.getCurrentScreen().findElementByName("StartMatch").getRenderer(ImageRenderer.class).setImage(image);
            startMatchButton.disable();
            return false; 
@@ -941,10 +980,17 @@ public class CharacterSelectMenu implements ScreenController
         player2.getCharacter().initializeCharacter(app,player2);
         //player3.getCharacter().initializeCharacter(app,player3);
         //player4.getCharacter().initializeCharacter(app,player4);
-        Match currentMatch = new Match(player1, player2, player3, player4);
+        if (currentMatch == null)
+        {
+            currentMatch = new Match(player1, player2, player3, player4);
+            currentMatch.setStock(7);
+            currentMatch.setTime(65);
+        }
+        else
+        {
+            currentMatch.reloadPlayers(player1, player2, player3, player4);
+        }
         
-        currentMatch.setStock(7);
-        currentMatch.setTime(65);
         
         if (player1.playerType.equals("CPU"))
         {
@@ -992,6 +1038,7 @@ public class CharacterSelectMenu implements ScreenController
   
     public void goBack()
     {
+        currentMatch = null;
         mainMenu = new MainMenu();
         mainMenu.initiate(app);
     }
@@ -1048,6 +1095,192 @@ public class CharacterSelectMenu implements ScreenController
             System.out.println("Player Does Not Exist.");
         }
         return temp;
+    }
+
+    
+    /* Initializes the menu to be what it was when before going to the Match Settings menu. */
+    private void loadMatch() 
+    {
+        System.out.println("Loading Match");
+        player1 = currentMatch.getPlayer1();
+        player2 = currentMatch.getPlayer2();
+        player3 = currentMatch.getPlayer3();
+        player4 = currentMatch.getPlayer4();
+        
+        NiftyImage image;
+        
+        // Reattach teams correctly, switch to Team Match String and Image.
+        
+        teamType = currentMatch.getTeamType();
+        
+        if (teamType.equals("Team Match"))
+        {
+            image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/TeamMatch.png", false);
+            screen.findElementByName("TeamType").getRenderer(ImageRenderer.class).setImage(image);
+        }
+        
+//        Team.availableTeams = currentMatch.getTeamsInvolved();
+        
+        if (!player1.playerType.equals("Null"))
+        {
+            if (player1.currentCharacter != null)
+            {
+                Team.addMember(player1.team, player1);
+                image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/" + player1.getCostume() + ".png", false);
+                screen.findElementByName("Player1Select").getRenderer(ImageRenderer.class).setImage(image);
+            }
+            else
+            {
+                image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/Player1Select.png", false);
+                screen.findElementByName("Player1Select").getRenderer(ImageRenderer.class).setImage(image);
+            }
+            image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/PlayerType" + player1.playerType + ".png", false);
+            screen.findElementByName("Player1Type").getRenderer(ImageRenderer.class).setImage(image);
+            Element player1Dropper = screen.findElementByName("Player1");
+            player1Dropper.markForMove(screen.findElementByName("Player1Placehold"));
+            player1Dropper.show();
+            player1Dropper.enable();
+            
+        }
+        if (!player2.playerType.equals("Null"))
+        {
+            if (player2.currentCharacter != null)
+            {
+                Team.addMember(player2.team, player2);
+                image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/" + player2.getCostume() + ".png", false);
+                screen.findElementByName("Player2Select").getRenderer(ImageRenderer.class).setImage(image);
+            }
+            else
+            {
+                image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/Player2Select.png", false);
+                screen.findElementByName("Player2Select").getRenderer(ImageRenderer.class).setImage(image);
+            }
+            image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/PlayerType" + player2.playerType + ".png", false);
+            screen.findElementByName("Player2Type").getRenderer(ImageRenderer.class).setImage(image);
+            Element player2Dropper = screen.findElementByName("Player2");
+            player2Dropper.markForMove(screen.findElementByName("Player2Placehold"));
+            player2Dropper.show();
+            player2Dropper.enable();
+        }
+        if (!player3.playerType.equals("Null"))
+        {
+            if (player3.currentCharacter != null)
+            {
+                Team.addMember(player3.team, player3);
+                image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/" + player3.getCostume() + ".png", false);
+                screen.findElementByName("Player3Select").getRenderer(ImageRenderer.class).setImage(image);
+            }
+            else
+            {
+                image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/Player3Select.png", false);
+                screen.findElementByName("Player3Select").getRenderer(ImageRenderer.class).setImage(image);
+            }
+            image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/PlayerType" + player3.playerType + ".png", false);
+            screen.findElementByName("Player3Type").getRenderer(ImageRenderer.class).setImage(image);
+            Element player3Dropper = screen.findElementByName("Player3");
+            player3Dropper.markForMove(screen.findElementByName("Player3Placehold"));
+            player3Dropper.show();
+            player3Dropper.enable();
+        }
+        if (!player4.playerType.equals("Null"))
+        {
+            if (player4.currentCharacter != null)
+            {
+                Team.addMember(player4.team, player4);
+                image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/" + player4.getCostume() + ".png", false);
+                screen.findElementByName("Player4Select").getRenderer(ImageRenderer.class).setImage(image);
+            }
+            else
+            {
+                image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/Player4Select.png", false);
+                screen.findElementByName("Player4Select").getRenderer(ImageRenderer.class).setImage(image);
+            }
+             
+            image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/PlayerType" + player4.playerType + ".png", false);
+            screen.findElementByName("Player4Type").getRenderer(ImageRenderer.class).setImage(image);
+            Element player4Dropper = screen.findElementByName("Player4");
+            player4Dropper.markForMove(screen.findElementByName("Player4Placehold"));
+            player4Dropper.show();
+            player4Dropper.enable();
+        }
+        
+        printPlayerSelections();
+    }
+    
+    
+    /* These methods deterimine where the Dropper Placeholders will appear, 
+     * which are placed based on where the droppers were prior to switching 
+     * over to the Match Settings Screen. */
+    public String getP1PHX()
+    {
+        if (currentMatch != null)
+        {
+            return currentMatch.p1X + "px";
+        }
+        return "0px";
+    }
+    
+    public String getP1PHY()
+    {
+        if (currentMatch != null)
+        {
+            return currentMatch.p1Y + "px";
+        }
+        return "0px";
+    }
+    
+    public String getP2PHX()
+    {
+        if (currentMatch != null)
+        {
+            return currentMatch.p2X + "px";
+        }
+        return "0px";
+    }
+    
+    public String getP2PHY()
+    {
+        if (currentMatch != null)
+        {
+            return currentMatch.p2Y + "px";
+        }
+        return "0px";
+    }
+    
+    public String getP3PHX()
+    {
+        if (currentMatch != null)
+        {
+            return currentMatch.p3X + "px";
+        }
+        return "0px";
+    }
+    
+    public String getP3PHY()
+    {
+        if (currentMatch != null)
+        {
+            return currentMatch.p3Y + "px";
+        }
+        return "0px";
+    }
+    
+    public String getP4PHX()
+    {
+        if (currentMatch != null)
+        {
+            return currentMatch.p4X + "px";
+        }
+        return "0px";
+    }
+    
+    public String getP4PHY()
+    {
+        if (currentMatch != null)
+        {
+            return currentMatch.p4Y + "px";
+        }
+        return "0px";
     }
       
 }

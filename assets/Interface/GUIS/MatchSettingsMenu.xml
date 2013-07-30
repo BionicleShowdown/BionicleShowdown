@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+
+<useControls filename="showdown-controls/showdown-controls.xml" />
+<useStyles filename="showdown-style/showdown-styles.xml" />
+
+    <screen id="MatchSettingsMenu" controller="menu.MatchSettingsMenu">
+        
+        <layer id="Background" childLayout="absolute">
+            
+        </layer>
+        
+        <layer id="Foreground" childLayout="absolute">
+            
+            <panel id="BackButtonPanel" width="10%" height="7%" x="1%" y="1%" childLayout="vertical" visibleToMouse = "true">
+               <image filename="Interface/General/BackButton.png" width="100%" height="100%" visibleToMouse="true">
+                <interact onClick="goBack()" />
+               </image>
+            </panel>
+            
+            <panel id="StockEnterPanel" width="60%" height="10%" x="20%" y="10%" childLayout="vertical">
+                <control id="StockValue" name="centeredtextfield" maxLength="3" font="showdown-style/1942-report-32.fnt"/>
+            </panel>
+            
+            <panel id="TimeEnterPanel" width="60%" height="10%" x="20%" y="30%" childLayout="absolute">
+                <panel id="HourEnterPanel" width="30%" height="100%" x="0%" y="0%" childLayout="vertical">
+                    <control id="HourValue" name="centeredtextfield" font="showdown-style/1942-report-32.fnt" />
+                </panel>
+                <panel id="MinuteEnterPanel" width="35%" height="100%" x="30%" y="0%" childLayout="vertical">
+                    <control id="MinuteValue" name="centeredtextfield" maxLength="2" font="showdown-style/1942-report-32.fnt"/>
+                </panel>
+                <panel id="SecondEnterPanel" width="35%" height="100%" x="65%" y="0%" childLayout="vertical">
+                    <control id="SecondValue" name="centeredtextfield" maxLength="2" font="showdown-style/1942-report-32.fnt"/>
+                </panel>
+            </panel>
+            
+            <panel id="WidgetEnterPanel" width="60%" height="10%" x="20%" y="50%" childLayout="vertical">
+                <control id="WidgetValue" name="centeredtextfield" font="showdown-style/1942-report-32.fnt"/>
+            </panel>
+            
+        </layer>
+        
+    </screen>
+
+
+</nifty>
