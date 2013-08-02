@@ -608,4 +608,8 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     {
         startGravity = newWeight;
     }
+    
+    public String getAnim(){
+        return animationChannel.getAnimationName();
+    }
 }

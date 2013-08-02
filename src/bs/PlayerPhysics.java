@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mygame.Main;
 import Players.Player;
+import com.jme3.animation.AnimControl;
 import com.jme3.bullet.control.GhostControl;
 
 
@@ -57,8 +58,10 @@ public class PlayerPhysics extends GhostControl implements PhysicsCollisionListe
     private Node rootNode;
     private Node shootables;
     private int percentage = 0;
-    
+    private boolean gettingHit = false;
     private InGameState sourceState;
+    private String lastanim = "anim";
+    private String thisanim;
 
 
     /* Player class builds player with proper inputs, name, etc.
@@ -175,11 +178,43 @@ public class PlayerPhysics extends GhostControl implements PhysicsCollisionListe
 
     @Override
     public void collision(PhysicsCollisionEvent event) {
+       
        if(event.getNodeA().getControl(AIController.class)!=null && event.getNodeB().getControl(PlayerControl.class)!=null){
-           percentage++;
+           thisanim = event.getNodeB().getControl(PlayerControl.class).getAnim();
+           
+           if (!event.getNodeB().getControl(PlayerControl.class).isFighting()){
+                gettingHit = false;
+                return;
+            } 
+           
+           if(thisanim.equals("First A") && !gettingHit){
+                percentage = percentage+2;
+                gettingHit = true;
+            } else if (thisanim.equals("Second A") && !gettingHit){
+                percentage = percentage+3;
+                gettingHit = true;
+            } else if (thisanim.equals("Third A") && !gettingHit){
+                percentage = percentage+5;
+                gettingHit = true;
+            }
        }
        if(event.getNodeB().getControl(AIController.class)!=null && event.getNodeA().getControl(PlayerControl.class)!=null){
-           percentage++;
+           thisanim = event.getNodeA().getControl(PlayerControl.class).getAnim();
+            if (!event.getNodeA().getControl(PlayerControl.class).isFighting()){
+                gettingHit = false;
+                return;
+            }
+            if(thisanim.equals("DTilt") && !gettingHit){
+                percentage = percentage+6;
+            } else if (thisanim.equals("F Tilt") && !gettingHit){
+                percentage = percentage+8;
+            } else if (thisanim.equals("Up Tilt") && !gettingHit){
+                percentage = percentage+9;
+            }
+            
+            if(event.getNodeA().getControl(PlayerControl.class).isFighting()){
+                gettingHit = true;   
+            }
        }
     }
     

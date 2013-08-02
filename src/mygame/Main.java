@@ -90,7 +90,7 @@ public class Main extends SimpleApplication
     public void simpleInitApp () 
     {
         
-//        stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
+        stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
         startState = new StartState();
         setDisplayStatView(false);
         music = new MusicAudioNode(assetManager, "Sounds/Music/Fire and Ice.wav", true);
