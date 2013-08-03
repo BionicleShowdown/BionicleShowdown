@@ -80,7 +80,9 @@ public class CenteredTextFieldControl extends AbstractController implements Cent
     TextRenderer textRenderer = textElement.getRenderer(TextRenderer.class);
     this.firstVisibleCharacterIndex = 0;
     this.lastVisibleCharacterIndex = FontHelper.getVisibleCharactersFromStart(textRenderer.getFont(), this.textField.getText(), fieldWidth, 1.0f);
-
+    
+    
+    
     updateCursor();
     super.init(parameter, controlDefinitionAttributes);
   }
@@ -358,4 +360,5 @@ public class CenteredTextFieldControl extends AbstractController implements Cent
   public boolean isPasswordCharEnabled() {
     return passwordChar != null;
   }
+
 }

@@ -1,6 +1,7 @@
 
 package menu;
 
+import AudioNodes.SFXAudioNode;
 import Characters.Tahu;
 import Characters.Kopaka;
 import Characters.PlayableCharacter;
@@ -22,6 +23,9 @@ import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import com.jme3.texture.Texture;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.NiftyEventSubscriber;
+import de.lessvoid.nifty.effects.EffectEventId;
+import de.lessvoid.nifty.elements.events.NiftyMouseMovedEvent;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
@@ -82,6 +86,15 @@ public class MainMenu extends AbstractAppState implements ScreenController
     Button extrasButton;
     Button optionsButton;
     
+    
+    SFXAudioNode fightButtonSound;
+    boolean fightButtonWasClickable = false;
+    SFXAudioNode trainingButtonSound;
+    boolean trainingButtonWasClickable = false;
+    SFXAudioNode optionsButtonSound;
+    boolean optionsButtonWasClickable = false;
+    SFXAudioNode extrasButtonSound;
+    boolean extrasButtonWasClickable = false;
     
     /* Records whether the TeamType is Free For All or a Team Match. */
     String teamType = "Free For All";
@@ -171,6 +184,78 @@ public class MainMenu extends AbstractAppState implements ScreenController
     public void onEndScreen() 
     {
         
+    }
+    
+    @NiftyEventSubscriber(id="FightPanel")
+    public void fightButtonHoverCheck(String id, NiftyMouseMovedEvent event)
+    {
+        if (fightButton.isClickable(event.getMouseX(), event.getMouseY()))
+        {
+            if (fightButtonWasClickable == false)
+            {
+                fightButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Tahu.wav");
+                fightButtonSound.play();
+                
+            }
+            fightButtonWasClickable = true;
+            return;
+        }
+        event.getElement().stopEffect(EffectEventId.onHover);
+        fightButtonWasClickable = false;
+    }
+    
+    @NiftyEventSubscriber(id="TrainingPanel")
+    public void trainingButtonHoverCheck(String id, NiftyMouseMovedEvent event)
+    {
+        if (trainingButton.isClickable(event.getMouseX(), event.getMouseY()))
+        {
+            if (trainingButtonWasClickable == false)
+            {
+                trainingButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Kopaka.wav");
+                trainingButtonSound.play();
+                
+            }
+            trainingButtonWasClickable = true;
+            return;
+        }
+        event.getElement().stopEffect(EffectEventId.onHover);
+        trainingButtonWasClickable = false;
+    }
+    
+    @NiftyEventSubscriber(id="OptionsPanel")
+    public void optionsButtonHoverCheck(String id, NiftyMouseMovedEvent event)
+    {
+        if (optionsButton.isClickable(event.getMouseX(), event.getMouseY()))
+        {
+            if (optionsButtonWasClickable == false)
+            {
+                optionsButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Tahu.wav");
+                optionsButtonSound.play();
+                
+            }
+            optionsButtonWasClickable = true;
+            return;
+        }
+        event.getElement().stopEffect(EffectEventId.onHover);
+        optionsButtonWasClickable = false;
+    }
+    
+    @NiftyEventSubscriber(id="ExtrasPanel")
+    public void extrasButtonHoverCheck(String id, NiftyMouseMovedEvent event)
+    {
+        if (extrasButton.isClickable(event.getMouseX(), event.getMouseY()))
+        {
+            if (extrasButtonWasClickable == false)
+            {
+                extrasButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Kopaka.wav");
+                extrasButtonSound.play();
+                
+            }
+            extrasButtonWasClickable = true;
+            return;
+        }
+        event.getElement().stopEffect(EffectEventId.onHover);
+        extrasButtonWasClickable = false;
     }
     
     public void fightScreen(int x, int y)
