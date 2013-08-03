@@ -129,6 +129,12 @@ public class Button
     {
         int imageX = (int) ((x - mapX) * ratioX);
         int imageY = (int) ((y - mapY) * ratioY);
+        
+        if ((imageX < 0) || (imageX >= width) || (imageY < 0) || (imageY >= height))
+        {
+            return false;
+        }
+        
         System.out.println("X on image: " + imageX + ", Y on image: " + imageY);
         int pixelColorInt = buffImage.getRGB(imageX, imageY);
         Color pixelColor = new Color(pixelColorInt, true);
@@ -183,6 +189,8 @@ public class Button
      */
     public void mobileRefresh()
     {
+        this.height= this.buffImage.getHeight();
+        this.width = this.buffImage.getWidth();
         this.mapX = element.getX();
         this.mapY = element.getY();
     }

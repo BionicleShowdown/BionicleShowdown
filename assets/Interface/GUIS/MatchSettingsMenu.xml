@@ -13,29 +13,103 @@
         <layer id="Foreground" childLayout="absolute">
             
             <panel id="BackButtonPanel" width="10%" height="7%" x="1%" y="1%" childLayout="vertical" visibleToMouse = "true">
-               <image filename="Interface/General/BackButton.png" width="100%" height="100%" visibleToMouse="true">
+               <image id="BackButton" filename="Interface/General/BackButton.png" width="100%" height="100%" visibleToMouse="true">
                 <interact onClick="goBack()" />
                </image>
             </panel>
             
-            <panel id="StockEnterPanel" width="60%" height="10%" x="20%" y="10%" childLayout="vertical">
-                <control id="StockValue" name="centeredtextfield" maxLength="3" font="showdown-style/1942-report-32.fnt"/>
+            <panel id="StockNamePanel" width="10%" height="10%" x="0%" y="10%" childLayout="vertical">
+                <text id="StockName" font="showdown-style/1942-report-16.fnt" text="Stock" width="100%" height="100%" align="center" valign="center"/>
+            </panel>
+            <panel id="StockPanel" width="80%" height="10%" x="10%" y="10%" childLayout="absolute">
+                <panel id="StockLeftButton" width="12.5%" height="100%" x="0%" y="0%" childLayout="vertical">
+                    <image filename="Interface/General/LeftButton.png" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true">
+                        <effect>
+                            <onHover name="changeImage" active="Interface/General/LeftButtonHover.png" inactive="Interface/General/LeftButton.png"/>
+                        </effect>
+                    </image>
+                    <interact onClick="adjustStock(-1)" />
+                </panel>
+                <panel id="StockEnterPanel" width="75%" height="100%" x="12.5%" y="0%" childLayout="vertical">
+                    <control id="StockValue" name="centeredtextfield" maxLength="3" font="showdown-style/1942-report-32.fnt"/>
+                </panel>
+                <panel id="StockRightButton" width="12.5%" height="100%" x="87.5%" y="0%" childLayout="vertical">
+                    <image filename="Interface/General/RightButton.png" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true">
+                        <effect>
+                            <onHover name="changeImage" active="Interface/General/RightButtonHover.png" inactive="Interface/General/RightButton.png"/>
+                        </effect>
+                        <interact onClick="adjustStock(1)" />
+                    </image>
+                </panel>
             </panel>
             
-            <panel id="TimeEnterPanel" width="60%" height="10%" x="20%" y="30%" childLayout="absolute">
-                <panel id="HourEnterPanel" width="30%" height="100%" x="0%" y="0%" childLayout="vertical">
-                    <control id="HourValue" name="centeredtextfield" font="showdown-style/1942-report-32.fnt" />
+            <panel id="TimeNamePanel" width="10%" height="10%" x="0%" y="30%" childLayout="vertical">
+                <text id="TimeName" font="showdown-style/1942-report-16.fnt" text="Time" width="100%" height="100%" align="center" valign="center"/>
+            </panel>
+            <panel id="TimeLabelPanel" width="60%" height="5%" x="20%" y="25%" childLayout="absolute">
+                <panel id="HourLabelPanel" width="30%" height="100%" x="0%" y="0%" childLayout="vertical">
+                    <text id="HourLabel" font="showdown-style/1942-report-16.fnt" text="Hours" width="100%" height="100%" align="center" valign="center"/>
                 </panel>
-                <panel id="MinuteEnterPanel" width="35%" height="100%" x="30%" y="0%" childLayout="vertical">
-                    <control id="MinuteValue" name="centeredtextfield" maxLength="2" font="showdown-style/1942-report-32.fnt"/>
+                <panel id="MinuteLabelPanel" width="35%" height="100%" x="30%" y="0%" childLayout="vertical">
+                    <text id="MinuteLabel" font="showdown-style/1942-report-16.fnt" text="Minutes" width="100%" height="100%" align="center" valign="center"/>
                 </panel>
-                <panel id="SecondEnterPanel" width="35%" height="100%" x="65%" y="0%" childLayout="vertical">
-                    <control id="SecondValue" name="centeredtextfield" maxLength="2" font="showdown-style/1942-report-32.fnt"/>
+                <panel id="SecondLabelPanel" width="35%" height="100%" x="65%" y="0%" childLayout="vertical">
+                    <text id="SecondLabel" font="showdown-style/1942-report-16.fnt" text="Seconds" width="100%" height="100%" align="center" valign="center"/>
+                </panel>
+            </panel>
+            <panel id="TimePanel" width="80%" height="10%" x="10%" y="30%" childLayout="absolute">
+                <panel id="TimeLeftButton" width="12.5%" height="100%" x="0%" y="0%" childLayout="vertical">
+                    <image filename="Interface/General/LeftButton.png" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true">
+                        <effect>
+                            <onHover name="changeImage" active="Interface/General/LeftButtonHover.png" inactive="Interface/General/LeftButton.png"/>
+                        </effect>
+                    </image>
+                    <interact onClick="adjustTime(-1)" />
+                </panel>
+                <panel id="TimeEnterPanel" width="75%" height="100%" x="12.5%" y="0%" childLayout="absolute">
+                    <panel id="HourEnterPanel" width="30%" height="100%" x="0%" y="0%" childLayout="vertical">
+                        <control id="HourValue" name="centeredtextfield" font="showdown-style/1942-report-32.fnt" />
+                    </panel>
+                    <panel id="MinuteEnterPanel" width="35%" height="100%" x="30%" y="0%" childLayout="vertical">
+                        <control id="MinuteValue" name="centeredtextfield" maxLength="2" font="showdown-style/1942-report-32.fnt"/>
+                    </panel>
+                    <panel id="SecondEnterPanel" width="35%" height="100%" x="65%" y="0%" childLayout="vertical">
+                        <control id="SecondValue" name="centeredtextfield" maxLength="2" font="showdown-style/1942-report-32.fnt"/>
+                    </panel>
+                </panel>
+                <panel id="TimeRightButton" width="12.5%" height="100%" x="87.5%" y="0%" childLayout="vertical">
+                    <image filename="Interface/General/RightButton.png" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true">
+                        <effect>
+                            <onHover name="changeImage" active="Interface/General/RightButtonHover.png" inactive="Interface/General/RightButton.png"/>
+                        </effect>
+                    </image>
+                    <interact onClick="adjustTime(1)" />
                 </panel>
             </panel>
             
-            <panel id="WidgetEnterPanel" width="60%" height="10%" x="20%" y="50%" childLayout="vertical">
-                <control id="WidgetValue" name="centeredtextfield" font="showdown-style/1942-report-32.fnt"/>
+            <panel id="WidgetNamePanel" width="10%" height="10%" x="0%" y="50%" childLayout="vertical">
+                <text id="WidgetName" font="showdown-style/1942-report-16.fnt" text="Widgets" width="100%" height="100%" align="center" valign="center"/>
+            </panel>
+            <panel id="WidgetPanel" width="80%" height="10%" x="10%" y="50%" childLayout="absolute">
+                <panel id="WidgetLeftButton" width="12.5%" height="100%" x="0%" y="0%" childLayout="vertical">
+                    <image filename="Interface/General/LeftButton.png" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true">
+                        <effect>
+                            <onHover name="changeImage" active="Interface/General/LeftButtonHover.png" inactive="Interface/General/LeftButton.png"/>
+                        </effect>
+                    </image>
+                    <interact onClick="adjustWidgets(-1)" />
+                </panel>
+                <panel id="WidgetEnterPanel" width="75%" height="100%" x="12.5%" y="0%" childLayout="vertical">
+                    <control id="WidgetValue" name="centeredtextfield" font="showdown-style/1942-report-32.fnt"/>
+                </panel>
+                <panel id="WidgetRightButton" width="12.5%" height="100%" x="87.5%" y="0%" childLayout="vertical">
+                    <image filename="Interface/General/RightButton.png" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true">
+                        <effect>
+                            <onHover name="changeImage" active="Interface/General/RightButtonHover.png" inactive="Interface/General/RightButton.png"/>
+                        </effect>
+                        <interact onClick="adjustWidgets(1)" />
+                    </image>
+                </panel>
             </panel>
             
         </layer>

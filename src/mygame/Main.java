@@ -9,6 +9,7 @@ import com.aurellem.capture.Capture;
 import com.aurellem.capture.IsoTimer;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.VideoRecorderAppState;
+import com.jme3.input.Joystick;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -46,6 +47,8 @@ public class Main extends SimpleApplication
     private static float musicVolume = 1.0f;
     private static AppSettings settings = new AppSettings(true); // Made this outside of main method so it could be acquired with getSettings()
     
+    public static Joystick[] joysticks;
+    
     //Temp Input Mappigns for testing
     public static int[] player1Mappings = new int[]{KeyInput.KEY_W,KeyInput.KEY_A,KeyInput.KEY_D,
         KeyInput.KEY_1,KeyInput.KEY_S,KeyInput.KEY_O,KeyInput.KEY_2,KeyInput.KEY_P,KeyInput.KEY_LBRACKET};
@@ -64,7 +67,7 @@ public class Main extends SimpleApplication
         SimpleApplication app = new Main();
         
         app.setSettings(settings);
-        
+        settings.setUseJoysticks(true);
         /*try {
             //Testing Audio+Video capture
             File video = File.createTempFile("Test", ".avi");
@@ -79,7 +82,6 @@ public class Main extends SimpleApplication
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }*/
-        
         
         
         app.start();
@@ -102,7 +104,31 @@ public class Main extends SimpleApplication
         nifty = niftyDisplay.getNifty();
         guiViewPort.addProcessor(niftyDisplay);
         stateManager.attach(startState);               //Attach the first state
-
+        
+        
+        joysticks = inputManager.getJoysticks();
+        System.out.println(joysticks);
+        System.out.println(joysticks.length);
+        if (joysticks.length == 0)
+        {
+            System.out.println("FAILED");
+        }
+        else
+        {
+            for (int i=0; i < joysticks.length; i++)
+            {
+                System.out.println("Number of Buttons: " + joysticks[i].getButtonCount());
+                System.out.println("Number of Axis: " + joysticks[i].getAxisCount());
+                System.out.println(joysticks[i].getName());
+                System.out.println(joysticks);
+                System.out.println(joysticks[i].getButtons());
+                System.out.println(joysticks[i].getAxes());
+                joysticks[i].getButton("0").assignButton("Start Game");
+                joysticks[i].getAxis("x").assignAxis("", "Start Game");
+                inputManager.setAxisDeadZone(0.5f);
+                System.out.println(joysticks[i].getAxis("x").getDeadZone());
+            }
+        }
         
         flyCam.setEnabled(false);
     }

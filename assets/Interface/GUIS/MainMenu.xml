@@ -8,43 +8,35 @@
             
         </layer>
         <layer id="foreground" childLayout="absolute">
-            <panel id="FightPanel" width="35%" height="25%" x="10%" y="20%"  childLayout="vertical" visibleToMouse = "true">
-                <image filename= "Interface/MainMenu/Fight.png" width = "100%" height = "100%" visibleToMouse = "true"> <!-- width="${CALL.getWidthPx()}" height="${CALL.getHeightPx()}" -->
-                   <!-- <effect>
-                        <onHover name="imageSize" maxSize="20%" >
-                            <hover hoverFalloffType="none" hoverWidth="100%" hoverHeight="100%" hoverFalloffConstraint="both" />                  
-                        </onHover>                                   
-                    </effect> -->
+            <panel id="FightPanel" width="35%" height="31.25%" x="10%" y="16.875%"  childLayout="absolute" visibleToMouse = "true">
+                <image filename= "Interface/MainMenu/Fight.png" width="100%" height="80%" x="0%" y="10%" visibleToMouse = "true"> <!-- width="${CALL.getWidthPx()}" height="${CALL.getHeightPx()}" -->
+                    <effect>
+                        <onHover name="changeImage" active="Interface/MainMenu/FightHover.png" inactive="Interface/MainMenu/Fight.png" />                 
+                    </effect> 
                     <interact onClick="fightScreen()" />
                 </image>
             </panel>
-            <panel id="TrainingPanel" width="35%" height="25%" x="55%" y="20%" childLayout="vertical" visibleToMouse = "true" >
-                <image filename= "Interface/MainMenu/Training.png" width = "100%" height = "100%" visibleToMouse = "true">
-                   <!-- <effect>
-                        <onHover name="imageSize" maxSize="20%" >
-                            <hover hoverFalloffType="none" hoverWidth="100%" hoverHeight="100%" hoverFalloffConstraint="both" />                  
-                        </onHover>                                    
-                    </effect> -->
+            <panel id="TrainingPanel" width="35%" height="31.25%" x="55%" y="16.875%" childLayout="absolute" visibleToMouse = "true" >
+                <image filename= "Interface/MainMenu/Training.png" width="100%" height="80%" x="0%" y="10%" visibleToMouse = "true">
+                    <effect>
+                        <onHover name="changeImage" active="Interface/MainMenu/TrainingHover.png" inactive="Interface/MainMenu/Training.png" />                                  
+                    </effect> 
                     <interact onClick="trainingScreen()" />
                 </image>
             </panel>
-            <panel id="ExtrasPanel" width="35%" height="25%" x="10%" y="55%" childLayout="vertical" visibleToMouse = "true">
-                <image filename= "Interface/MainMenu/Extras.png" width = "100%" height = "100%" visibleToMouse = "true">
-                    <!-- <effect>
-                        <onHover name="imageSize" maxSize="20%" >
-                            <hover hoverFalloffType="none" hoverWidth="100%" hoverHeight="100%" hoverFalloffConstraint="both" />                  
-                        </onHover>                                    
-                    </effect> -->
+            <panel id="ExtrasPanel" width="35%" height="31.25%" x="10%" y="51.875%" childLayout="absolute" visibleToMouse = "true">
+                <image filename= "Interface/MainMenu/Extras.png" width="100%" height="80%" x="0%" y="10%" visibleToMouse = "true">
+                     <effect>
+                        <onHover name="changeImage" active="Interface/MainMenu/ExtrasHover.png" inactive="Interface/MainMenu/Extras.png" />                                 
+                    </effect> 
                     <interact onClick="extrasScreen()" />
                 </image>
             </panel>
-            <panel id="OptionsPanel" width="35%" height="25%" x="55%" y="55%" childLayout="vertical" visibleToMouse = "true" >
-                <image filename= "Interface/MainMenu/Options.png" width = "100%" height = "100%" visibleToMouse = "true">
-                    <!-- <effect>
-                        <onHover name="imageSize" maxSize="20%" >
-                            <hover hoverFalloffType="none" hoverWidth="100%" hoverHeight="100%" hoverFalloffConstraint="both" />                  
-                        </onHover>                                    
-                    </effect> -->
+            <panel id="OptionsPanel" width="35%" height="31.25%" x="55%" y="51.875%" childLayout="absolute" visibleToMouse = "true" >
+                <image filename= "Interface/MainMenu/Options.png" width="100%" height="80%" x="0%" y="10%" visibleToMouse = "true">
+                     <effect>
+                        <onHover name="changeImage" active="Interface/MainMenu/OptionsHover.png" inactive="Interface/MainMenu/Options.png" />                                  
+                    </effect> 
                     <interact onClick="optionsScreen()" />
                 </image>
             </panel>

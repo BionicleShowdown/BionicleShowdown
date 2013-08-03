@@ -487,6 +487,16 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         inputManager.addMapping("Dodge",new KeyTrigger(Main.player1Mappings[8]));
         inputManager.addListener(this, "Right","Left","Jump","Normal Attack", "UpAction", "Down","RightLeftAction","Special","Dodge");
         
+        if ((Main.joysticks.length != 0) && (Main.joysticks[0].getName().equals("Controller (XBOX 360 For Windows)")))
+        {
+            Main.joysticks[0].getAxis("x").assignAxis("Right", "Left");
+            Main.joysticks[0].getAxis("y").assignAxis("Down", "UpAction");
+            Main.joysticks[0].getButton("0").assignButton("Jump");
+            Main.joysticks[0].getButton("2").assignButton("Normal Attack");
+            Main.joysticks[0].getButton("3").assignButton("Special");
+        }
+        
+        
         groundA = new ComboMove("First A");
         groundA.press("Normal Attack").done();   
         groundA.setUseFinalState(false); 

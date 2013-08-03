@@ -829,9 +829,17 @@ public class CharacterSelectMenu implements ScreenController
     
     public void adjustMatchSettings()
     {
-        printPlayerSelections();
+
         
-        currentMatch = new Match(player1, player2, player3, player4);
+        if (currentMatch == null)
+        {
+            currentMatch = new Match(player1, player2, player3, player4);
+        }
+        else
+        {
+            currentMatch.reloadPlayers(player1, player2, player3, player4);
+        }
+        
         
         Element player1Dropper = screen.findElementByName("Player1");
         Element player2Dropper = screen.findElementByName("Player2");
