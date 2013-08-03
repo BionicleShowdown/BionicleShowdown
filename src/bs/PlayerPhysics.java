@@ -104,7 +104,7 @@ public class PlayerPhysics extends GhostControl implements PhysicsCollisionListe
             playerNode.setUserData("tag","target");
         }   else {
             idling = new IdleMovement(model); 
-            aicontroller = new AIController(p, model, shootables, rootNode,bulletAppState);
+            aicontroller = new AIController(p, model, shootables, rootNode,bulletAppState, sourceState);
             attacking = new EnemyMoveAttack(model,rootNode, aicontroller);
             playerNode.addControl(idling);
             playerNode.addControl(attacking);
@@ -171,6 +171,11 @@ public class PlayerPhysics extends GhostControl implements PhysicsCollisionListe
     {
         if (pc == null)
         {
+            if (aicontroller == null)
+            {
+               return; 
+            }
+            aicontroller.setStock(newStock);
             return;
         }
         pc.setStock(newStock);

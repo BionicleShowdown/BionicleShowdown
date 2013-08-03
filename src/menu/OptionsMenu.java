@@ -71,9 +71,9 @@ public class OptionsMenu implements ScreenController
         nifty = Main.getNifty();
         nifty.registerScreenController(this);
         nifty.addXml("Interface/GUIS/OptionsMenu.xml");
-        nifty.gotoScreen("OptionsMenu");          //Just for the first one, got to the start screen
+        nifty.gotoScreen("OptionsMenu");          //Just for the first one, go to the start screen
         
-        nifty.setDebugOptionPanelColors(true); // Leave it on true for now, so you can see the costume buttons.
+        nifty.setDebugOptionPanelColors(true); // Leave it on true for now
     }
     
     @Override

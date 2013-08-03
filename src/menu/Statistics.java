@@ -21,6 +21,14 @@ public class Statistics
     int numberOfFightsLost;
     float winLossRatio;
     
+    int numberOfStockMatches;
+    int numberOfTimeMatches;
+    int numberOfWidgetMatches;
+    int numberOfStockTimeMatches;
+    int numberOfStockWidgetMatches;
+    int numberOfWidgetTimeMatches;
+    int numberOfStockWidgetTimeMatches;
+    
     int totalKOs;
     int totalKOsTahu;
     int totalKOsKopaka;

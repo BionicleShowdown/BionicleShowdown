@@ -101,10 +101,10 @@ public class StandardMatchState extends InGameState implements ScreenController
     public StandardMatchState(Match currentMatch)
     {
         this.currentMatch = currentMatch;
-        isStockMatch = currentMatch.isStockMatch();
-        initialStock = currentMatch.getStock();
-        isTimeMatch = currentMatch.isTimeMatch();
-        matchDuration = currentMatch.getTime();
+        isStockMatch = currentMatch.getMatchSettings().isStockMatch();
+        initialStock = currentMatch.getMatchSettings().getStock();
+        isTimeMatch = currentMatch.getMatchSettings().isTimeMatch();
+        matchDuration = currentMatch.getMatchSettings().getTime();
     }
 
 
@@ -321,6 +321,8 @@ public class StandardMatchState extends InGameState implements ScreenController
         setStockImageHeight();
         setPlayerAvatars();
         setPlayerEmblems();
+        // Temporary
+        screen.findElementByName("Player1Damage").getRenderer(TextRenderer.class).setText("10%");
     }
     
     public void setStockImageHeight()
