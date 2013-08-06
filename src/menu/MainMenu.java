@@ -25,11 +25,14 @@ import com.jme3.texture.Texture;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.effects.EffectEventId;
+import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.events.NiftyMouseEvent;
 import de.lessvoid.nifty.elements.events.NiftyMouseMovedEvent;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import de.lessvoid.nifty.tools.SizeValue;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.DisplayMode;
@@ -86,15 +89,39 @@ public class MainMenu extends AbstractAppState implements ScreenController
     Button extrasButton;
     Button optionsButton;
     
+//    Element fightImageElement;
+//    Element trainingImageElement;
+//    Element extrasImageElement;
+//    Element optionsImageElement;
+    
+    ImageRenderer fightImageRenderer;
+    ImageRenderer trainingImageRenderer;
+    ImageRenderer extrasImageRenderer;
+    ImageRenderer optionsImageRenderer;
+    
+    NiftyImage fightImageNormal;
+    NiftyImage trainingImageNormal;
+    NiftyImage extrasImageNormal;
+    NiftyImage optionsImageNormal;
+    
+    NiftyImage fightImageHover;
+    NiftyImage trainingImageHover;
+    NiftyImage extrasImageHover;
+    NiftyImage optionsImageHover;
     
     SFXAudioNode fightButtonSound;
     boolean fightButtonWasClickable = false;
+    boolean fightResetDone = false;
     SFXAudioNode trainingButtonSound;
     boolean trainingButtonWasClickable = false;
-    SFXAudioNode optionsButtonSound;
-    boolean optionsButtonWasClickable = false;
+    boolean trainingResetDone = false;
     SFXAudioNode extrasButtonSound;
     boolean extrasButtonWasClickable = false;
+    boolean extrasResetDone = false;
+    SFXAudioNode optionsButtonSound;
+    boolean optionsButtonWasClickable = false;
+    boolean optionsResetDone = false;
+    
     
     /* Records whether the TeamType is Free For All or a Team Match. */
     String teamType = "Free For All";
@@ -166,6 +193,23 @@ public class MainMenu extends AbstractAppState implements ScreenController
     
     public void onStartScreen() 
     {
+//        inputManager.addRawInputListener(new CursorMoveListener(settings, nifty.getNiftyMouse()));
+        // The next few lines were for a likely dropped Iconic Cursor (it made it impossible to use Nifty properly [as the cursor was invisible])
+        Element cursorElement = screen.findElementByName("Cursor");
+        cursorElement.hide();
+        
+//        CursorMoveListener cursor = new CursorMoveListener(cursorElement, settings);
+//        
+//        float startX = inputManager.getCursorPosition().x - 15;
+//        float startY = settings.getHeight() - inputManager.getCursorPosition().y - 15;
+//        
+//        cursorElement.setConstraintX(new SizeValue((int) startX + "px"));
+//        cursorElement.getParent().layoutElements();
+//        cursorElement.setConstraintY(new SizeValue((int) startY + "px"));
+//        cursorElement.getParent().layoutElements();
+//        
+//        inputManager.addRawInputListener(cursor);
+        
         screenHeight = settings.getHeight(); // Gets the height of the window after the window is created, but before it is used
         screenWidth = settings.getWidth(); // Gets the width of the window after the window is created, but before it is used
         System.out.println("Screen height is: " + screenHeight + ", Screen width is: " + screenWidth);
@@ -179,6 +223,31 @@ public class MainMenu extends AbstractAppState implements ScreenController
         trainingButton = new Button(app, "Interface/MainMenu/Training.png", .55, .20, .35, .25, false);
         extrasButton = new Button(app, "Interface/MainMenu/Extras.png", .1, .55, .35, .25, false);
         optionsButton = new Button(app, "Interface/MainMenu/Options.png", .55, .55, .35, .25, false);
+        
+        fightButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Tahu.wav");
+        trainingButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Kopaka.wav");
+        extrasButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Kopaka.wav");
+        optionsButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Tahu.wav");
+        
+//        fightImageElement = screen.findElementByName("FightImage");
+//        trainingImageElement = screen.findElementByName("TrainingImage");
+//        optionsImageElement = screen.findElementByName("OptionsImage");
+//        extrasImageElement = screen.findElementByName("ExtrasImage");
+        
+        fightImageRenderer = screen.findElementByName("FightImage").getRenderer(ImageRenderer.class);
+        trainingImageRenderer = screen.findElementByName("TrainingImage").getRenderer(ImageRenderer.class);
+        extrasImageRenderer = screen.findElementByName("ExtrasImage").getRenderer(ImageRenderer.class);
+        optionsImageRenderer = screen.findElementByName("OptionsImage").getRenderer(ImageRenderer.class);
+        
+        fightImageNormal = nifty.createImage("Interface/MainMenu/Fight.png", false);
+        trainingImageNormal = nifty.createImage("Interface/MainMenu/Training.png", false);
+        extrasImageNormal = nifty.createImage("Interface/MainMenu/Extras.png", false);
+        optionsImageNormal = nifty.createImage("Interface/MainMenu/Options.png", false);
+
+        fightImageHover = nifty.createImage("Interface/MainMenu/FightHover.png", false);
+        trainingImageHover = nifty.createImage("Interface/MainMenu/TrainingHover.png", false);
+        extrasImageHover = nifty.createImage("Interface/MainMenu/ExtrasHover.png", false);
+        optionsImageHover = nifty.createImage("Interface/MainMenu/OptionsHover.png", false);
     }
 
     public void onEndScreen() 
@@ -186,154 +255,333 @@ public class MainMenu extends AbstractAppState implements ScreenController
         
     }
     
-    @NiftyEventSubscriber(id="FightPanel")
-    public void fightButtonHoverCheck(String id, NiftyMouseMovedEvent event)
+    @NiftyEventSubscriber(id="MouseCatcher")
+    public void buttonCaller(String id, NiftyMouseEvent event)
     {
-        if (fightButton.isClickable(event.getMouseX(), event.getMouseY()))
-        {
-            if (fightButtonWasClickable == false)
-            {
-                fightButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Tahu.wav");
-                fightButtonSound.play();
-                
-            }
-            fightButtonWasClickable = true;
-            return;
-        }
-        event.getElement().stopEffect(EffectEventId.onHover);
-        fightButtonWasClickable = false;
-    }
-    
-    @NiftyEventSubscriber(id="TrainingPanel")
-    public void trainingButtonHoverCheck(String id, NiftyMouseMovedEvent event)
-    {
-        if (trainingButton.isClickable(event.getMouseX(), event.getMouseY()))
-        {
-            if (trainingButtonWasClickable == false)
-            {
-                trainingButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Kopaka.wav");
-                trainingButtonSound.play();
-                
-            }
-            trainingButtonWasClickable = true;
-            return;
-        }
-        event.getElement().stopEffect(EffectEventId.onHover);
-        trainingButtonWasClickable = false;
-    }
-    
-    @NiftyEventSubscriber(id="OptionsPanel")
-    public void optionsButtonHoverCheck(String id, NiftyMouseMovedEvent event)
-    {
-        if (optionsButton.isClickable(event.getMouseX(), event.getMouseY()))
-        {
-            if (optionsButtonWasClickable == false)
-            {
-                optionsButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Tahu.wav");
-                optionsButtonSound.play();
-                
-            }
-            optionsButtonWasClickable = true;
-            return;
-        }
-        event.getElement().stopEffect(EffectEventId.onHover);
-        optionsButtonWasClickable = false;
-    }
-    
-    @NiftyEventSubscriber(id="ExtrasPanel")
-    public void extrasButtonHoverCheck(String id, NiftyMouseMovedEvent event)
-    {
-        if (extrasButton.isClickable(event.getMouseX(), event.getMouseY()))
-        {
-            if (extrasButtonWasClickable == false)
-            {
-                extrasButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Kopaka.wav");
-                extrasButtonSound.play();
-                
-            }
-            extrasButtonWasClickable = true;
-            return;
-        }
-        event.getElement().stopEffect(EffectEventId.onHover);
-        extrasButtonWasClickable = false;
-    }
-    
-    public void fightScreen(int x, int y)
-    {
-        System.out.println("" + x + ", " + y);
-         if (fightButton.isClickable(x, y))
-         {
-             System.out.println("This spot is clickable.");
-             System.out.println("Fighting");
-//             clearPlayersAndTeams();
-//             nifty.gotoScreen("CharSelect");
-//             nifty.getScreen("CharSelect").getScreenController();
-//             currentScreen = fightScreen;
-             characterSelectMenu = new CharacterSelectMenu(this);
-             characterSelectMenu.initiate(app);
-         }
-         else
-         {
-             System.out.println("Not clickable.");
-         }
-    }
-    
-    public void trainingScreen(int x, int y) 
-    {
-        System.out.println("" + x + ", " + y);
-        if (trainingButton.isClickable(x, y))
-        {
-            System.out.println("Clickable.");
-            System.out.println("Training.");
-            Tahu.unlockCostume("Special");
-            Team.addTeam("Green");
-        }
-        else
-        {
-            System.out.println("Not Clickable.");
-        }
-    }
-    
-    public void extrasScreen(int x, int y)
-    {
-        System.out.println("" + x + ", " + y);
-        if (extrasButton.isClickable(x, y))
-        {
-            System.out.println("Clickable.");
-            System.out.println("Extra-ing.");
-            
-            Calendar calendar = Calendar.getInstance();
-            System.out.println(calendar.getTime());
-            int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
-            int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-            int year = Calendar.getInstance().get(Calendar.YEAR);
-            int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-            int minute = Calendar.getInstance().get(Calendar.MINUTE);
-            int second = Calendar.getInstance().get(Calendar.SECOND);
-            System.out.println(Calendar.getInstance().getTimeZone());
-            System.out.println(month + "/" + day + "/" + year + " at " + hour + ":" + minute + ":" + second);
-        }
-        else
-        {
-            System.out.println("Not Clickable.");
-        }
-    }
+        int x = event.getMouseX();
+        int y = event.getMouseY();
+        boolean wasClick = event.isButton0Down();
         
-    public void optionsScreen(int x, int y)
+        fightButtonControl(fightButton.isClickable(x, y), wasClick);
+        trainingButtonControl(trainingButton.isClickable(x, y), wasClick);
+        extrasButtonControl(extrasButton.isClickable(x, y), wasClick);
+        optionsButtonControl(optionsButton.isClickable(x, y), wasClick);
+        
+    }
+    
+    public void fightButtonControl(boolean isAvailable, boolean wasClick)
     {
-        System.out.println("" + x + ", " + y);
-        optionsButton.printAll();
-        if (optionsButton.isClickable(x, y))
+        if (isAvailable)
         {
-            System.out.println("Clickable.");
-            System.out.println("Option-ing.");
-            OptionsMenu optionsMenu = new OptionsMenu(this);
-            optionsMenu.initiate(app);
+            if (wasClick)
+            {
+                fightButtonClicked();
+                return;
+            }
+            if (!fightButtonWasClickable)
+            {
+                fightImageRenderer.setImage(fightImageHover);
+//                fightButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Tahu.wav");
+                fightButtonSound.playInstance();
+                fightButtonWasClickable = true;
+                fightResetDone = false;
+            } 
         }
-        else
+        else if (!fightResetDone)
         {
-            System.out.println("Not Clickable.");
+            fightImageRenderer.setImage(fightImageNormal);
+            fightButtonWasClickable = false;
+            fightResetDone = true;
         }
     }
+    
+    public void trainingButtonControl(boolean isAvailable, boolean wasClick)
+    {
+        if (isAvailable)
+        {
+            if (wasClick)
+            {
+                trainingButtonClicked();
+                return;
+            }
+            if (!trainingButtonWasClickable)
+            {
+                trainingImageRenderer.setImage(trainingImageHover);
+                trainingButtonSound.playInstance();
+                trainingButtonWasClickable = true;
+                trainingResetDone = false;
+            }
+        }
+        else if (!trainingResetDone)
+        {
+            trainingImageRenderer.setImage(trainingImageNormal);
+            trainingButtonWasClickable = false;
+            trainingResetDone = true;
+        }
+    }
+    
+    public void extrasButtonControl(boolean isAvailable, boolean wasClick)
+    {
+        if (isAvailable)
+        {
+            if (wasClick)
+            {
+                extrasButtonClicked();
+                return;
+            }
+            if (!extrasButtonWasClickable)
+            {
+                extrasImageRenderer.setImage(extrasImageHover);
+                extrasButtonSound.playInstance();
+                extrasButtonWasClickable = true;
+                extrasResetDone = false;
+            } 
+        }
+        else if (!extrasResetDone)
+        {
+            extrasImageRenderer.setImage(extrasImageNormal);
+            extrasButtonWasClickable = false;
+            extrasResetDone = true;
+        }
+    }
+    
+    public void optionsButtonControl(boolean isAvailable, boolean wasClick)
+    {
+        if (isAvailable)
+        {
+            if (wasClick)
+            {
+                optionsButtonClicked();
+                return;
+            }
+            if (!optionsButtonWasClickable)
+            {
+                optionsImageRenderer.setImage(optionsImageHover);
+                optionsButtonSound.playInstance();
+                optionsButtonWasClickable = true;
+                optionsResetDone = false;
+            }
+        }
+        else if (!optionsResetDone)
+        {
+            optionsImageRenderer.setImage(optionsImageNormal);
+            optionsButtonWasClickable = false;
+            optionsResetDone = true;
+        }
+    }
+    
+    public void fightButtonClicked()
+    {
+        System.out.println("Fighting");
+        characterSelectMenu = new CharacterSelectMenu(this);
+        characterSelectMenu.initiate(app);
+    }
+    
+    public void trainingButtonClicked()
+    {
+        System.out.println("Training");
+        Tahu.unlockCostume("Special");
+        Team.addTeam("Green");
+    }
+    
+    public void extrasButtonClicked()
+    {
+        System.out.println("Extra-ing");
+        Calendar calendar = Calendar.getInstance();
+        System.out.println(calendar.getTime());
+        int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
+        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        int minute = Calendar.getInstance().get(Calendar.MINUTE);
+        int second = Calendar.getInstance().get(Calendar.SECOND);
+        System.out.println(Calendar.getInstance().getTimeZone());
+        System.out.println(month + "/" + day + "/" + year + " at " + hour + ":" + minute + ":" + second);
+    }
+    
+    public void optionsButtonClicked()
+    {
+        System.out.println("Option-ing");
+        OptionsMenu optionsMenu = new OptionsMenu(this);
+        optionsMenu.initiate(app);
+    }
+    
+    
+    
+    
+//    @NiftyEventSubscriber(id="FightPanel")
+//    public void fightButtonHoverCheck(String id, NiftyMouseMovedEvent event)
+//    {
+//        NiftyImage image;
+//        Element element = event.getElement().findElementByName("FightImage");
+//        if (fightButton.isClickable(event.getMouseX(), event.getMouseY()))
+//        {
+////            event.getElement().startEffect(EffectEventId.onHover);
+//            if (fightButtonWasClickable == false)
+//            {
+//                fightButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Tahu.wav");
+//                fightButtonSound.play();
+//                image = nifty.createImage("Interface/MainMenu/FightHover.png", false);
+//                element.getRenderer(ImageRenderer.class).setImage(image);
+//            }
+//            fightButtonWasClickable = true;
+//            return;
+//        }
+//        
+//        System.out.println(fightButton.isClickable(event.getMouseX(), event.getMouseY()));
+////        event.getElement().stopEffect(EffectEventId.onHover);
+//        image = nifty.createImage("Interface/MainMenu/Fight.png", false);
+//        element.getRenderer(ImageRenderer.class).setImage(image);
+//        fightButtonWasClickable = false;
+//    }
+//    
+//    @NiftyEventSubscriber(id="TrainingPanel")
+//    public void trainingButtonHoverCheck(String id, NiftyMouseMovedEvent event)
+//    {
+//        NiftyImage image;
+//        Element element = event.getElement().findElementByName("TrainingImage");
+//        if (trainingButton.isClickable(event.getMouseX(), event.getMouseY()))
+//        {
+//            if (trainingButtonWasClickable == false)
+//            {
+//                trainingButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Kopaka.wav");
+//                trainingButtonSound.play();
+//                image = nifty.createImage("Interface/MainMenu/TrainingHover.png", false);
+//                element.getRenderer(ImageRenderer.class).setImage(image);
+//            }
+//            trainingButtonWasClickable = true;
+//            return;
+//        }
+////        event.getElement().stopEffect(EffectEventId.onHover);
+//        image = nifty.createImage("Interface/MainMenu/Training.png", false);
+//        element.getRenderer(ImageRenderer.class).setImage(image);
+//        trainingButtonWasClickable = false;
+//    }
+//    
+//    @NiftyEventSubscriber(id="OptionsPanel")
+//    public void optionsButtonHoverCheck(String id, NiftyMouseMovedEvent event)
+//    {
+//        NiftyImage image;
+//        Element element = event.getElement().findElementByName("OptionsImage");
+//        if (optionsButton.isClickable(event.getMouseX(), event.getMouseY()))
+//        {
+//            if (optionsButtonWasClickable == false)
+//            {
+//                optionsButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Tahu.wav");
+//                optionsButtonSound.play();
+//                image = nifty.createImage("Interface/MainMenu/OptionsHover.png", false);
+//                element.getRenderer(ImageRenderer.class).setImage(image);
+//                
+//            }
+//            optionsButtonWasClickable = true;
+//            return;
+//        }
+////        event.getElement().stopEffect(EffectEventId.onHover);
+//        image = nifty.createImage("Interface/MainMenu/Options.png", false);
+//        element.getRenderer(ImageRenderer.class).setImage(image);
+//        optionsButtonWasClickable = false;
+//    }
+//    
+//    @NiftyEventSubscriber(id="ExtrasPanel")
+//    public void extrasButtonHoverCheck(String id, NiftyMouseMovedEvent event)
+//    {
+//        NiftyImage image;
+//        Element element = event.getElement().findElementByName("ExtrasImage");
+//        if (extrasButton.isClickable(event.getMouseX(), event.getMouseY()))
+//        {
+//            if (extrasButtonWasClickable == false)
+//            {
+//                extrasButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Kopaka.wav");
+//                extrasButtonSound.play();
+//                image = nifty.createImage("Interface/MainMenu/ExtrasHover.png", false);
+//                element.getRenderer(ImageRenderer.class).setImage(image);
+//            }
+//            extrasButtonWasClickable = true;
+//            return;
+//        }
+////        event.getElement().stopEffect(EffectEventId.onHover);
+//        image = nifty.createImage("Interface/MainMenu/Extras.png", false);
+//        element.getRenderer(ImageRenderer.class).setImage(image);
+//        extrasButtonWasClickable = false;
+//    }
+//    
+//    
+//    public void fightScreen(int x, int y)
+//    {
+//        System.out.println("" + x + ", " + y);
+//         if (fightButton.isClickable(x, y))
+//         {
+//             System.out.println("This spot is clickable.");
+//             System.out.println("Fighting");
+////             clearPlayersAndTeams();
+////             nifty.gotoScreen("CharSelect");
+////             nifty.getScreen("CharSelect").getScreenController();
+////             currentScreen = fightScreen;
+//             characterSelectMenu = new CharacterSelectMenu(this);
+//             characterSelectMenu.initiate(app);
+//         }
+//         else
+//         {
+//             System.out.println("Not clickable.");
+//         }
+//    }
+//    
+//    public void trainingScreen(int x, int y) 
+//    {
+//        System.out.println("" + x + ", " + y);
+//        if (trainingButton.isClickable(x, y))
+//        {
+//            System.out.println("Clickable.");
+//            System.out.println("Training.");
+//            Tahu.unlockCostume("Special");
+//            Team.addTeam("Green");
+//        }
+//        else
+//        {
+//            System.out.println("Not Clickable.");
+//        }
+//    }
+//    
+//    public void extrasScreen(int x, int y)
+//    {
+//        System.out.println("" + x + ", " + y);
+//        if (extrasButton.isClickable(x, y))
+//        {
+//            System.out.println("Clickable.");
+//            System.out.println("Extra-ing.");
+//            
+//            Calendar calendar = Calendar.getInstance();
+//            System.out.println(calendar.getTime());
+//            int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
+//            int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+//            int year = Calendar.getInstance().get(Calendar.YEAR);
+//            int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+//            int minute = Calendar.getInstance().get(Calendar.MINUTE);
+//            int second = Calendar.getInstance().get(Calendar.SECOND);
+//            System.out.println(Calendar.getInstance().getTimeZone());
+//            System.out.println(month + "/" + day + "/" + year + " at " + hour + ":" + minute + ":" + second);
+//        }
+//        else
+//        {
+//            System.out.println("Not Clickable.");
+//        }
+//    }
+//        
+//    public void optionsScreen(int x, int y)
+//    {
+//        System.out.println("" + x + ", " + y);
+//        optionsButton.printAll();
+//        if (optionsButton.isClickable(x, y))
+//        {
+//            System.out.println("Clickable.");
+//            System.out.println("Option-ing.");
+//            OptionsMenu optionsMenu = new OptionsMenu(this);
+//            optionsMenu.initiate(app);
+//        }
+//        else
+//        {
+//            System.out.println("Not Clickable.");
+//        }
+//    }
           
 }
