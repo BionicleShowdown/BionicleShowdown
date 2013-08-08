@@ -84,6 +84,7 @@ public class StartState extends AbstractAppState implements ScreenController {
 
     public void onStartScreen() {
         //throw new UnsupportedOperationException("Not supported yet.");
+//        inputManager.setCursorVisible(false);
     }
 
     public void onEndScreen() {

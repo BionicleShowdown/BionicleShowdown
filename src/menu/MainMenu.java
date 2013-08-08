@@ -17,6 +17,16 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.TextureKey;
 import com.jme3.audio.AudioRenderer;
 import com.jme3.input.InputManager;
+import com.jme3.input.KeyInput;
+import com.jme3.input.RawInputListener;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.event.JoyAxisEvent;
+import com.jme3.input.event.JoyButtonEvent;
+import com.jme3.input.event.KeyInputEvent;
+import com.jme3.input.event.MouseButtonEvent;
+import com.jme3.input.event.MouseMotionEvent;
+import com.jme3.input.event.TouchEvent;
+import com.jme3.math.FastMath;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
@@ -24,12 +34,15 @@ import com.jme3.system.AppSettings;
 import com.jme3.texture.Texture;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
+import de.lessvoid.nifty.controls.FocusGainedEvent;
 import de.lessvoid.nifty.effects.EffectEventId;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.events.NiftyMouseEvent;
 import de.lessvoid.nifty.elements.events.NiftyMouseMovedEvent;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
+import de.lessvoid.nifty.input.NiftyInputEvent;
 import de.lessvoid.nifty.render.NiftyImage;
+import de.lessvoid.nifty.screen.KeyInputHandler;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.tools.SizeValue;
@@ -55,7 +68,7 @@ import mygame.Main;
  *
  * @author JSC and Inferno
  */
-public class MainMenu extends AbstractAppState implements ScreenController 
+public class MainMenu extends AbstractAppState implements ScreenController, KeyInputHandler, ActionListener
 {
     private AssetManager assetManager;
     private SimpleApplication app;
@@ -94,6 +107,11 @@ public class MainMenu extends AbstractAppState implements ScreenController
 //    Element extrasImageElement;
 //    Element optionsImageElement;
     
+    Element fightPanel;
+    Element trainingPanel;
+    Element extrasPanel;
+    Element optionsPanel;
+    
     ImageRenderer fightImageRenderer;
     ImageRenderer trainingImageRenderer;
     ImageRenderer extrasImageRenderer;
@@ -122,11 +140,25 @@ public class MainMenu extends AbstractAppState implements ScreenController
     boolean optionsButtonWasClickable = false;
     boolean optionsResetDone = false;
     
+    boolean keysUsed = false;
+    
+    byte nullID = -1;
+    byte fightID = 0;
+    byte trainingID = 1;
+    byte extrasID = 2;
+    byte optionsID = 3;
+    
+    ButtonLayout currentLayout = new ButtonLayout(nullID, fightID, fightID, fightID, fightID);
+    ButtonLayout fightLayout = new ButtonLayout(fightID, fightID, trainingID, fightID, extrasID);
+    ButtonLayout trainingLayout = new ButtonLayout(trainingID, fightID, trainingID, trainingID, optionsID);
+    ButtonLayout extrasLayout = new ButtonLayout(extrasID, extrasID, optionsID, fightID, extrasID);
+    ButtonLayout optionsLayout = new ButtonLayout(optionsID, extrasID, optionsID, trainingID, optionsID);
+    
     
     /* Records whether the TeamType is Free For All or a Team Match. */
     String teamType = "Free For All";
     
-    public MainMenu() // Don't compress it like that please, it's ugly. 
+    public MainMenu() 
     {
     
     }
@@ -193,6 +225,7 @@ public class MainMenu extends AbstractAppState implements ScreenController
     
     public void onStartScreen() 
     {
+//        inputManager.setCursorVisible(false);
 //        inputManager.addRawInputListener(new CursorMoveListener(settings, nifty.getNiftyMouse()));
         // The next few lines were for a likely dropped Iconic Cursor (it made it impossible to use Nifty properly [as the cursor was invisible])
         Element cursorElement = screen.findElementByName("Cursor");
@@ -200,8 +233,8 @@ public class MainMenu extends AbstractAppState implements ScreenController
         
 //        CursorMoveListener cursor = new CursorMoveListener(cursorElement, settings);
 //        
-//        float startX = inputManager.getCursorPosition().x - 15;
-//        float startY = settings.getHeight() - inputManager.getCursorPosition().y - 15;
+//        float startX = inputManager.getCursorPosition().x;
+//        float startY = settings.getHeight() - inputManager.getCursorPosition().y;
 //        
 //        cursorElement.setConstraintX(new SizeValue((int) startX + "px"));
 //        cursorElement.getParent().layoutElements();
@@ -229,6 +262,11 @@ public class MainMenu extends AbstractAppState implements ScreenController
         extrasButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Kopaka.wav");
         optionsButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Tahu.wav");
         
+        fightPanel = screen.findElementByName("FightPanel");
+        trainingPanel = screen.findElementByName("TrainingPanel");
+        extrasPanel = screen.findElementByName("ExtrasPanel");
+        optionsPanel = screen.findElementByName("OptionsPanel");
+        
 //        fightImageElement = screen.findElementByName("FightImage");
 //        trainingImageElement = screen.findElementByName("TrainingImage");
 //        optionsImageElement = screen.findElementByName("OptionsImage");
@@ -248,6 +286,13 @@ public class MainMenu extends AbstractAppState implements ScreenController
         trainingImageHover = nifty.createImage("Interface/MainMenu/TrainingHover.png", false);
         extrasImageHover = nifty.createImage("Interface/MainMenu/ExtrasHover.png", false);
         optionsImageHover = nifty.createImage("Interface/MainMenu/OptionsHover.png", false);
+        
+//        fightPanel.setFocusable(true);
+//        fightPanel.setFocus();
+        currentLayout = new ButtonLayout(fightID, fightID, fightID, fightID, fightID);
+        keysUsed = false;
+        
+        initJoy();
     }
 
     public void onEndScreen() 
@@ -262,6 +307,15 @@ public class MainMenu extends AbstractAppState implements ScreenController
         int y = event.getMouseY();
         boolean wasClick = event.isButton0Down();
         
+        if (wasClick)
+        {
+            keysUsed = false;
+            fightResetDone = false;
+            trainingResetDone = false;
+            extrasResetDone = false;
+            optionsResetDone = false;
+        }
+        
         fightButtonControl(fightButton.isClickable(x, y), wasClick);
         trainingButtonControl(trainingButton.isClickable(x, y), wasClick);
         extrasButtonControl(extrasButton.isClickable(x, y), wasClick);
@@ -271,6 +325,7 @@ public class MainMenu extends AbstractAppState implements ScreenController
     
     public void fightButtonControl(boolean isAvailable, boolean wasClick)
     {
+        System.out.println(isAvailable);
         if (isAvailable)
         {
             if (wasClick)
@@ -285,7 +340,13 @@ public class MainMenu extends AbstractAppState implements ScreenController
                 fightButtonSound.playInstance();
                 fightButtonWasClickable = true;
                 fightResetDone = false;
-            } 
+                adaptActive(fightID);
+            }
+//            adaptActive(fightID);
+        }
+        else if (keysUsed)
+        {
+            return;
         }
         else if (!fightResetDone)
         {
@@ -310,7 +371,13 @@ public class MainMenu extends AbstractAppState implements ScreenController
                 trainingButtonSound.playInstance();
                 trainingButtonWasClickable = true;
                 trainingResetDone = false;
+                adaptActive(trainingID);
             }
+//            adaptActive(trainingID);
+        }
+        else if (keysUsed)
+        {
+            return;
         }
         else if (!trainingResetDone)
         {
@@ -335,7 +402,13 @@ public class MainMenu extends AbstractAppState implements ScreenController
                 extrasButtonSound.playInstance();
                 extrasButtonWasClickable = true;
                 extrasResetDone = false;
+                adaptActive(extrasID);
             } 
+//            adaptActive(extrasID);
+        }
+        else if (keysUsed)
+        {
+            return;
         }
         else if (!extrasResetDone)
         {
@@ -360,7 +433,13 @@ public class MainMenu extends AbstractAppState implements ScreenController
                 optionsButtonSound.playInstance();
                 optionsButtonWasClickable = true;
                 optionsResetDone = false;
+                adaptActive(optionsID);
             }
+//            adaptActive(optionsID);
+        }
+        else if (keysUsed)
+        {
+            return;
         }
         else if (!optionsResetDone)
         {
@@ -406,6 +485,270 @@ public class MainMenu extends AbstractAppState implements ScreenController
         optionsMenu.initiate(app);
     }
     
+    
+//    @NiftyEventSubscriber(id="FightPanel")
+//    public void onFightFocus(String id, FocusGainedEvent event)
+//    {
+//        System.out.println("Focus");
+//        fightImageRenderer.setImage(fightImageHover);
+//    }
+//    
+//    @NiftyEventSubscriber(id="TrainingPanel")
+//    public void onTrainingFocus(String id, FocusGainedEvent event)
+//    {
+//        System.out.println("Focus!");
+//        trainingImageRenderer.setImage(trainingImageHover);
+//    }
+    
+//    public boolean inputEvent(NiftyInputEvent event)
+//    {
+//        if (event == NiftyInputEvent.Activate)
+//        {
+//            System.out.println("Activate");
+//            return true;
+//        }
+//        return false;
+//    }
+    
+    
+    public void adaptActive(byte newButton)
+    {
+        if (!keysUsed && (currentLayout.Identity() == newButton))
+        {
+            switch (newButton)
+            {
+                case 0:
+                {
+                    System.out.println("Fight");
+                    currentLayout = fightLayout;
+                    fightButtonSound.playInstance();
+                    fightImageRenderer.setImage(fightImageHover);
+                    break;
+                }
+                case 1:
+                {
+                    System.out.println("Training");
+                    currentLayout = trainingLayout;
+                    trainingButtonSound.playInstance();
+                    trainingImageRenderer.setImage(trainingImageHover);
+                    break;
+                }
+                case 2:
+                {
+                    System.out.println("Extras");
+                    currentLayout = extrasLayout;
+                    extrasButtonSound.playInstance();
+                    extrasImageRenderer.setImage(extrasImageHover);
+                    break;
+                }
+                case 3:
+                {
+                    System.out.println("Options");
+                    currentLayout = optionsLayout;
+                    optionsButtonSound.playInstance();
+                    optionsImageRenderer.setImage(optionsImageHover);
+                    break;
+                }
+                default:
+                {
+                    System.out.println("Fight");
+                    currentLayout = fightLayout;
+                    fightButtonSound.playInstance();
+                    fightImageRenderer.setImage(fightImageHover);
+                }
+            }
+        }
+        if (currentLayout.Identity() == newButton)
+        {
+            System.out.println("Already There");
+            return;
+        }
+        switch (currentLayout.Identity())
+        {
+            case 0:
+            {
+                System.out.println("Fight");
+                currentLayout = fightLayout;
+                fightButtonWasClickable = false;
+                fightImageRenderer.setImage(fightImageNormal);
+                break;
+            }
+            case 1:
+            {
+                System.out.println("Training");
+                currentLayout = trainingLayout;
+                trainingButtonWasClickable = false;
+                trainingImageRenderer.setImage(trainingImageNormal);
+                break;
+            }
+            case 2:
+            {
+                System.out.println("Extras");
+                currentLayout = extrasLayout;
+                extrasButtonWasClickable = false;
+                extrasImageRenderer.setImage(extrasImageNormal);
+                break;
+            }
+            case 3:
+            {
+                System.out.println("Options");
+                currentLayout = optionsLayout;
+                optionsButtonWasClickable = false;
+                optionsImageRenderer.setImage(optionsImageNormal);
+                break;
+            }
+            default:
+            {
+                System.out.println("Fight");
+                currentLayout = fightLayout;
+                fightButtonWasClickable = false;
+                fightImageRenderer.setImage(fightImageNormal);
+            }
+        }
+        switch (newButton)
+        {
+            case 0:
+            {
+                System.out.println("Fight");
+                currentLayout = fightLayout;
+                fightButtonSound.playInstance();
+                fightImageRenderer.setImage(fightImageHover);
+                break;
+            }
+            case 1:
+            {
+                System.out.println("Training");
+                currentLayout = trainingLayout;
+                trainingButtonSound.playInstance();
+                trainingImageRenderer.setImage(trainingImageHover);
+                break;
+            }
+            case 2:
+            {
+                System.out.println("Extras");
+                currentLayout = extrasLayout;
+                extrasButtonSound.playInstance();
+                extrasImageRenderer.setImage(extrasImageHover);
+                break;
+            }
+            case 3:
+            {
+                System.out.println("Options");
+                currentLayout = optionsLayout;
+                optionsButtonSound.playInstance();
+                optionsImageRenderer.setImage(optionsImageHover);
+                break;
+            }
+            default:
+            {
+                System.out.println("Fight");
+                currentLayout = fightLayout;
+                fightButtonSound.playInstance();
+                fightImageRenderer.setImage(fightImageHover);
+            }
+        }
+    }
+    
+    public void activateActive()
+    {
+        switch (currentLayout.Identity())
+        {
+            case 0:
+            {
+                fightButtonClicked();
+                break;
+            }
+            case 1:
+            {
+                trainingButtonClicked();
+                break;
+            }
+            case 2:
+            {
+                extrasButtonClicked();
+                break;
+            }
+            case 3:
+            {
+                optionsButtonClicked();
+                break;
+            }
+            default:
+            {
+                System.out.println("No Selection");
+            }
+        }
+    }
+    
+    public boolean keyEvent(NiftyInputEvent event)
+    {
+        if (event == NiftyInputEvent.Activate)
+        {
+            System.out.println("ACTIVATE!!!");
+            if (keysUsed)
+            {
+                activateActive();
+            }
+            return true;
+        }
+        else if (event == NiftyInputEvent.MoveCursorLeft)
+        {
+            System.out.println("Left");
+            if (!keysUsed)
+            {
+                adaptActive(currentLayout.Identity());
+                keysUsed = true;
+            }
+            else
+            {
+                adaptActive(currentLayout.Left());
+            }
+            return true;
+        }
+        else if (event == NiftyInputEvent.MoveCursorRight)
+        {
+            System.out.println("Right");
+            if (!keysUsed)
+            {
+                adaptActive(currentLayout.Identity());
+                keysUsed = true;
+            }
+            else
+            {
+                adaptActive(currentLayout.Right());
+            }
+            return true;
+        }
+        else if (event == NiftyInputEvent.MoveCursorUp)
+        {
+            System.out.println("Up");
+            if (!keysUsed)
+            {
+                adaptActive(currentLayout.Identity());
+                keysUsed = true;
+            }
+            else
+            {
+                adaptActive(currentLayout.Up());
+            }
+            return true;
+        }
+        else if (event == NiftyInputEvent.MoveCursorDown)
+        {
+            System.out.println("Down");
+            if (!keysUsed)
+            {
+                adaptActive(currentLayout.Identity());
+                keysUsed = true;
+            }
+            else
+            {
+                adaptActive(currentLayout.Down());
+            }
+            return true;
+        }
+        return false;
+    }
     
     
     
@@ -583,5 +926,180 @@ public class MainMenu extends AbstractAppState implements ScreenController
 //            System.out.println("Not Clickable.");
 //        }
 //    }
+    
+//    private class CursorMoveListener implements RawInputListener
+//    {
+//        private Element cursor;
+//        private AppSettings settings;
+//        private float x=0, y=0;
+//        
+//        public CursorMoveListener()
+//        {
+//            
+//        }
+//        
+//        public CursorMoveListener(Element cursor, AppSettings settings)
+//        {
+//            this.cursor = cursor;
+//            this.settings = settings;
+//        }
+//
+//        public void beginInput() 
+//        {
+//            
+//        }
+//
+//        public void endInput() 
+//        {
+//            
+//        }
+//
+//        public void onJoyAxisEvent(JoyAxisEvent evt) 
+//        {
+//            float deadzone = inputManager.getAxisDeadZone();
+//            System.out.println("Axis Deadzones: " + inputManager.getAxisDeadZone());
+//            System.out.println("Moved Joystick");
+//            if (evt.getAxis().getName().equalsIgnoreCase("x"))
+//            {
+//                System.out.println("X Value: " + evt.getValue());
+//                if ((evt.getValue() >= deadzone) || (evt.getValue() <= -deadzone))
+//                {
+//                    x += evt.getValue() * 10;
+//                }
+//            }
+//            if (evt.getAxis().getName().equalsIgnoreCase("y"))
+//            {
+//                System.out.println("Y Value: " + evt.getValue());
+//                if ((evt.getValue() >= deadzone) || (evt.getValue() <= -deadzone))
+//                {
+//                    y += evt.getValue() * 10;
+//                }
+//            }
+//            
+//            x = FastMath.clamp(x, 0, settings.getWidth() - 12);
+//            y = FastMath.clamp(y, 0, settings.getHeight() - 19);
+//            
+//            System.out.println(x + ", " + y);
+//            
+//            cursor.setConstraintX(new SizeValue((int) x + "px"));
+//            cursor.getParent().layoutElements();
+//            cursor.setConstraintY(new SizeValue((int) y + "px"));
+//            cursor.getParent().layoutElements();
+//            
+//            fightButtonControl(fightButton.isClickable((int) x, (int) y), false);
+//        }
+//
+//        public void onJoyButtonEvent(JoyButtonEvent evt) 
+//        {
+//            
+//        }
+//
+//        public void onMouseMotionEvent(MouseMotionEvent evt) 
+//        {
+//            System.out.println("Moved Mouse");
+//            x = evt.getX();
+//            y = settings.getHeight() - evt.getY();
+//            System.out.println(x + ", " + y);
+//        
+//            x = FastMath.clamp(x, 0, settings.getWidth() - 12);
+//            y = FastMath.clamp(y, 0, settings.getHeight() - 19);
+//        
+//            cursor.setConstraintX(new SizeValue((int) x + "px"));
+//            cursor.getParent().layoutElements();
+//            cursor.setConstraintY(new SizeValue((int) y + "px"));
+//            cursor.getParent().layoutElements();
+//            
+//            fightButtonControl(fightButton.isClickable((int) x, (int) y), false);
+////            trainingButtonControl(trainingButton.isClickable(x, y), wasClick);
+////            extrasButtonControl(extrasButton.isClickable(x, y), wasClick);
+////            optionsButtonControl(optionsButton.isClickable(x, y), wasClick);
+//        }
+//
+//        public void onMouseButtonEvent(MouseButtonEvent evt) 
+//        {
+//            x = evt.getX();
+//            y = settings.getHeight() - evt.getY();
+//            System.out.println("Clicked Mouse");
+//            System.out.println(fightButton.isClickable((int) x, (int) y));
+//            fightButtonControl(fightButton.isClickable((int) x, (int) y), true);
+//        }
+//
+//        public void onKeyEvent(KeyInputEvent evt) 
+//        {
+//            if (evt.getKeyCode() == KeyInput.KEY_A)
+//            {
+//                x -= 10;
+//            }
+//            if (evt.getKeyCode() == KeyInput.KEY_D)
+//            {
+//                x += 10;
+//            }
+//            if (evt.getKeyCode() == KeyInput.KEY_W)
+//            {
+//                y -= 10;
+//            }
+//            if (evt.getKeyCode() == KeyInput.KEY_S)
+//            {
+//                y += 10;
+//            }
+//            
+//            x = FastMath.clamp(x, 0, settings.getWidth() - 12);
+//            y = FastMath.clamp(y, 0, settings.getHeight() - 19);
+//        
+//            cursor.setConstraintX(new SizeValue((int) x + "px"));
+//            cursor.getParent().layoutElements();
+//            cursor.setConstraintY(new SizeValue((int) y + "px"));
+//            cursor.getParent().layoutElements();
+//            
+//            fightButtonControl(fightButton.isClickable((int) x, (int) y), false);
+//        }
+//
+//        public void onTouchEvent(TouchEvent evt) 
+//        {
+//            
+//        }
+//    };
+
+    private void initJoy() 
+    {
+        if (Main.joysticks.length != 0)
+        {
+            Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
+            Main.joysticks[0].getYAxis().assignAxis("Down", "Up");
+            Main.joysticks[0].getButton("0").assignButton("Accept");
+            inputManager.addListener(this, "Right", "Left", "Up", "Down", "Accept");
+        }
+    }
+
+    public void onAction(String name, boolean isPressed, float tpf) 
+    {
+        if (name.equals("Accept"))
+        {
+            System.out.println("Accept");
+            Main.getNiftyDisplay().simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_RETURN, '0', true, false));
+        }
+        if (name.equals("Right"))
+        {
+            System.out.println("Right");
+            Main.getNiftyDisplay().simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_D, 'D', true, false));
+        }
+        if (name.equals("Left"))
+        {
+            System.out.println("Left");
+            Main.getNiftyDisplay().simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_A, 'A', true, false));
+        }
+        if (name.equals("Up"))
+        {
+            System.out.println("Up");
+            Main.getNiftyDisplay().simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_W, 'W', true, false));
+        }
+        if (name.equals("Down"))
+        {
+            System.out.println("Down");
+            Main.getNiftyDisplay().simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_S, 'S', true, false));
+        }
+    }
+
+    
           
 }

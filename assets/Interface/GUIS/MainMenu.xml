@@ -3,7 +3,7 @@
 
 
     
-    <screen id="MainMenu" controller="menu.MainMenu">
+    <screen id="MainMenu" controller="menu.MainMenu" inputMapping="menu.MenuMapping">
         <layer id="background"  childLayout="vertical" >
             <panel id="MouseCatcher" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true"/>
         </layer>
@@ -16,7 +16,7 @@
                     <!--<interact onClick="fightScreen()" />-->
                 </image>
             </panel>
-            <panel id="TrainingPanel" width="40%" height="31.25%" x="52.5%" y="16.875%" childLayout="absolute" visibleToMouse = "true" >
+            <panel id="TrainingPanel" width="40%" height="31.25%" x="52.5%" y="16.875%" childLayout="absolute" visibleToMouse = "true">
                 <image id="TrainingImage" filename= "Interface/MainMenu/Training.png" width="87.5%" height="80%" x="6.25%" y="10%" visibleToMouse = "true">
 <!--                    <effect>
                         <onHover name="changeImage" active="Interface/MainMenu/TrainingHover.png" inactive="Interface/MainMenu/Training.png" />                                  
@@ -41,8 +41,8 @@
                 </image>
             </panel>
             
-            <panel id="Cursor" width="30px" height="30px" x="0%" y="0%" childLayout="vertical">
-                <image filename="Interface/CharacterSelect/Droppers/Player1.png" />
+            <panel id="Cursor" width="12px" height="19px" x="0%" y="0%" childLayout="vertical">
+                <image filename="Interface/General/TempCursor.png" />
             </panel>
         </layer>
         

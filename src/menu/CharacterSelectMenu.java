@@ -154,6 +154,7 @@ public class CharacterSelectMenu implements ScreenController
     
     public void onStartScreen() 
     {
+        inputManager.setCursorVisible(true);
         screenHeight = settings.getHeight(); // Gets the height of the window after the window is created, but before it is used
         screenWidth = settings.getWidth(); // Gets the width of the window after the window is created, but before it is used
         System.out.println("Screen height is: " + screenHeight + ", Screen width is: " + screenWidth);

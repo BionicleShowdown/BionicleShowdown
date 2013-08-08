@@ -48,7 +48,7 @@ public class Main extends SimpleApplication
     private boolean isRunning = false;
     private Trigger enterTrigger = new KeyTrigger(KeyInput.KEY_RETURN);
     private static Nifty nifty;
-    private NiftyJmeDisplay niftyDisplay;
+    private static NiftyJmeDisplay niftyDisplay;
     private static MusicAudioNode music;
     public static String musicSelection = "Sounds/Music/Fire and Ice.wav";
     private static float musicVolume = 1.0f;
@@ -148,15 +148,16 @@ public class Main extends SimpleApplication
     {
         public void onAction(String name, boolean isPressed, float tpf) 
         {
-//            try
-//            {
-//                Robot rob = new Robot();
-//                rob.mouseWheel(1);
-//            }
-//            catch (AWTException e)
-//            {
-//                System.out.println("Failed");
-//            }
+            // Simulates a Mouse Action, thus initializing JME's Cursor Position
+            try
+            {
+                Robot rob = new Robot();
+                rob.mouseWheel(1);
+            }
+            catch (AWTException e)
+            {
+                System.out.println("Failed");
+            }
 //            
             if (name.equals("Start Game") && !isPressed) 
             {
@@ -227,6 +228,15 @@ public class Main extends SimpleApplication
     public static AppSettings getSettings()
     {
         return settings;
+    }
+    
+    /**
+     * Returns the Nifty Display for use by simulating key events for Nifty to use a Joystick
+     * @return The game's NiftyDisplay
+     */
+    public static NiftyJmeDisplay getNiftyDisplay()
+    {
+        return niftyDisplay;
     }
 
 
