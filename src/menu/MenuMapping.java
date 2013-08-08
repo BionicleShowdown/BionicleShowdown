@@ -17,13 +17,6 @@ import mygame.Main;
  */
 public class MenuMapping implements NiftyInputMapping
 {
-    private NiftyJmeDisplay niftyDisplay;
-    
-    public MenuMapping()
-    {
-        niftyDisplay = Main.getNiftyDisplay();
-    }
-
     public NiftyInputEvent convert(KeyboardInputEvent inputEvent) 
     {
         if (inputEvent.isKeyDown()) 

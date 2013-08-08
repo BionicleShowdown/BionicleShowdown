@@ -171,6 +171,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
         this.audioRenderer = this.app.getAudioRenderer();
         this.guiViewPort = this.app.getViewPort();
         this.stateManager = this.app.getStateManager();
+        this.niftyDisplay = Main.getNiftyDisplay();
         nifty = Main.getNifty();
         nifty.registerScreenController(this);
         nifty.addXml("Interface/GUIS/MainMenu.xml");
@@ -189,6 +190,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
         this.audioRenderer = this.app.getAudioRenderer();
         this.guiViewPort = this.app.getViewPort();
         this.stateManager = this.app.getStateManager();
+        this.niftyDisplay = Main.getNiftyDisplay();
         nifty = Main.getNifty();
         nifty.registerScreenController(this);
         nifty.addXml("Interface/GUIS/MainMenu.xml");
@@ -523,6 +525,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
                     currentLayout = fightLayout;
                     fightButtonSound.playInstance();
                     fightImageRenderer.setImage(fightImageHover);
+                    fightButtonWasClickable = true;
                     break;
                 }
                 case 1:
@@ -531,6 +534,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
                     currentLayout = trainingLayout;
                     trainingButtonSound.playInstance();
                     trainingImageRenderer.setImage(trainingImageHover);
+                    trainingButtonWasClickable = true;
                     break;
                 }
                 case 2:
@@ -539,6 +543,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
                     currentLayout = extrasLayout;
                     extrasButtonSound.playInstance();
                     extrasImageRenderer.setImage(extrasImageHover);
+                    extrasButtonWasClickable = true;
                     break;
                 }
                 case 3:
@@ -547,6 +552,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
                     currentLayout = optionsLayout;
                     optionsButtonSound.playInstance();
                     optionsImageRenderer.setImage(optionsImageHover);
+                    optionsButtonWasClickable = true;
                     break;
                 }
                 default:
@@ -555,6 +561,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
                     currentLayout = fightLayout;
                     fightButtonSound.playInstance();
                     fightImageRenderer.setImage(fightImageHover);
+                    fightButtonWasClickable = true;
                 }
             }
         }
@@ -613,6 +620,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
                 currentLayout = fightLayout;
                 fightButtonSound.playInstance();
                 fightImageRenderer.setImage(fightImageHover);
+                fightButtonWasClickable = true;
                 break;
             }
             case 1:
@@ -621,6 +629,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
                 currentLayout = trainingLayout;
                 trainingButtonSound.playInstance();
                 trainingImageRenderer.setImage(trainingImageHover);
+                trainingButtonWasClickable = true;
                 break;
             }
             case 2:
@@ -629,6 +638,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
                 currentLayout = extrasLayout;
                 extrasButtonSound.playInstance();
                 extrasImageRenderer.setImage(extrasImageHover);
+                extrasButtonWasClickable = true;
                 break;
             }
             case 3:
@@ -637,6 +647,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
                 currentLayout = optionsLayout;
                 optionsButtonSound.playInstance();
                 optionsImageRenderer.setImage(optionsImageHover);
+                optionsButtonWasClickable = true;
                 break;
             }
             default:
@@ -645,6 +656,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
                 currentLayout = fightLayout;
                 fightButtonSound.playInstance();
                 fightImageRenderer.setImage(fightImageHover);
+                fightButtonWasClickable = true;
             }
         }
     }
@@ -962,17 +974,25 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
 //            if (evt.getAxis().getName().equalsIgnoreCase("x"))
 //            {
 //                System.out.println("X Value: " + evt.getValue());
-//                if ((evt.getValue() >= deadzone) || (evt.getValue() <= -deadzone))
+//                if (evt.getValue() >= deadzone)
 //                {
-//                    x += evt.getValue() * 10;
+//                    x += 5;
+//                }
+//                else if (evt.getValue() <= -deadzone)
+//                {
+//                    x -= 5;
 //                }
 //            }
 //            if (evt.getAxis().getName().equalsIgnoreCase("y"))
 //            {
 //                System.out.println("Y Value: " + evt.getValue());
-//                if ((evt.getValue() >= deadzone) || (evt.getValue() <= -deadzone))
+//                if (evt.getValue() >= deadzone)
 //                {
-//                    y += evt.getValue() * 10;
+//                    y += 10;
+//                }
+//                else if (evt.getValue() <= -deadzone)
+//                {
+//                    y -= 10;
 //                }
 //            }
 //            
@@ -1076,27 +1096,27 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
         if (name.equals("Accept"))
         {
             System.out.println("Accept");
-            Main.getNiftyDisplay().simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_RETURN, '0', true, false));
+            niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_RETURN, '0', true, false));
         }
         if (name.equals("Right"))
         {
             System.out.println("Right");
-            Main.getNiftyDisplay().simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_D, 'D', true, false));
+            niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_D, 'D', true, false));
         }
         if (name.equals("Left"))
         {
             System.out.println("Left");
-            Main.getNiftyDisplay().simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_A, 'A', true, false));
+            niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_A, 'A', true, false));
         }
         if (name.equals("Up"))
         {
             System.out.println("Up");
-            Main.getNiftyDisplay().simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_W, 'W', true, false));
+            niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_W, 'W', true, false));
         }
         if (name.equals("Down"))
         {
             System.out.println("Down");
-            Main.getNiftyDisplay().simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_S, 'S', true, false));
+            niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_S, 'S', true, false));
         }
     }
 

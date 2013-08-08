@@ -135,7 +135,7 @@ public class Main extends SimpleApplication
                 System.out.println(joysticks[i].getButtons());
                 System.out.println(joysticks[i].getAxes());
                 joysticks[i].getButton("0").assignButton("Start Game");
-                joysticks[i].getAxis("x").assignAxis("", "Start Game");
+//                joysticks[i].getAxis("x").assignAxis("", "Start Game");
                 inputManager.setAxisDeadZone(0.5f);
                 System.out.println(joysticks[i].getAxis("x").getDeadZone());
             }
