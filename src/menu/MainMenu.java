@@ -17,6 +17,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.TextureKey;
 import com.jme3.audio.AudioRenderer;
 import com.jme3.input.InputManager;
+import com.jme3.input.JoystickAxis;
 import com.jme3.input.KeyInput;
 import com.jme3.input.RawInputListener;
 import com.jme3.input.controls.ActionListener;
@@ -154,9 +155,13 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
     ButtonLayout extrasLayout = new ButtonLayout(extrasID, extrasID, optionsID, fightID, extrasID);
     ButtonLayout optionsLayout = new ButtonLayout(optionsID, extrasID, optionsID, trainingID, optionsID);
     
+    private float x, y, vx, vy;
     
     /* Records whether the TeamType is Free For All or a Team Match. */
     String teamType = "Free For All";
+    
+    
+    private Element cursorElement;
     
     public MainMenu() 
     {
@@ -209,6 +214,18 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
     @Override
     public void update(float tpf) 
     {
+//        x += vx;
+//        y += vy;
+//        
+//        x = FastMath.clamp(x, 0, settings.getWidth() - 12);
+//        y = FastMath.clamp(y, 0, settings.getHeight() - 19);
+//            
+//        System.out.println(x + ", " + y);
+//            
+//        cursorElement.setConstraintX(new SizeValue((int) x + "px"));
+//        cursorElement.getParent().layoutElements();
+//        cursorElement.setConstraintY(new SizeValue((int) y + "px"));
+//        cursorElement.getParent().layoutElements();
         /* Nothing Yet*/
     }
 
@@ -230,7 +247,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
 //        inputManager.setCursorVisible(false);
 //        inputManager.addRawInputListener(new CursorMoveListener(settings, nifty.getNiftyMouse()));
         // The next few lines were for a likely dropped Iconic Cursor (it made it impossible to use Nifty properly [as the cursor was invisible])
-        Element cursorElement = screen.findElementByName("Cursor");
+        cursorElement = screen.findElementByName("Cursor");
         cursorElement.hide();
         
 //        CursorMoveListener cursor = new CursorMoveListener(cursorElement, settings);
@@ -301,11 +318,14 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
     {
         /* Make sure to delete mappings so they don't seep through to the next menu.
            Do NOT clear Mappings, as that will also remove the Escape to exit. */
-        inputManager.deleteMapping("Accept");
-        inputManager.deleteMapping("Right");
-        inputManager.deleteMapping("Left");
-        inputManager.deleteMapping("Up");
-        inputManager.deleteMapping("Down");
+        if (Main.joysticks.length != 0)
+        {
+            inputManager.deleteMapping("Accept");
+            inputManager.deleteMapping("Right");
+            inputManager.deleteMapping("Left");
+            inputManager.deleteMapping("Up");
+            inputManager.deleteMapping("Down");
+        }
     }
     
     @NiftyEventSubscriber(id="MouseCatcher")
@@ -949,7 +969,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
 //    {
 //        private Element cursor;
 //        private AppSettings settings;
-//        private float x=0, y=0;
+////        private float x=0, y=0;
 //        
 //        public CursorMoveListener()
 //        {
@@ -977,40 +997,40 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
 //            float deadzone = inputManager.getAxisDeadZone();
 //            System.out.println("Axis Deadzones: " + inputManager.getAxisDeadZone());
 //            System.out.println("Moved Joystick");
-//            if (evt.getAxis().getName().equalsIgnoreCase("x"))
+//            if (evt.getAxis().getLogicalId() == JoystickAxis.X_AXIS)
 //            {
 //                System.out.println("X Value: " + evt.getValue());
-//                if (evt.getValue() >= deadzone)
+//                if (evt.getValue() >= deadzone || evt.getValue() <= -deadzone)
 //                {
-//                    x += 5;
+//                    vx = evt.getValue();
 //                }
-//                else if (evt.getValue() <= -deadzone)
+//                else
 //                {
-//                    x -= 5;
+//                    vx = 0;
 //                }
 //            }
-//            if (evt.getAxis().getName().equalsIgnoreCase("y"))
+//            if (evt.getAxis().getLogicalId() == JoystickAxis.Y_AXIS)
 //            {
 //                System.out.println("Y Value: " + evt.getValue());
-//                if (evt.getValue() >= deadzone)
+//                if (evt.getValue() >= deadzone || evt.getValue() <= -deadzone)
 //                {
-//                    y += 10;
+//                    vy = evt.getValue();
 //                }
-//                else if (evt.getValue() <= -deadzone)
+//                else 
 //                {
-//                    y -= 10;
+//                    vy = 0;
 //                }
 //            }
 //            
-//            x = FastMath.clamp(x, 0, settings.getWidth() - 12);
-//            y = FastMath.clamp(y, 0, settings.getHeight() - 19);
-//            
-//            System.out.println(x + ", " + y);
-//            
-//            cursor.setConstraintX(new SizeValue((int) x + "px"));
-//            cursor.getParent().layoutElements();
-//            cursor.setConstraintY(new SizeValue((int) y + "px"));
-//            cursor.getParent().layoutElements();
+////            x = FastMath.clamp(x, 0, settings.getWidth() - 12);
+////            y = FastMath.clamp(y, 0, settings.getHeight() - 19);
+////            
+////            System.out.println(x + ", " + y);
+////            
+////            cursor.setConstraintX(new SizeValue((int) x + "px"));
+////            cursor.getParent().layoutElements();
+////            cursor.setConstraintY(new SizeValue((int) y + "px"));
+////            cursor.getParent().layoutElements();
 //            
 //            fightButtonControl(fightButton.isClickable((int) x, (int) y), false);
 //        }
@@ -1023,8 +1043,8 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
 //        public void onMouseMotionEvent(MouseMotionEvent evt) 
 //        {
 //            System.out.println("Moved Mouse");
-//            x = evt.getX();
-//            y = settings.getHeight() - evt.getY();
+//            x += evt.getDX();
+//            y -= evt.getDY();
 //            System.out.println(x + ", " + y);
 //        
 //            x = FastMath.clamp(x, 0, settings.getWidth() - 12);
@@ -1088,6 +1108,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
 
     private void initJoy() 
     {
+//        inputManager.setCursorVisible(false);
         if (Main.joysticks.length != 0)
         {
             Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
@@ -1099,27 +1120,27 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
 
     public void onAction(String name, boolean isPressed, float tpf) 
     {
-        if (name.equals("Accept"))
+        if (isPressed && name.equals("Accept"))
         {
             System.out.println("Accept");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_RETURN, '0', true, false));
         }
-        if (name.equals("Right"))
+        if (isPressed && name.equals("Right"))
         {
             System.out.println("Right");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_D, 'D', true, false));
         }
-        if (name.equals("Left"))
+        if (isPressed && name.equals("Left"))
         {
             System.out.println("Left");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_A, 'A', true, false));
         }
-        if (name.equals("Up"))
+        if (isPressed && name.equals("Up"))
         {
             System.out.println("Up");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_W, 'W', true, false));
         }
-        if (name.equals("Down"))
+        if (isPressed && name.equals("Down"))
         {
             System.out.println("Down");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_S, 'S', true, false));

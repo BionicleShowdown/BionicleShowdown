@@ -269,12 +269,44 @@ public class OptionsMenu implements ScreenController, KeyInputHandler
     {
         mainMenu.initiate(app);
     }
+    
+    
+    /*
+     *  0
+     * 
+     *  2      1      3
+     *  5      4      6
+     *  8      7      9
+     * 
+     *         10
+     * 
+     */
 
     public boolean keyEvent(NiftyInputEvent inputEvent) 
     {
+        if (inputEvent == NiftyInputEvent.Activate)
+        {
+            System.out.println("Activate!");
+            return true;
+        }
         if (inputEvent == NiftyInputEvent.MoveCursorLeft)
         {
             System.out.println("LEFT!!!");
+            return true;
+        }
+        if (inputEvent == NiftyInputEvent.MoveCursorRight)
+        {
+            System.out.println("Right");
+            return true;
+        }
+        if (inputEvent == NiftyInputEvent.MoveCursorUp)
+        {
+            System.out.println("Up");
+            return true;
+        }
+        if (inputEvent == NiftyInputEvent.MoveCursorDown)
+        {
+            System.out.println("Down");
             return true;
         }
         return false;
