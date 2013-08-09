@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-controls>
+  <controlDefinition name="verticalSliderHeadless" style="headless-vertical-slider" controller="AdaptedControls.HeadlessSliderControl">
+    <panel style="#panel" focusable="true">
+      <interact onMouseWheel="mouseWheel()" />
+      <image style="#up">
+        <interact onClickRepeat="upClick()" />
+      </image>
+      <image id="#background" style="#background">
+        <interact onClick="mouseClick()" onClickMouseMove="mouseClick()" />
+        <image id="#position" style="#position">
+          <interact onClick="mouseClick()" onClickMouseMove="mouseClick()" />
+        </image>
+      </image>
+      <image style="#down">
+        <interact onClickRepeat="downClick()" />
+      </image>
+    </panel>
+  </controlDefinition>
+
+  <controlDefinition name="horizontalSliderHeadless" style="headless-horizontal-slider" controller="AdaptedControls.HeadlessSliderControl">
+    <panel style="#panel">
+      <interact onMouseWheel="mouseWheel()" />
+      <image style="#left">
+        <interact onClickRepeat="upClick()" />
+      </image>
+      <image id="#background" style="#background">
+        <interact onClick="mouseClick()" onClickMouseMove="mouseClick()" />
+        <image id="#position" style="#position">
+          <interact onClick="mouseClick()" onClickMouseMove="mouseClick()" />
+        </image>
+      </image>
+      <image style="#right">
+        <interact onClickRepeat="downClick()" />
+      </image>
+    </panel>
+  </controlDefinition>
+</nifty-controls>

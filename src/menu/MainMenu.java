@@ -299,7 +299,13 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
 
     public void onEndScreen() 
     {
-        
+        /* Make sure to delete mappings so they don't seep through to the next menu.
+           Do NOT clear Mappings, as that will also remove the Escape to exit. */
+        inputManager.deleteMapping("Accept");
+        inputManager.deleteMapping("Right");
+        inputManager.deleteMapping("Left");
+        inputManager.deleteMapping("Up");
+        inputManager.deleteMapping("Down");
     }
     
     @NiftyEventSubscriber(id="MouseCatcher")

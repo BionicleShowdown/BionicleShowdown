@@ -2,6 +2,7 @@
 <nifty-controls>
   <useControls filename="showdown-controls/showdown-controls/nifty-button.xml" />
   <useControls filename="showdown-controls/showdown-controls/centered-textfield.xml" />
+  <useControls filename="showdown-controls/showdown-controls/headless-slider.xml" />
   <useControls filename="showdown-controls/showdown-controls/nifty-chat-control.xml" />
   <useControls filename="showdown-controls/showdown-controls/nifty-tabs.xml" />
   <useControls filename="showdown-controls/showdown-controls/nifty-treebox.xml" />

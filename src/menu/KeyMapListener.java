@@ -5,6 +5,7 @@
 
 package menu;
 
+import com.jme3.input.KeyNames;
 import com.jme3.input.RawInputListener;
 import com.jme3.input.controls.JoyButtonTrigger;
 import com.jme3.input.controls.KeyTrigger;
@@ -24,6 +25,8 @@ public class KeyMapListener implements RawInputListener
 {
     private KeyTrigger lastTrigger;
     private int lastKeyValue = -1;
+    private KeyNames keynames = new KeyNames();
+    private String lastKeyName = "";
 
     public void beginInput() 
     {
@@ -59,6 +62,7 @@ public class KeyMapListener implements RawInputListener
     {
         lastTrigger = new KeyTrigger(evt.getKeyCode());
         lastKeyValue = evt.getKeyCode();
+        lastKeyName = keynames.getName(lastKeyValue);
     }
 
     public void onTouchEvent(TouchEvent evt) 
@@ -74,6 +78,11 @@ public class KeyMapListener implements RawInputListener
     public int getLastKeyValue()
     {
         return lastKeyValue;
+    }
+    
+    public String getLastKeyName()
+    {
+        return lastKeyName;
     }
 
 }

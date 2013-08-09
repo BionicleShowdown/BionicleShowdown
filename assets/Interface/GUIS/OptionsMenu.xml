@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
     
-<useControls filename="nifty-default-controls.xml" />
-<useStyles filename="nifty-default-styles.xml" />
+<useControls filename="showdown-controls/showdown-controls.xml" />
+<useStyles filename="showdown-style/showdown-styles.xml" />
 
 <!--
 To change this template, choose Tools | Templates
@@ -10,7 +10,7 @@ and open the template in the editor.
 -->
 
 
-    <screen id="OptionsMenu" controller="menu.OptionsMenu">
+    <screen id="OptionsMenu" controller="menu.OptionsMenu" inputMapping="menu.MenuMapping">
         <layer id="background"  childLayout="vertical" >
             
         </layer>
@@ -24,15 +24,15 @@ and open the template in the editor.
             </panel>
             
             <panel id="VolumePanel" width="50%" height="5%" x="15%" y="20%" childLayout="center" visibleToMouse = "true">
-                <control id="musicVolumeSlider" name="horizontalSlider" width="100%" min="-0.01" max="1.01" initial="1.0" stepSize="0.01" buttonStepSize="0.01" valign="center" />
+                <control id="musicVolumeSlider" name="horizontalSliderHeadless" width="100%" min="-0.01" max="1.01" initial="1.0" stepSize="0.01" buttonStepSize="0.01" valign="center" />
             </panel>
             
             <panel id="SFXPanel" width="50%" height="5%" x="15%" y="30%" childLayout="center" visibleToMouse="true">
-                <control id="sfxVolumeSlider" name="horizontalSlider" width="100%" min="-0.01" max="1.01" initial="1.0" stepSize="0.01" buttonStepSize="0.01" valign="center"/>
+                <control id="sfxVolumeSlider" name="horizontalSliderHeadless" width="100%" min="-0.01" max="1.01" initial="1.0" stepSize="0.01" buttonStepSize="0.01" valign="center"/>
             </panel>
             
             <panel id="VoicePanel" width="50%" height="5%" x="15%" y="40%" valign="center" childLayout="center">
-                <control id="voiceVolumeSlider" name="horizontalSlider" width="100%" min="-0.01" max="1.01" initial="1.0" stepSize="0.01" buttonStepSize="0.01" valign="center"/>
+                <control id="voiceVolumeSlider" name="horizontalSliderHeadless" width="100%" min="-0.01" max="1.01" initial="1.0" stepSize="0.01" buttonStepSize="0.01" valign="center"/>
             </panel>
             
             <panel id="MutePanel" width="25%" height="5%" x="70%" y="20%" childLayout="center" visibleToMouse = "true" >

@@ -5,6 +5,7 @@
 
 package menu;
 
+import AdaptedControls.HeadlessSliderChangedEvent;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
@@ -20,6 +21,8 @@ import de.lessvoid.nifty.controls.NiftyControl;
 import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.elements.render.TextRenderer;
+import de.lessvoid.nifty.input.NiftyInputEvent;
+import de.lessvoid.nifty.screen.KeyInputHandler;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import mygame.Main;
@@ -28,7 +31,7 @@ import mygame.Main;
  *
  * @author Inferno
  */
-public class OptionsMenu implements ScreenController
+public class OptionsMenu implements ScreenController, KeyInputHandler
 {
     private AssetManager assetManager;
     private SimpleApplication app;
@@ -135,7 +138,7 @@ public class OptionsMenu implements ScreenController
     
     // Changes the volume value and updates the text on the volume label when the Slider changes
     @NiftyEventSubscriber(id="musicVolumeSlider")
-    public void getMusicVolume(String id, SliderChangedEvent event)
+    public void getMusicVolume(String id, HeadlessSliderChangedEvent event)
     {
         float floatVolume = Main.getMusic().getVolume();
         int volume = Math.round(floatVolume * 100);
@@ -151,7 +154,7 @@ public class OptionsMenu implements ScreenController
     }
     
     @NiftyEventSubscriber(id="sfxVolumeSlider")
-    public void getSFXVolume(String id, SliderChangedEvent event)
+    public void getSFXVolume(String id, HeadlessSliderChangedEvent event)
     {
         float floatVolume = currentSFXVolume;
         int volume = Math.round(floatVolume * 100);
@@ -167,7 +170,7 @@ public class OptionsMenu implements ScreenController
     }
     
     @NiftyEventSubscriber(id="voiceVolumeSlider")
-    public void getVoiceVolume(String id, SliderChangedEvent event)
+    public void getVoiceVolume(String id, HeadlessSliderChangedEvent event)
     {
         float floatVolume = currentVoiceVolume;
         int volume = Math.round(floatVolume * 100);
@@ -205,7 +208,7 @@ public class OptionsMenu implements ScreenController
     
     // Can change music volume.
     @NiftyEventSubscriber(id="musicVolumeSlider")
-    public void changeMusicVolume(String id, SliderChangedEvent event)
+    public void changeMusicVolume(String id, HeadlessSliderChangedEvent event)
     {
         float volume = event.getValue();
         if (volume < 0)
@@ -216,6 +219,7 @@ public class OptionsMenu implements ScreenController
         {
             volume = 1;
         }
+        event.getSlider().setValue(volume);
         System.out.println("" + event.getValue());
         currentMusicVolume = volume;
         Main.setMusicVolume(volume);
@@ -223,7 +227,7 @@ public class OptionsMenu implements ScreenController
     }
     
     @NiftyEventSubscriber(id="sfxVolumeSlider")
-    public void changeSFXVolume(String id, SliderChangedEvent event)
+    public void changeSFXVolume(String id, HeadlessSliderChangedEvent event)
     {
         float volume = event.getValue();
         if (volume < 0)
@@ -234,12 +238,13 @@ public class OptionsMenu implements ScreenController
         {
             volume = 1;
         }
+        event.getSlider().setValue(volume);
         System.out.println("" + event.getValue());
         currentSFXVolume = volume;
     }
     
     @NiftyEventSubscriber(id="voiceVolumeSlider")
-    public void changeVoiceVolume(String id, SliderChangedEvent event)
+    public void changeVoiceVolume(String id, HeadlessSliderChangedEvent event)
     {
         float volume = event.getValue();
         if (volume < 0)
@@ -250,6 +255,7 @@ public class OptionsMenu implements ScreenController
         {
             volume = 1;
         }
+        event.getSlider().setValue(volume);
         System.out.println("" + event.getValue());
         currentVoiceVolume = volume;
     }
@@ -262,6 +268,16 @@ public class OptionsMenu implements ScreenController
     public void goBack()
     {
         mainMenu.initiate(app);
+    }
+
+    public boolean keyEvent(NiftyInputEvent inputEvent) 
+    {
+        if (inputEvent == NiftyInputEvent.MoveCursorLeft)
+        {
+            System.out.println("LEFT!!!");
+            return true;
+        }
+        return false;
     }
 
 }

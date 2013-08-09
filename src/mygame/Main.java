@@ -148,7 +148,8 @@ public class Main extends SimpleApplication
     {
         public void onAction(String name, boolean isPressed, float tpf) 
         {
-            // Simulates a Mouse Action, thus initializing JME's Cursor Position
+//            System.out.println("Key Name: " + keymapListener.getLastKeyName());
+            // Simulates a Mouse Action, thus initializing JME's Cursor Position (not really necessary)
             try
             {
                 Robot rob = new Robot();
@@ -214,7 +215,7 @@ public class Main extends SimpleApplication
     {
         // Key Input testing stuff
         
-//        inputManager.addRawInputListener(keymapListener);
+//        inputManager.addRawInputListener(keymapListener); // NECESSARY WHEN TESTING KEY ASSIGNMENTS HERE
         inputManager.addMapping("Start Game", enterTrigger);
 //        inputManager.addMapping("Start Game", keymapListener.getLastTrigger());
         inputManager.addListener(actionListener, new String[]{"Start Game"});
@@ -263,6 +264,7 @@ public class Main extends SimpleApplication
         
 //        System.out.println(inputManager.getCursorPosition().x);
 //        System.out.println(inputManager.getCursorPosition().y);
+        
         
         // Key input testing stuff
 //        if (keymapListener.getLastTrigger() != null)
