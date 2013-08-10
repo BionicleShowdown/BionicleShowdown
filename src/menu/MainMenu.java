@@ -308,7 +308,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
         
 //        fightPanel.setFocusable(true);
 //        fightPanel.setFocus();
-        currentLayout = new ButtonLayout(fightID, fightID, fightID, fightID, fightID);
+        currentLayout = new ButtonLayout(nullID, fightID, fightID, fightID, fightID);
         keysUsed = false;
         
         initJoy();
@@ -1111,10 +1111,17 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
 //        inputManager.setCursorVisible(false);
         if (Main.joysticks.length != 0)
         {
+            Main.joysticks[0].getButton("0").assignButton("Accept");
+            
+            if (Main.joysticks[0].getName().equals("Logitech Dual Action"))
+            {
+                inputManager.deleteMapping("Accept");
+                Main.joysticks[0].getButton("2").assignButton("Accept");
+            }
+            
             Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
             Main.joysticks[0].getYAxis().assignAxis("Down", "Up");
-            Main.joysticks[0].getButton("0").assignButton("Accept");
-            inputManager.addListener(this, "Right", "Left", "Up", "Down", "Accept");
+            inputManager.addListener(this, "Accept", "Right", "Left", "Up", "Down");
         }
     }
 
@@ -1125,22 +1132,22 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
             System.out.println("Accept");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_RETURN, '0', true, false));
         }
-        if (isPressed && name.equals("Right"))
+        else if (isPressed && name.equals("Right"))
         {
             System.out.println("Right");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_D, 'D', true, false));
         }
-        if (isPressed && name.equals("Left"))
+        else if (isPressed && name.equals("Left"))
         {
             System.out.println("Left");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_A, 'A', true, false));
         }
-        if (isPressed && name.equals("Up"))
+        else if (isPressed && name.equals("Up"))
         {
             System.out.println("Up");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_W, 'W', true, false));
         }
-        if (isPressed && name.equals("Down"))
+        else if (isPressed && name.equals("Down"))
         {
             System.out.println("Down");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_S, 'S', true, false));

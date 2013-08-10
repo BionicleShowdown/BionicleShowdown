@@ -90,27 +90,31 @@ public class HeadlessSliderControl extends AbstractController implements Headles
 
   public void upClick() {
     sliderImpl.stepDown();
+    sliderView.valueChanged(getValue());
   }
 
   public void downClick() {
     sliderImpl.stepUp();
+    sliderView.valueChanged(getValue());
   }
 
-  public void mouseClick(final int mouseX, final int mouseY) {
+  public void mouseClick(final int mouseX, final int mouseY) 
+  {
     sliderImpl.setValueFromPosition(
         mouseX - elementBackground.getX() - elementPosition.getWidth() / 2,
         mouseY - elementBackground.getY() - elementPosition.getHeight() / 2);
+    sliderView.valueChanged(getValue());
   }
 
-  public void mouseWheel(final Element element, final NiftyMouseInputEvent inputEvent) {
-    int mouseWheel = inputEvent.getMouseWheel();
-    float currentValue = sliderImpl.getValue();
-    if (mouseWheel < 0) {
-      sliderImpl.setValue(currentValue - sliderImpl.getButtonStepSize() * mouseWheel);
-    } else if (mouseWheel > 0) {
-      sliderImpl.setValue(currentValue - sliderImpl.getButtonStepSize() * mouseWheel);
-    }
-  }
+//  public void mouseWheel(final Element element, final NiftyMouseInputEvent inputEvent) {
+//    int mouseWheel = inputEvent.getMouseWheel();
+//    float currentValue = sliderImpl.getValue();
+//    if (mouseWheel < 0) {
+//      sliderImpl.setValue(currentValue - sliderImpl.getButtonStepSize() * mouseWheel);
+//    } else if (mouseWheel > 0) {
+//      sliderImpl.setValue(currentValue - sliderImpl.getButtonStepSize() * mouseWheel);
+//    }
+//  }
 
   // Slider implementation
 

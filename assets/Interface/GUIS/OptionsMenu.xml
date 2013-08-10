@@ -17,9 +17,12 @@ and open the template in the editor.
         
         
         <layer id="foreground" childLayout="absolute">
-            <panel id="BackButtonPanel" width="10%" height="7%" x="1%" y="1%" childLayout="vertical" visibleToMouse = "true">
-               <image filename="Interface/General/BackButton.png" width="100%" height="100%" visibleToMouse="true">
-                <interact onClick="goBack()" />
+            <panel id="BackButtonPanel" width="10%" height="7%" x="1%" y="1%" childLayout="vertical" visibleToMouse = "true" focusable="true">
+               <image id="BackButtonImage" filename="Interface/General/BackButton.png" width="100%" height="100%" visibleToMouse="true">
+                   <effect>
+                       <onHover name="changeImage" active="Interface/General/BackButtonHover.png" inactive="Interface/General/BackButton.png"/>
+                   </effect> 
+                   <interact onClick="goBack()" />
                </image>
             </panel>
             
@@ -35,27 +38,30 @@ and open the template in the editor.
                 <control id="voiceVolumeSlider" name="horizontalSliderHeadless" width="100%" min="-0.01" max="1.01" initial="1.0" stepSize="0.01" buttonStepSize="0.01" valign="center"/>
             </panel>
             
-            <panel id="MutePanel" width="25%" height="5%" x="70%" y="20%" childLayout="center" visibleToMouse = "true" >
-                <text id="CurrentMusicVolume" font="Interface/Fonts/Kalinga.fnt" text="Music Volume: 100%" valign="center"/>   
+            <panel id="MusicVolumeLabelPanel" width="25%" height="5%" x="70%" y="20%" backgroundColor="#662121" childLayout="center" visibleToMouse = "true" >
+                <text id="CurrentMusicVolume" font="Interface/Fonts/1942-report-16.fnt" text="Music Volume: 100%" valign="center"/>   
                 <interact onClick="muteMusic()" />
             </panel>
             
-            <panel id="SFXVolumeLabelPanel" width="25%" height="5%" x="70%" y="30%" childLayout="center">
-                <text id="CurrentSFXVolume" font="Interface/Fonts/Kalinga.fnt" text="SFX Volume: 100%" valign="center"/>
+            <panel id="SFXVolumeLabelPanel" width="25%" height="5%" x="70%" y="30%" backgroundColor="#662121" childLayout="center">
+                <text id="CurrentSFXVolume" font="Interface/Fonts/1942-report-16.fnt" text="SFX Volume: 100%" valign="center"/>
             </panel>
             
-            <panel id="VoiceVolumeLabelPanel" width="25%" height="5%" x="70%" y="40%" childLayout="center">
-                <text id="CurrentVoiceVolume" font="Interface/Fonts/Kalinga.fnt" text="Voice Volume: 100%" valign="center"/>
+            <panel id="VoiceVolumeLabelPanel" width="25%" height="5%" x="70%" y="40%" backgroundColor="#662121" childLayout="center">
+                <text id="CurrentVoiceVolume" font="Interface/Fonts/1942-report-16.fnt" text="Voice Volume: 100%" valign="center"/>
             </panel>
             
-            <panel id="SwitchMusicPanel" width="35%" height="25%" x="10%" y="55%" childLayout="vertical" visibleToMouse = "true">
+<!--            <panel id="SwitchMusicPanel" width="35%" height="25%" x="10%" y="55%" childLayout="vertical" visibleToMouse = "true">
                 <image filename= "Interface/MainMenu/Extras.png" width = "100%" height = "100%" visibleToMouse = "true">
                     <interact onClick="switchMusic()" />
                 </image>
-            </panel>
+            </panel>-->
             
-            <panel id="ControlsPanel" width="50%" height="45%" x="25%" y="50%" childLayout="vertical" visibleToMouse = "true">
-                <image filename="Interface/Options/Controls.png" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true">
+            <panel id="ControlsPanel" width="50%" height="45%" x="25%" y="50%" childLayout="vertical" visibleToMouse = "true" focusable="true">
+                <image id="ControlsImage" filename="Interface/Options/Controls.png" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true">
+                    <effect>
+                        <onHover name="changeImage" active="Interface/Options/ControlsHover.png" inactive="Interface/Options/Controls.png"/>
+                    </effect>
                     <interact onClick="controlsScreen()" />
                 </image>
             </panel>
