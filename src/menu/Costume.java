@@ -44,8 +44,10 @@ public class Costume
         return costumeList;
     }
     
-    public boolean equals(Costume otherCostume)
+    @Override
+    public boolean equals(Object compCostume)
     {
+        Costume otherCostume = (Costume) compCostume;
         if (otherCostume == null)
         {
             return false;

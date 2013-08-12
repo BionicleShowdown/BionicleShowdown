@@ -12,17 +12,17 @@ and open the template in the editor.
 
     <screen id="OptionsMenu" controller="menu.OptionsMenu" inputMapping="menu.MenuMapping">
         <layer id="background"  childLayout="vertical" >
-            
+            <panel id="MouseCatcher" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true" />
         </layer>
         
         
         <layer id="foreground" childLayout="absolute">
             <panel id="BackButtonPanel" width="10%" height="7%" x="1%" y="1%" childLayout="vertical" visibleToMouse = "true" focusable="true">
                <image id="BackButtonImage" filename="Interface/General/BackButton.png" width="100%" height="100%" visibleToMouse="true">
-                   <effect>
+<!--                   <effect>
                        <onHover name="changeImage" active="Interface/General/BackButtonHover.png" inactive="Interface/General/BackButton.png"/>
-                   </effect> 
-                   <interact onClick="goBack()" />
+                   </effect> -->
+                   <!--<interact onClick="goBack()" />-->
                </image>
             </panel>
             
@@ -59,10 +59,10 @@ and open the template in the editor.
             
             <panel id="ControlsPanel" width="50%" height="45%" x="25%" y="50%" childLayout="vertical" visibleToMouse = "true" focusable="true">
                 <image id="ControlsImage" filename="Interface/Options/Controls.png" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true">
-                    <effect>
+<!--                    <effect>
                         <onHover name="changeImage" active="Interface/Options/ControlsHover.png" inactive="Interface/Options/Controls.png"/>
-                    </effect>
-                    <interact onClick="controlsScreen()" />
+                    </effect>-->
+                    <!--<interact onClick="controlsScreen()" />-->
                 </image>
             </panel>
             

@@ -35,6 +35,10 @@ public class MenuMapping implements NiftyInputMapping
         {
             return NiftyInputEvent.Activate;
         }
+        else if (inputEvent.getKey() == KeyboardInputEvent.KEY_BACK)
+        {
+            return NiftyInputEvent.Backspace;
+        }
         else if (inputEvent.getKey() == KeyboardInputEvent.KEY_A)
         {
             return NiftyInputEvent.MoveCursorLeft;

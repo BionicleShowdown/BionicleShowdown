@@ -4,7 +4,7 @@ package mygame;
 import AudioNodes.MusicAudioNode;
 import bs.Characters;
 import bs.StandardMatchState;
-import bs.StartState;
+import bs.StartMenu;
 import com.aurellem.capture.Capture;
 import com.aurellem.capture.IsoTimer;
 import com.jme3.app.SimpleApplication;
@@ -44,7 +44,7 @@ public class Main extends SimpleApplication
 
 
     public static Characters charList;
-    private StartState startState;
+    private StartMenu startState;
     private boolean isRunning = false;
     private Trigger enterTrigger = new KeyTrigger(KeyInput.KEY_RETURN);
     private static Nifty nifty;
@@ -104,74 +104,52 @@ public class Main extends SimpleApplication
     {
         
 //        stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
-        startState = new StartState();
+        startState = new StartMenu();
         setDisplayStatView(false);
         music = new MusicAudioNode(assetManager, "Sounds/Music/Fire and Ice.wav", true);
         music.play();
 
         charList = new Characters((SimpleApplication)this);
-        initKeys();
+//        initKeys();
         niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         nifty = niftyDisplay.getNifty();
         guiViewPort.addProcessor(niftyDisplay);
+        
         stateManager.attach(startState);               //Attach the first state
         
-        
-        joysticks = inputManager.getJoysticks();
-        System.out.println(joysticks);
-        System.out.println(joysticks.length);
-        if (joysticks.length == 0)
-        {
-            System.out.println("FAILED");
-        }
-        else
-        {
-            for (int i=0; i < joysticks.length; i++)
-            {
-                System.out.println("Number of Buttons: " + joysticks[i].getButtonCount());
-                System.out.println("Number of Axis: " + joysticks[i].getAxisCount());
-                System.out.println(joysticks[i].getName());
-                System.out.println(joysticks);
-                System.out.println(joysticks[i].getButtons());
-                System.out.println(joysticks[i].getAxes());
-                joysticks[i].getButton("0").assignButton("Start Game");
-//                joysticks[i].getAxis("x").assignAxis("", "Start Game");
-                inputManager.setAxisDeadZone(0.5f);
-                System.out.println(joysticks[i].getAxis("x").getDeadZone());
-            }
-        }
+        initJoy();
         
         flyCam.setEnabled(false);
     }
     /*This ActionListener will handle all the switching of states*/
-    private ActionListener actionListener = new ActionListener() 
-    {
-        public void onAction(String name, boolean isPressed, float tpf) 
-        {
-//            System.out.println("Key Name: " + keymapListener.getLastKeyName());
-            // Simulates a Mouse Action, thus initializing JME's Cursor Position (not really necessary)
-            try
-            {
-                Robot rob = new Robot();
-                rob.mouseWheel(1);
-            }
-            catch (AWTException e)
-            {
-                System.out.println("Failed");
-            }
-//            
-            if (name.equals("Start Game") && !isPressed) 
-            {
-                if (!isRunning) 
-                {
-                    xCursor = (int) inputManager.getCursorPosition().x;
-                    yCursor = (int) inputManager.getCursorPosition().y;
-                    stateManager.detach(startState);
-                    isRunning = !isRunning;
-                }
-            }
-        }
-    };
+//    private ActionListener actionListener = new ActionListener() 
+//    {
+//        public void onAction(String name, boolean isPressed, float tpf) 
+//        {
+////            System.out.println("Key Name: " + keymapListener.getLastKeyName());
+//            // Simulates a Mouse Action, thus initializing JME's Cursor Position (not really necessary)
+////            try
+////            {
+////                Robot rob = new Robot();
+////                rob.mouseWheel(1);
+////            }
+////            catch (AWTException e)
+////            {
+////                System.out.println("Failed");
+////            }
+////            
+//            if (name.equals("Start Game") && !isPressed) 
+//            {
+//                if (!isRunning) 
+//                {
+////                    xCursor = (int) inputManager.getCursorPosition().x;
+////                    yCursor = (int) inputManager.getCursorPosition().y;
+//                    stateManager.detach(startMenu);
+//                    isRunning = !isRunning;
+//                }
+//            }
+//        }
+//    };
     
     /*Getter for list of characters
      * currently unlocked
@@ -211,15 +189,15 @@ public class Main extends SimpleApplication
     }
 
 
-    private void initKeys() 
-    {
-        // Key Input testing stuff
-        
-//        inputManager.addRawInputListener(keymapListener); // NECESSARY WHEN TESTING KEY ASSIGNMENTS HERE
-        inputManager.addMapping("Start Game", enterTrigger);
-//        inputManager.addMapping("Start Game", keymapListener.getLastTrigger());
-        inputManager.addListener(actionListener, new String[]{"Start Game"});
-    }
+//    private void initKeys() 
+//    {
+//        // Key Input testing stuff
+//        
+////        inputManager.addRawInputListener(keymapListener); // NECESSARY WHEN TESTING KEY ASSIGNMENTS HERE
+//        inputManager.addMapping("Start Game", enterTrigger);
+////        inputManager.addMapping("Start Game", keymapListener.getLastTrigger());
+//        inputManager.addListener(actionListener, "Start Game");
+//    }
     
     /**
      * Returns the settings for use by the menu; so buttons are set up properly.
@@ -281,7 +259,7 @@ public class Main extends SimpleApplication
 //        {
 //            music.stop();
 //        }
-        // Couldn't you just use music.setLooping(true); ? That would loop it without having to check, I believe.
+        
         if(music.getStatus() == MusicAudioNode.Status.Stopped)
         {
             music = new MusicAudioNode(assetManager, musicSelection, true);
@@ -295,6 +273,33 @@ public class Main extends SimpleApplication
     public void simpleRender(RenderManager rm) 
     {
         //TODO: add render code
+    }
+
+    private void initJoy() 
+    {
+        joysticks = inputManager.getJoysticks();
+        System.out.println(joysticks);
+        System.out.println(joysticks.length);
+        if (joysticks.length == 0)
+        {
+            System.out.println("FAILED");
+        }
+        else
+        {
+            for (int i=0; i < joysticks.length; i++)
+            {
+                System.out.println("Number of Buttons: " + joysticks[i].getButtonCount());
+                System.out.println("Number of Axis: " + joysticks[i].getAxisCount());
+                System.out.println(joysticks[i].getName());
+                System.out.println(joysticks);
+                System.out.println(joysticks[i].getButtons());
+                System.out.println(joysticks[i].getAxes());
+                joysticks[i].getButton("0").assignButton("Start Game");
+//                joysticks[i].getAxis("x").assignAxis("", "Start Game");
+                inputManager.setAxisDeadZone(0.5f);
+                System.out.println(joysticks[i].getAxis("x").getDeadZone());
+            }
+        }
     }
 }
 

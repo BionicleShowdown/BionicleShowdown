@@ -28,6 +28,8 @@ import de.lessvoid.nifty.controls.NiftyControl;
 import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.events.NiftyMouseEvent;
+import de.lessvoid.nifty.elements.events.NiftyMouseMovedEvent;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.input.NiftyInputEvent;
@@ -108,6 +110,20 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
     
     private float slideSlow = 0;
     
+    private boolean backResetDone = false;
+    private boolean backButtonWasClickable = false;
+    private boolean controlsResetDone = false;
+    private boolean controlsButtonWasClickable = false;
+    
+    private boolean musicResetDone = false;
+    private boolean musicSliderWasHovered = false;
+    private boolean sfxResetDone = false;
+    private boolean sfxSliderWasHovered = false;
+    private boolean voiceResetDone = false;
+    private boolean voiceSliderWasHovered = false;
+    
+    private boolean keysUsed = false;
+    
     public OptionsMenu()
     {
         
@@ -156,7 +172,7 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
         
         musicTextRenderer.setText(getMusicVolume());
         sfxTextRenderer.setText(getSFXVolume());
-        voiceTextRenderer.setText(getVoiceVolume());;
+        voiceTextRenderer.setText(getVoiceVolume());
         
         musicSlider = screen.findNiftyControl("musicVolumeSlider", HeadlessSlider.class);
         sfxSlider = screen.findNiftyControl("sfxVolumeSlider", HeadlessSlider.class);
@@ -350,6 +366,190 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
         currentVoiceVolume = volume;
     }
     
+    @NiftyEventSubscriber(id="MouseCatcher")
+    public void buttonCaller(String id, NiftyMouseEvent event)
+    {
+        int x = event.getMouseX();
+        int y = event.getMouseY();
+        boolean wasClick = event.isButton0Down();
+        boolean wasRelease = event.isButton0Release();
+        
+        if (wasClick)
+        {
+            keysUsed = false;
+            backResetDone = false;
+            musicResetDone = false;
+            sfxResetDone = false;
+            voiceResetDone = false;
+            controlsResetDone = false;
+            backPanelElement.setFocus();
+        }
+        
+        onBackHover(backPanelElement.isMouseInsideElement(x, y), wasClick);
+        onMusicHover(musicSlider.getElement().isMouseInsideElement(x, y), wasClick);
+        onSFXHover(sfxSlider.getElement().isMouseInsideElement(x, y), wasClick);
+        onVoiceHover(voiceSlider.getElement().isMouseInsideElement(x, y), wasClick);
+        onControlsHover(controlsPanelElement.isMouseInsideElement(x, y), wasClick);
+        
+    }
+    
+    public void onBackHover(boolean isAvailable, boolean wasClick)
+    {
+        if (isAvailable)
+        {
+            if (wasClick)
+            {
+                goBack();
+                return;
+            }
+            if (!backButtonWasClickable)
+            {
+                backImageRenderer.setImage(backImageHover);
+                backButtonWasClickable = true;
+                backResetDone = false;
+                adaptActive(backID);
+            }
+        }
+        else if (keysUsed)
+        {
+            return;
+        }
+        else if (!backResetDone)
+        {
+            backImageRenderer.setImage(backImageNormal);
+            backButtonWasClickable = false;
+            backResetDone = true;
+        }
+    }
+    
+    public void onMusicHover(boolean isAvailable, boolean wasClick)
+    {
+        if (isAvailable)
+        {
+            if (wasClick)
+            {
+                musicSlider.setFocus();
+                return;
+            }
+            if (!musicSliderWasHovered)
+            {
+                musicTextRenderer.setColor(hoverTextColor);
+                musicSliderWasHovered = true;
+                musicResetDone = false;
+                adaptActive(musicID);
+            }
+        }
+        else if (keysUsed)
+        {
+            return;
+        }
+        else if (!musicResetDone)
+        {
+            musicTextRenderer.setColor(defaultTextColor);
+            if (screen.getFocusHandler().getKeyboardFocusElement() == musicSlider.getElement())
+            {
+                backPanelElement.setFocus();
+            }
+            musicSliderWasHovered = false;
+            musicResetDone = true;
+        }
+    }
+    
+    public void onSFXHover(boolean isAvailable, boolean wasClick)
+    {
+        if (isAvailable)
+        {
+            if (wasClick)
+            {
+                sfxSlider.setFocus();
+                return;
+            }
+            if (!sfxSliderWasHovered)
+            {
+                sfxTextRenderer.setColor(hoverTextColor);
+                sfxSliderWasHovered = true;
+                sfxResetDone = false;
+                adaptActive(sfxID);
+            }
+        }
+        else if (keysUsed)
+        {
+            return;
+        }
+        else if (!sfxResetDone)
+        {
+            sfxTextRenderer.setColor(defaultTextColor);
+            if (screen.getFocusHandler().getKeyboardFocusElement() == sfxSlider.getElement())
+            {
+                backPanelElement.setFocus();
+            }
+            sfxSliderWasHovered = false;
+            sfxResetDone = true;
+        }
+    }
+    
+    public void onVoiceHover(boolean isAvailable, boolean wasClick)
+    {
+        if (isAvailable)
+        {
+            if (wasClick)
+            {
+                voiceSlider.setFocus();
+                return;
+            }
+            if (!voiceSliderWasHovered)
+            {
+                voiceTextRenderer.setColor(hoverTextColor);
+                voiceSliderWasHovered = true;
+                voiceResetDone = false;
+                adaptActive(voiceID);
+            }
+        }
+        else if (keysUsed)
+        {
+            return;
+        }
+        else if (!voiceResetDone)
+        {
+            voiceTextRenderer.setColor(defaultTextColor);
+            if (screen.getFocusHandler().getKeyboardFocusElement() == voiceSlider.getElement())
+            {
+                backPanelElement.setFocus();
+            }
+            voiceSliderWasHovered = false;
+            voiceResetDone = true;
+        }
+    }
+    
+    public void onControlsHover(boolean isAvailable, boolean wasClick)
+    {
+        if (isAvailable)
+        {
+            if (wasClick)
+            {
+                controlsScreen();
+                return;
+            }
+            if (!controlsButtonWasClickable)
+            {
+                controlsImageRenderer.setImage(controlsImageHover);
+                controlsButtonWasClickable = true;
+                controlsResetDone = false;
+                adaptActive(controlsID);
+            }
+        }
+        else if (keysUsed)
+        {
+            return;
+        }
+        else if (!controlsResetDone)
+        {
+            controlsImageRenderer.setImage(controlsImageNormal);
+            controlsButtonWasClickable = false;
+            controlsResetDone = true;
+        }
+    }
+    
     @NiftyEventSubscriber(id="musicVolumeSlider")
     public void onMusicFocus(String id, FocusGainedEvent event)
     {
@@ -371,6 +571,8 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
     public void controlsScreen()
     {
         System.out.println("Controls Screen!");
+        ControlsHub controlsHub = new ControlsHub(this);
+        controlsHub.initiate(app);
     }
     
     public void goBack()
@@ -393,6 +595,56 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
     
     public void adaptActive(byte newButton)
     {
+        if (!keysUsed && (currentLayout.Identity() == newButton))
+        {
+            switch (newButton)
+            {
+                case 0:
+                {
+                    System.out.println("Back");
+                    currentLayout = backLayout;
+                    backImageRenderer.setImage(backImageHover);
+                    backButtonWasClickable = true;
+                    break;
+                }
+                case 1:
+                {
+                    musicTextRenderer.setColor(hoverTextColor);
+                    currentLayout = musicLayout;
+                    musicSliderWasHovered = true;
+                    musicSlider.setFocus();
+                    break;
+                }
+                case 4:
+                {
+                    sfxTextRenderer.setColor(hoverTextColor);
+                    currentLayout = sfxLayout;
+                    sfxSliderWasHovered = true;
+                    sfxSlider.setFocus();
+                    break;
+                }
+                case 7:
+                {
+                    voiceTextRenderer.setColor(hoverTextColor);
+                    currentLayout = voiceLayout;
+                    voiceSliderWasHovered = true;
+                    voiceSlider.setFocus();
+                    break;
+                }
+                case 10:
+                {
+                    currentLayout = controlsLayout;
+                    controlsPanelElement.setFocus();
+                    controlsImageRenderer.setImage(controlsImageHover);
+                    controlsButtonWasClickable = true;
+                    break;
+                }
+                default:
+                {
+                    
+                }
+            }
+        }
         if (newButton == currentLayout.Identity())
         {
             return;
@@ -403,6 +655,7 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
             {
                 currentLayout = backLayout;
                 backImageRenderer.setImage(backImageNormal);
+                backButtonWasClickable = false;
                 break;
             }
             case 1:
@@ -413,6 +666,7 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
                 }
                 musicTextRenderer.setColor(defaultTextColor);
                 currentLayout = musicLayout;
+                musicSliderWasHovered = false;
                 break;
             }
             case 4:
@@ -423,6 +677,7 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
                 }
                 sfxTextRenderer.setColor(defaultTextColor);
                 currentLayout = sfxLayout;
+                sfxSliderWasHovered = false;
                 break;
             }
             case 7:
@@ -433,19 +688,19 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
                 }
                 voiceTextRenderer.setColor(defaultTextColor);
                 currentLayout = voiceLayout;
+                voiceSliderWasHovered = false;
                 break;
             }
             case 10:
             {
                 currentLayout = controlsLayout;
                 controlsImageRenderer.setImage(controlsImageNormal);
+                controlsButtonWasClickable = false;
                 break;
             }
             default:
             {
-                currentLayout = backLayout;
-                backImageRenderer.setImage(backImageNormal);
-                break;
+                
             }
         }
         switch (newButton)
@@ -455,6 +710,7 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
                 currentLayout = backLayout;
                 backPanelElement.setFocus();
                 backImageRenderer.setImage(backImageHover);
+                backButtonWasClickable = true;
                 break;
             }
             case 1:
@@ -462,6 +718,7 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
                 musicTextRenderer.setColor(hoverTextColor);
                 currentLayout = musicLayout;
                 musicSlider.setFocus();
+                musicSliderWasHovered = true;
                 break;
             }
             case 2:
@@ -482,6 +739,7 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
                 sfxTextRenderer.setColor(hoverTextColor);
                 currentLayout = sfxLayout;
                 sfxSlider.setFocus();
+                sfxSliderWasHovered = true;
                 break;
             }
             case 5:
@@ -501,6 +759,7 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
                 voiceTextRenderer.setColor(hoverTextColor);
                 currentLayout = voiceLayout;
                 voiceSlider.setFocus();
+                voiceSliderWasHovered = true;
                 break;
             }
             case 8:
@@ -520,12 +779,14 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
                 currentLayout = controlsLayout;
                 controlsPanelElement.setFocus();
                 controlsImageRenderer.setImage(controlsImageHover);
+                controlsButtonWasClickable = true;
                 break;
             }
             default:
             {
                 currentLayout = backLayout;
                 backImageRenderer.setImage(backImageHover);
+                backButtonWasClickable = true;
                 break;
             }
         }
@@ -551,36 +812,75 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
     }
     
     
-    public boolean keyEvent(NiftyInputEvent inputEvent) 
+    public boolean keyEvent(NiftyInputEvent event) 
     {
-        if (inputEvent == NiftyInputEvent.Activate)
+        if (event == NiftyInputEvent.Activate)
         {
-            System.out.println("Activate!");
-            activateActive();
+            System.out.println("ACTIVATE!!!");
+            if (keysUsed)
+            {
+                activateActive();
+            }
             return true;
         }
-        if (inputEvent == NiftyInputEvent.MoveCursorLeft)
+        else if (event == NiftyInputEvent.Backspace)
         {
-            System.out.println("LEFT!!!");
-            adaptActive(currentLayout.Left());
+            goBack();
+        }
+        else if (event == NiftyInputEvent.MoveCursorLeft)
+        {
+            System.out.println("Left");
+            if (!keysUsed)
+            {
+                adaptActive(currentLayout.Identity());
+                keysUsed = true;
+            }
+            else
+            {
+                adaptActive(currentLayout.Left());
+            }
             return true;
         }
-        if (inputEvent == NiftyInputEvent.MoveCursorRight)
+        else if (event == NiftyInputEvent.MoveCursorRight)
         {
             System.out.println("Right");
-            adaptActive(currentLayout.Right());
+            if (!keysUsed)
+            {
+                adaptActive(currentLayout.Identity());
+                keysUsed = true;
+            }
+            else
+            {
+                adaptActive(currentLayout.Right());
+            }
             return true;
         }
-        if (inputEvent == NiftyInputEvent.MoveCursorUp)
+        else if (event == NiftyInputEvent.MoveCursorUp)
         {
             System.out.println("Up");
-            adaptActive(currentLayout.Up());
+            if (!keysUsed)
+            {
+                adaptActive(currentLayout.Identity());
+                keysUsed = true;
+            }
+            else
+            {
+                adaptActive(currentLayout.Up());
+            }
             return true;
         }
-        if (inputEvent == NiftyInputEvent.MoveCursorDown)
+        else if (event == NiftyInputEvent.MoveCursorDown)
         {
             System.out.println("Down");
-            adaptActive(currentLayout.Down());
+            if (!keysUsed)
+            {
+                adaptActive(currentLayout.Identity());
+                keysUsed = true;
+            }
+            else
+            {
+                adaptActive(currentLayout.Down());
+            }
             return true;
         }
         return false;

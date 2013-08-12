@@ -21,16 +21,33 @@
             </panel>
             
             <panel id="TeamTypePanel" width="20%" height="7%" x="15%" y="1%" childLayout="vertical" visibleToMouse = "true">
-                <image id="TeamType" filename="Interface/CharacterSelect/Buttons/FreeForAll.png" width="100%" height="100%" visibleToMouse="true">
+               <image id="TeamTypeImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" visibleToMouse="true" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="vertical">
+                   <effect>
+                       <onHover name="changeImage" active="Interface/General/ButtonEdgeHover.png" inactive="Interface/General/ButtonEdgeStandard.png" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14"/>
+                   </effect>
+                   <text id="TeamType" text="Free for All" font="showdown-style/1942-report-16.fnt" width="100%" height="100%" >
+                       <interact onClick="switchTeamType()" />
+<!--                <image id="TeamType" filename="Interface/CharacterSelect/Buttons/FreeForAll.png" width="100%" height="100%" visibleToMouse="true">
                     <interact onClick="switchTeamType()" />
-                </image>           
+                </image> -->
+                   </text>
+               </image> 
+               <!--<interact onClick="switchTeamType()" />-->         
             </panel>
             
-            <panel id="RulesPanel" width="55%" height="7%" x="40%" y="1%" childLayout="vertical" visibleToMouse = "true">
-                <image filename="Interface/CharacterSelect/Buttons/Rules.png" width="100%" height="100%" visibleToMouse="true">
-                    <interact onClick="adjustMatchSettings()" />
+            <panel id="MatchSettingsPanel" width="55%" height="7%" x="40%" y="1%" childLayout="vertical" visibleToMouse = "true">
+                <image id="MatchSettingsImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" visibleToMouse="true" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="vertical">
+                    <effect>
+                        <onHover name="changeImage" active="Interface/General/ButtonEdgeHover.png" inactive="Interface/General/ButtonEdgeStandard.png" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14"/>
+                    </effect>
+                    <text id="MatchSettingsText" text="Match Settings" font="showdown-style/1942-report-16.fnt" width="100%" height="100%" />
                 </image>
+                <interact onClick="adjustMatchSettings()" />
+<!--                <image filename="Interface/CharacterSelect/Buttons/Rules.png" width="100%" height="100%" visibleToMouse="true">
+                    
+                </image>-->
             </panel>
+            
             
             
             <!--Player Select Panels-->

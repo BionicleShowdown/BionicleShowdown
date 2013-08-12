@@ -11,7 +11,7 @@ import Characters.Kopaka;
 import Characters.PlayableCharacter;
 import Characters.RandomCharacter;
 import bs.StandardMatchState;
-import bs.StartState;
+import bs.StartMenu;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -35,6 +35,7 @@ import de.lessvoid.nifty.controls.dragndrop.DraggableControl;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.events.NiftyMousePrimaryClickedEvent;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
+import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
@@ -74,7 +75,7 @@ public class CharacterSelectMenu implements ScreenController
     private MainMenu mainMenu;
     private MatchSettingsMenu matchSettingsMenu;
     
-    StartState startState;
+    StartMenu startState;
     //static menu app = new menu(); // Defined outside of function to allow use in all methods
     static AppSettings settings = Main.getSettings(); // Defined outside of function to allow use in all methods
     
@@ -800,8 +801,9 @@ public class CharacterSelectMenu implements ScreenController
       if (teamType.equals("Free For All"))
       {
           teamType = "Team Match";
-          NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/TeamMatch.png", false);
-          nifty.getCurrentScreen().findElementByName("TeamType").getRenderer(ImageRenderer.class).setImage(image);
+//          NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/TeamMatch.png", false);
+//          nifty.getCurrentScreen().findElementByName("TeamType").getRenderer(ImageRenderer.class).setImage(image);
+          nifty.getCurrentScreen().findElementByName("TeamType").getRenderer(TextRenderer.class).setText("Team Match");
           System.out.println("Changing costumes");
 //          setPlayerCostume(player1.playerNumber);
 //          setPlayerCostume(player2.playerNumber);
@@ -815,8 +817,9 @@ public class CharacterSelectMenu implements ScreenController
       else
       {
           teamType = "Free For All";
-          NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/FreeForAll.png", false);
-          nifty.getCurrentScreen().findElementByName("TeamType").getRenderer(ImageRenderer.class).setImage(image);
+//          NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/FreeForAll.png", false);
+//          nifty.getCurrentScreen().findElementByName("TeamType").getRenderer(ImageRenderer.class).setImage(image);
+          nifty.getCurrentScreen().findElementByName("TeamType").getRenderer(TextRenderer.class).setText("Free for All");
           System.out.println("Changing costumes");
 //          setPlayerCostume(player1.playerNumber);
 //          setPlayerCostume(player2.playerNumber);
@@ -1050,8 +1053,6 @@ public class CharacterSelectMenu implements ScreenController
         mainMenu = new MainMenu();
         mainMenu.initiate(app);
     }
-    
-    // TODO: Move Char Select Screen to a different file!
 
     private void resetVariables() 
     {
@@ -1123,8 +1124,9 @@ public class CharacterSelectMenu implements ScreenController
         
         if (teamType.equals("Team Match"))
         {
-            image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/TeamMatch.png", false);
-            screen.findElementByName("TeamType").getRenderer(ImageRenderer.class).setImage(image);
+//            image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/TeamMatch.png", false);
+//            screen.findElementByName("TeamType").getRenderer(ImageRenderer.class).setImage(image);
+            screen.findElementByName("TeamType").getRenderer(TextRenderer.class).setText("Team Match");
         }
         
 //        Team.availableTeams = currentMatch.getTeamsInvolved();

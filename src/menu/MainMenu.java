@@ -7,7 +7,7 @@ import Characters.Kopaka;
 import Characters.PlayableCharacter;
 import Characters.RandomCharacter;
 import bs.StandardMatchState;
-import bs.StartState;
+import bs.StartMenu;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -84,7 +84,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
     private StandardMatchState inGameState;
     private CharacterSelectMenu characterSelectMenu;
     
-    StartState startState;
+    StartMenu startState;
     static AppSettings settings = Main.getSettings(); // Defined outside of function to allow use in all methods
     
     /* Intiializes the screenHeight and screenWidth so they can be used later (initialized in onStartScreen() */
@@ -232,7 +232,6 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
     @Override
     public void cleanup() 
     {
-              
         
     }
 
@@ -488,6 +487,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
     {
         System.out.println("Training");
         Tahu.unlockCostume("Special");
+//        Kopaka.unlockCostume("Special");
         Team.addTeam("Green");
     }
     
@@ -513,6 +513,12 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
         optionsMenu.initiate(app);
     }
     
+    public void goBack()
+    {
+        StartMenu startState = new StartMenu();
+        stateManager.detach(this);
+        stateManager.attach(startState);
+    }
     
 //    @NiftyEventSubscriber(id="FightPanel")
 //    public void onFightFocus(String id, FocusGainedEvent event)
@@ -728,6 +734,11 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
                 activateActive();
             }
             return true;
+        }
+        else if (event == NiftyInputEvent.Backspace)
+        {
+            System.out.println("Back");
+            goBack();
         }
         else if (event == NiftyInputEvent.MoveCursorLeft)
         {
