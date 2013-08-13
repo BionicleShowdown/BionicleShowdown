@@ -135,10 +135,10 @@ public class Button
             return false;
         }
         
-        System.out.println("X on image: " + imageX + ", Y on image: " + imageY);
+//        System.out.println("X on image: " + imageX + ", Y on image: " + imageY);
         int pixelColorInt = buffImage.getRGB(imageX, imageY);
         Color pixelColor = new Color(pixelColorInt, true);
-        System.out.println(pixelColor.getRed() + ", " + pixelColor.getGreen() + ", " + pixelColor.getBlue() + ", " + pixelColor.getAlpha());
+//        System.out.println(pixelColor.getRed() + ", " + pixelColor.getGreen() + ", " + pixelColor.getBlue() + ", " + pixelColor.getAlpha());
         boolean notAlpha = false;
         
         if (pixelColor.getAlpha() != 0)

@@ -99,7 +99,7 @@ public class PlayerPhysics extends GhostControl implements PhysicsCollisionListe
         
         //For dev purposes only (AI), make player 2 without controls
         if(!p.toString().equals("Player2")){
-            pc = new PlayerControl(p,model,im, player, cam, sourceState);
+            pc = new PlayerControl(rootNode,p,model,im, player, cam, sourceState);
             playerNode.addControl(pc);
             playerNode.setUserData("tag","target");
         }   else {

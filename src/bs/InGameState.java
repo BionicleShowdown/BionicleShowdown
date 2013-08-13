@@ -7,6 +7,7 @@
 package bs;
 
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.asset.AssetManager;
 
 /**
  *
@@ -21,4 +22,6 @@ abstract class InGameState extends AbstractAppState
 
      // This is a procedure that will be filled by those that use it.
     public abstract void adjustStock(int stock, String number);
+   
+    public abstract AssetManager getAssetManager();
 }

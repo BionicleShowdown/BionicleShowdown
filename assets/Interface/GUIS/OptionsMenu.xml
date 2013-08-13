@@ -55,7 +55,9 @@ and open the template in the editor.
             </panel>
             
             <panel id="ControlsPanel" width="50%" height="45%" x="25%" y="50%" childLayout="vertical" visibleToMouse = "true">
-                <interact onClick="controlsScreen()" />
+                <image filename="Interface/Options/Controls.png" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true">
+                    <interact onClick="controlsScreen()" />
+                </image>
             </panel>
             
         </layer>

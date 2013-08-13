@@ -6,6 +6,7 @@ package bs;
 
 
 import Characters.PlayableCharacter;
+import MoveControls.Tahu.FireballControl;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
@@ -32,10 +33,15 @@ import java.util.HashSet;
 import java.util.List;
 import mygame.Main;
 import Players.Player;
+import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.SceneGraphVisitorAdapter;
 
 public class PlayerControl extends AbstractControl implements ActionListener, AnalogListener, AnimEventListener {
 
+    
+    //MOST LIKELY TAHU SPECIFIC
     private InputManager inputManager;
     private boolean left = false, right = false;
     private Vector3f walkDirection = new Vector3f(0, 0, 0);
@@ -44,8 +50,11 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private int stock = 3;
     private Spatial model;
     private Camera cam;
+    private AssetManager assetManager;
     private AnimChannel animationChannel;
     private AnimControl animationControl;
+    private Vector3f fireballPos;
+    private Node root;
     
     //ComboMoves
     private ComboMove upTilt;
@@ -83,6 +92,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private boolean facingLeft = false;
     private boolean facingRight = false;
     private boolean ducking = false;
+    private boolean fireballShot = false;
     
     private boolean grabbingLedge = false;
     private float startGravity;
@@ -98,8 +108,9 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     
 
     /* PlayerControl will manage input and collision logic */
-    PlayerControl(Player p,Spatial s,InputManager input, CharacterControl cc, Camera cm, InGameState ss) 
+    PlayerControl(Node r,Player p,Spatial s,InputManager input, CharacterControl cc, Camera cm, InGameState ss) 
     {
+        root = r;
         model = s;
         character = cc;
         inputManager = input;
@@ -108,6 +119,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         cam = cm;
         playerCharacter = p.currentCharacter;
         sourceState = ss;
+        assetManager = ss.getAssetManager();
         number = p.playerNumber;
         startGravity = character.getGravity();
         startFallSpeed = character.getFallSpeed();
@@ -118,9 +130,25 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         animationControl.addListener(this);
         animationChannel = animationControl.createChannel();
         animationChannel.setAnim("Idle");
+        model.depthFirstTraversal(getFireball);
         
     }
 
+    SceneGraphVisitorAdapter getFireball = new SceneGraphVisitorAdapter() {
+
+        @Override
+        public void visit(Node node) {
+            super.visit(node);
+            findFireball(node);
+        }
+
+        private void findFireball(Node node) {
+            if (node.getName().equals("Fireball")) {
+                fireballPos = node.getWorldTranslation();
+            }
+        }
+    };
+    
     @Override
     protected void controlUpdate(float tpf) {
         Vector3f camDir = cam.getDirection().clone().multLocal(0.25f);
@@ -153,9 +181,9 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
             FightingState(tpf,camLeft);
         } else if (isActing()) {
             ActingState(camLeft);
-        } else if(isIdling()){
+        } /*else if(isIdling()){
             IdleState();
-        }
+        }*/
         character.setWalkDirection(walkDirection); // THIS IS WHERE THE WALKING HAPPENS
         
         
@@ -368,9 +396,11 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     
     public void IdleState(){
         
-        if(!"Idle".equals(animationChannel.getAnimationName())){
+        /*if(!"Idle".equals(animationChannel.getAnimationName())){
             animationChannel.setAnim("Idle", .2f);
-        }
+        }*/
+        fireballShot = false;
+
     }
     public boolean isIdling(){
         return(character.onGround() && !isActing() && !isFighting());
@@ -450,7 +480,14 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
                 }
             } else if("Up B".equals(currentMove.getMoveName())){
                 walkDirection = new Vector3f(0,1.2f,0);
-            } else {
+            } else if("Neutral B".equals(currentMove.getMoveName()) && !fireballShot){
+                Spatial fireball = assetManager.loadModel("Scenes/Fireball.j3o");
+                fireball.setLocalTranslation(fireballPos);
+                FireballControl fireballControl = new FireballControl(10,facingRight);
+                fireball.addControl(fireballControl);
+                root.attachChild(fireball);
+                fireballShot = true;
+            }else {
                 walkDirection = new Vector3f(0,0,0);
             }
             
@@ -566,11 +603,18 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     }
 
     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
+        if(isIdling()){
+            if(!"Idle".equals(animationChannel.getAnimationName())){
+                animationChannel.setAnim("Idle", .2f);
+            }
+        }
+    
     }
 
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
     }
 
+    @Override
     public Control cloneForSpatial(Spatial spatial) {
         return null;
 //        throw new UnsupportedOperationException("Not supported yet.");
@@ -622,4 +666,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     public String getAnim(){
         return animationChannel.getAnimationName();
     }
+    
+    
+    
 }

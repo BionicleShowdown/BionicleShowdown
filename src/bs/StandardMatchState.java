@@ -682,5 +682,8 @@ public class StandardMatchState extends InGameState implements ScreenController
         return (speed / 100f);
     }
     
-    
+    public AssetManager getAssetManager(){
+        return assetManager;
+    }
 }
+
