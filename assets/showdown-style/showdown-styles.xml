@@ -5,6 +5,7 @@
   <useStyles filename="showdown-style/button/nifty-button.xml" />
   <useStyles filename="showdown-style/label/nifty-label.xml" />
   <useStyles filename="showdown-style/centered-textfield/centered-textfield.xml" />
+  <useStyles filename="showdown-style/headless-slider/headless-slider-style.xml" />
   <useStyles filename="showdown-style/textfield/nifty-textfield.xml" />
   <useStyles filename="showdown-style/dropdown/nifty-drop-down.xml" />
   <useStyles filename="showdown-style/imageselect/nifty-image-select.xml" />

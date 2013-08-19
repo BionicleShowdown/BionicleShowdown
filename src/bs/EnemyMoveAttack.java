@@ -5,6 +5,7 @@
 package bs;
 
 
+import MoveControls.Tahu.FireballControl;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
@@ -79,7 +80,7 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
     public float reationTime  = 2;
     private GhostControl ghost;
     private LwjglTimer time;
-    private Node rootNode;
+    private Node root;
     private CharacterControl container;
     /*function Awake () {
     //This locates the targets position and checks and recieves that inforcation from the previous code
@@ -93,7 +94,7 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
     private Spatial model;
     
     public EnemyMoveAttack(Spatial m,Node root,AIController AI){
-        rootNode = root;
+        this.root = root;
         model=m;
         time = new LwjglTimer();
         ai = AI;
@@ -169,11 +170,14 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
     }*/
     
     public void Fire(){
+        System.out.println("I do this all day");
         if(nextWeaponToFire < weaponBehaviours.length){
             //weaponBehaviours[nextWeaponToFire].Fire();
             nextWeaponToFire = (nextWeaponToFire + 1) % weaponBehaviours.length;
             lastFireTime = time.getTimeInSeconds();
         }
+
+        
     }
     
     

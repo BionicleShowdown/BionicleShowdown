@@ -7,7 +7,7 @@ import Characters.Kopaka;
 import Characters.PlayableCharacter;
 import Characters.RandomCharacter;
 import bs.StandardMatchState;
-import bs.StartState;
+import bs.StartMenu;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -17,6 +17,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.TextureKey;
 import com.jme3.audio.AudioRenderer;
 import com.jme3.input.InputManager;
+import com.jme3.input.JoystickAxis;
 import com.jme3.input.KeyInput;
 import com.jme3.input.RawInputListener;
 import com.jme3.input.controls.ActionListener;
@@ -83,7 +84,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
     private StandardMatchState inGameState;
     private CharacterSelectMenu characterSelectMenu;
     
-    StartState startState;
+    StartMenu startState;
     static AppSettings settings = Main.getSettings(); // Defined outside of function to allow use in all methods
     
     /* Intiializes the screenHeight and screenWidth so they can be used later (initialized in onStartScreen() */
@@ -154,9 +155,13 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
     ButtonLayout extrasLayout = new ButtonLayout(extrasID, extrasID, optionsID, fightID, extrasID);
     ButtonLayout optionsLayout = new ButtonLayout(optionsID, extrasID, optionsID, trainingID, optionsID);
     
+    private float x, y, vx, vy;
     
     /* Records whether the TeamType is Free For All or a Team Match. */
     String teamType = "Free For All";
+    
+    
+    private Element cursorElement;
     
     public MainMenu() 
     {
@@ -209,13 +214,24 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
     @Override
     public void update(float tpf) 
     {
+//        x += vx;
+//        y += vy;
+//        
+//        x = FastMath.clamp(x, 0, settings.getWidth() - 12);
+//        y = FastMath.clamp(y, 0, settings.getHeight() - 19);
+//            
+//        System.out.println(x + ", " + y);
+//            
+//        cursorElement.setConstraintX(new SizeValue((int) x + "px"));
+//        cursorElement.getParent().layoutElements();
+//        cursorElement.setConstraintY(new SizeValue((int) y + "px"));
+//        cursorElement.getParent().layoutElements();
         /* Nothing Yet*/
     }
 
     @Override
     public void cleanup() 
     {
-              
         
     }
 
@@ -230,7 +246,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
 //        inputManager.setCursorVisible(false);
 //        inputManager.addRawInputListener(new CursorMoveListener(settings, nifty.getNiftyMouse()));
         // The next few lines were for a likely dropped Iconic Cursor (it made it impossible to use Nifty properly [as the cursor was invisible])
-        Element cursorElement = screen.findElementByName("Cursor");
+        cursorElement = screen.findElementByName("Cursor");
         cursorElement.hide();
         
 //        CursorMoveListener cursor = new CursorMoveListener(cursorElement, settings);
@@ -291,7 +307,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
         
 //        fightPanel.setFocusable(true);
 //        fightPanel.setFocus();
-        currentLayout = new ButtonLayout(fightID, fightID, fightID, fightID, fightID);
+        currentLayout = new ButtonLayout(nullID, fightID, fightID, fightID, fightID);
         keysUsed = false;
         
         initJoy();
@@ -299,7 +315,16 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
 
     public void onEndScreen() 
     {
-        
+        /* Make sure to delete mappings so they don't seep through to the next menu.
+           Do NOT clear Mappings, as that will also remove the Escape to exit. */
+        if (Main.joysticks.length != 0)
+        {
+            inputManager.deleteMapping("Accept");
+            inputManager.deleteMapping("Right");
+            inputManager.deleteMapping("Left");
+            inputManager.deleteMapping("Up");
+            inputManager.deleteMapping("Down");
+        }
     }
     
     @NiftyEventSubscriber(id="MouseCatcher")
@@ -462,6 +487,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
     {
         System.out.println("Training");
         Tahu.unlockCostume("Special");
+//        Kopaka.unlockCostume("Special");
         Team.addTeam("Green");
     }
     
@@ -487,6 +513,12 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
         optionsMenu.initiate(app);
     }
     
+    public void goBack()
+    {
+        StartMenu startState = new StartMenu();
+        stateManager.detach(this);
+        stateManager.attach(startState);
+    }
     
 //    @NiftyEventSubscriber(id="FightPanel")
 //    public void onFightFocus(String id, FocusGainedEvent event)
@@ -702,6 +734,11 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
                 activateActive();
             }
             return true;
+        }
+        else if (event == NiftyInputEvent.Backspace)
+        {
+            System.out.println("Back");
+            goBack();
         }
         else if (event == NiftyInputEvent.MoveCursorLeft)
         {
@@ -943,7 +980,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
 //    {
 //        private Element cursor;
 //        private AppSettings settings;
-//        private float x=0, y=0;
+////        private float x=0, y=0;
 //        
 //        public CursorMoveListener()
 //        {
@@ -971,40 +1008,40 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
 //            float deadzone = inputManager.getAxisDeadZone();
 //            System.out.println("Axis Deadzones: " + inputManager.getAxisDeadZone());
 //            System.out.println("Moved Joystick");
-//            if (evt.getAxis().getName().equalsIgnoreCase("x"))
+//            if (evt.getAxis().getLogicalId() == JoystickAxis.X_AXIS)
 //            {
 //                System.out.println("X Value: " + evt.getValue());
-//                if (evt.getValue() >= deadzone)
+//                if (evt.getValue() >= deadzone || evt.getValue() <= -deadzone)
 //                {
-//                    x += 5;
+//                    vx = evt.getValue();
 //                }
-//                else if (evt.getValue() <= -deadzone)
+//                else
 //                {
-//                    x -= 5;
+//                    vx = 0;
 //                }
 //            }
-//            if (evt.getAxis().getName().equalsIgnoreCase("y"))
+//            if (evt.getAxis().getLogicalId() == JoystickAxis.Y_AXIS)
 //            {
 //                System.out.println("Y Value: " + evt.getValue());
-//                if (evt.getValue() >= deadzone)
+//                if (evt.getValue() >= deadzone || evt.getValue() <= -deadzone)
 //                {
-//                    y += 10;
+//                    vy = evt.getValue();
 //                }
-//                else if (evt.getValue() <= -deadzone)
+//                else 
 //                {
-//                    y -= 10;
+//                    vy = 0;
 //                }
 //            }
 //            
-//            x = FastMath.clamp(x, 0, settings.getWidth() - 12);
-//            y = FastMath.clamp(y, 0, settings.getHeight() - 19);
-//            
-//            System.out.println(x + ", " + y);
-//            
-//            cursor.setConstraintX(new SizeValue((int) x + "px"));
-//            cursor.getParent().layoutElements();
-//            cursor.setConstraintY(new SizeValue((int) y + "px"));
-//            cursor.getParent().layoutElements();
+////            x = FastMath.clamp(x, 0, settings.getWidth() - 12);
+////            y = FastMath.clamp(y, 0, settings.getHeight() - 19);
+////            
+////            System.out.println(x + ", " + y);
+////            
+////            cursor.setConstraintX(new SizeValue((int) x + "px"));
+////            cursor.getParent().layoutElements();
+////            cursor.setConstraintY(new SizeValue((int) y + "px"));
+////            cursor.getParent().layoutElements();
 //            
 //            fightButtonControl(fightButton.isClickable((int) x, (int) y), false);
 //        }
@@ -1017,8 +1054,8 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
 //        public void onMouseMotionEvent(MouseMotionEvent evt) 
 //        {
 //            System.out.println("Moved Mouse");
-//            x = evt.getX();
-//            y = settings.getHeight() - evt.getY();
+//            x += evt.getDX();
+//            y -= evt.getDY();
 //            System.out.println(x + ", " + y);
 //        
 //            x = FastMath.clamp(x, 0, settings.getWidth() - 12);
@@ -1082,38 +1119,46 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
 
     private void initJoy() 
     {
+//        inputManager.setCursorVisible(false);
         if (Main.joysticks.length != 0)
         {
+            Main.joysticks[0].getButton("0").assignButton("Accept");
+            
+            if (Main.joysticks[0].getName().equals("Logitech Dual Action"))
+            {
+                inputManager.deleteMapping("Accept");
+                Main.joysticks[0].getButton("2").assignButton("Accept");
+            }
+            
             Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
             Main.joysticks[0].getYAxis().assignAxis("Down", "Up");
-            Main.joysticks[0].getButton("0").assignButton("Accept");
-            inputManager.addListener(this, "Right", "Left", "Up", "Down", "Accept");
+            inputManager.addListener(this, "Accept", "Right", "Left", "Up", "Down");
         }
     }
 
     public void onAction(String name, boolean isPressed, float tpf) 
     {
-        if (name.equals("Accept"))
+        if (isPressed && name.equals("Accept"))
         {
             System.out.println("Accept");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_RETURN, '0', true, false));
         }
-        if (name.equals("Right"))
+        else if (isPressed && name.equals("Right"))
         {
             System.out.println("Right");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_D, 'D', true, false));
         }
-        if (name.equals("Left"))
+        else if (isPressed && name.equals("Left"))
         {
             System.out.println("Left");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_A, 'A', true, false));
         }
-        if (name.equals("Up"))
+        else if (isPressed && name.equals("Up"))
         {
             System.out.println("Up");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_W, 'W', true, false));
         }
-        if (name.equals("Down"))
+        else if (isPressed && name.equals("Down"))
         {
             System.out.println("Down");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_S, 'S', true, false));

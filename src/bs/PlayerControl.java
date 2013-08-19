@@ -14,12 +14,9 @@ import com.jme3.animation.LoopMode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.input.InputManager;
-import com.jme3.input.KeyInput;
-import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
@@ -34,9 +31,8 @@ import java.util.List;
 import mygame.Main;
 import Players.Player;
 import com.jme3.asset.AssetManager;
-import com.jme3.audio.AudioNode;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.SceneGraphVisitorAdapter;
+import com.jme3.system.lwjgl.LwjglTimer;
 
 public class PlayerControl extends AbstractControl implements ActionListener, AnalogListener, AnimEventListener {
 
@@ -55,6 +51,8 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private AnimControl animationControl;
     private Vector3f fireballPos;
     private Node root;
+    private LwjglTimer startTime = new LwjglTimer();
+    private Spatial fireball;
     
     //ComboMoves
     private ComboMove upTilt;
@@ -181,9 +179,10 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
             FightingState(tpf,camLeft);
         } else if (isActing()) {
             ActingState(camLeft);
-        } /*else if(isIdling()){
+        } else if(isIdling()){
             IdleState();
-        }*/
+        }
+        checkMoveActions();
         character.setWalkDirection(walkDirection); // THIS IS WHERE THE WALKING HAPPENS
         
         
@@ -395,11 +394,11 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     }
     
     public void IdleState(){
-        
+        //onAnimCycleDone(animationControl,animationChannel,getAnim());
         /*if(!"Idle".equals(animationChannel.getAnimationName())){
             animationChannel.setAnim("Idle", .2f);
         }*/
-        fireballShot = false;
+        //fireballShot = false;
 
     }
     public boolean isIdling(){
@@ -481,12 +480,15 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
             } else if("Up B".equals(currentMove.getMoveName())){
                 walkDirection = new Vector3f(0,1.2f,0);
             } else if("Neutral B".equals(currentMove.getMoveName()) && !fireballShot){
-                Spatial fireball = assetManager.loadModel("Scenes/Fireball.j3o");
-                fireball.setLocalTranslation(fireballPos);
-                FireballControl fireballControl = new FireballControl(10,facingRight);
-                fireball.addControl(fireballControl);
-                root.attachChild(fireball);
-                fireballShot = true;
+                if(startTime.getTimeInSeconds() >= .5){
+                    fireball = assetManager.loadModel("Scenes/Fireball.j3o");
+                    fireball.setLocalTranslation(fireballPos);
+                    FireballControl fireballControl = new FireballControl(10,facingRight);
+                    fireball.addControl(fireballControl);
+                    root.attachChild(fireball);
+                    fireballShot = true;
+                }
+                
             }else {
                 walkDirection = new Vector3f(0,0,0);
             }
@@ -526,11 +528,22 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         
         if ((Main.joysticks.length != 0) && (Main.joysticks[0].getName().equals("Controller (XBOX 360 For Windows)")))
         {
-            Main.joysticks[0].getAxis("x").assignAxis("Right", "Left");
-            Main.joysticks[0].getAxis("y").assignAxis("Down", "UpAction");
+            Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
+            Main.joysticks[0].getXAxis().assignAxis("RightLeftAction", "RightLeftAction");
+            Main.joysticks[0].getYAxis().assignAxis("Down", "UpAction");
             Main.joysticks[0].getButton("0").assignButton("Jump");
             Main.joysticks[0].getButton("2").assignButton("Normal Attack");
             Main.joysticks[0].getButton("3").assignButton("Special");
+        }
+        
+        if ((Main.joysticks.length != 0) && (Main.joysticks[0].getName().equals("Logitech Dual Action")))
+        {
+            Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
+            Main.joysticks[0].getXAxis().assignAxis("RightLeftAction", "RightLeftAction");
+            Main.joysticks[0].getYAxis().assignAxis("Down", "UpAction");
+            Main.joysticks[0].getButton("2").assignButton("Jump");
+            Main.joysticks[0].getButton("1").assignButton("Normal Attack");
+            Main.joysticks[0].getButton("4").assignButton("Special");
         }
         
         
@@ -607,11 +620,15 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
             if(!"Idle".equals(animationChannel.getAnimationName())){
                 animationChannel.setAnim("Idle", .2f);
             }
-        }
+        } 
+        
     
     }
 
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
+        if (animName.equals("Neutral B")){
+            startTime.reset();
+        }
     }
 
     @Override
@@ -652,7 +669,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     {
         startJumpSpeed = newSpeed;
     }
-    
+   
     public void setFallSpeed(float newSpeed)
     {
         startFallSpeed = newSpeed;
@@ -667,6 +684,12 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         return animationChannel.getAnimationName();
     }
     
+    private void checkMoveActions(){
+        if(startTime.getTimeInSeconds() > 2 && fireballShot){
+            root.detachChild(fireball);
+            fireballShot = false;
+        }
+    }
     
     
 }

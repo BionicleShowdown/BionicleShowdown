@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+    
+<useControls filename="showdown-controls/showdown-controls.xml" />
+<useStyles filename="showdown-style/showdown-styles.xml" />
+
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+    <screen id="PlayerControlMenu" controller="menu.PlayerControlMenu" inputMapping="menu.MenuMapping">
+        <layer id="background"  childLayout="vertical" >
+            <panel id="MouseCatcher" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true" />
+        </layer>
+        
+        <layer id="foreground" childLayout="absolute">
+            <panel id="BackButtonPanel" width="10%" height="7%" x="1%" y="1%" childLayout="vertical" visibleToMouse="true" focusable="true">
+               <image id="BackButtonImage" filename="Interface/General/BackButton.png" width="100%" height="100%" visibleToMouse="true">
+                   <interact onClick="goBack()" />
+               </image>
+            </panel>
+            
+<!--            <panel id="AcceptPanel" width="18.75%" height="18.75%" x="28.75%" y="5%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            <panel id="BackPanel" width="18.75%" height="18.75%" x="52.5%" y="5%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            <panel id="PausePanel" width="18.75%" height="18.75%" x="76.25%" y="5%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            <panel id="LeftPanel" width="18.75%" height="18.75%" x="5%" y="28.75%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            <panel id="Right" width="18.75%" height="18.75%" x="28.75%" y="28.75%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            <panel id="Up" width="18.75%" height="18.75%" x="52.5%" y="28.75%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            <panel id="Down" width="18.75%" height="18.75%" x="76.25%" y="28.75%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            <panel id="Attack" width="18.75%" height="18.75%" x="5%" y="52.5%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            <panel id="Special" width="18.75%" height="18.75%" x="28.75%" y="52.5%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            <panel id="Jump" width="18.75%" height="18.75%" x="52.5%" y="52.5%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            <panel id="Grab" width="18.75%" height="18.75%" x="76.25%" y="52.5%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            <panel id="Shield" width="18.75%" height="18.75%" x="5%" y="76.25%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            <panel id="Taunt 1" width="18.75%" height="18.75%" x="28.75%" y="76.25%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            <panel id="Taunt 2" width="18.75%" height="18.75%" x="52.5%" y="76.25%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>
+            <panel id="Taunt 3" width="18.75%" height="18.75%" x="76.25%" y="76.25%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>-->
+            
+            <!-- Column 1 -->
+            
+            <panel id="AcceptPanel" width="35%" height="6%" x="15%" y="6%" childLayout="vertical" visibleToMouse="true">
+                <image id="AcceptImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="AcceptText" text="Accept: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                </image>
+            </panel>
+            <panel id="" width="35%" height="6%" x="15%" y="14%" childLayout="vertical" visibleToMouse="true">
+                <image id="BackImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="BackText" text="Back: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                </image>
+            </panel>
+            <panel id="" width="35%" height="6%" x="15%" y="22%" childLayout="vertical" visibleToMouse="true">
+                <image id="PauseImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="PauseText" text="Pause: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                </image>
+            </panel>
+            <panel id="" width="35%" height="6%" x="15%" y="30%" childLayout="vertical" visibleToMouse="true">
+                <image id="LeftImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="LeftText" text="Left: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                </image>
+            </panel>
+            <panel id="" width="35%" height="6%" x="15%" y="38%" childLayout="vertical" visibleToMouse="true">
+                <image id="RightImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="RightText" text="Right: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                </image>
+            </panel>
+            <panel id="" width="35%" height="6%" x="15%" y="46%" childLayout="vertical" visibleToMouse="true">
+                <image id="UpImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="UpText" text="Up: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                </image>
+            </panel>
+            <panel id="" width="35%" height="6%" x="15%" y="54%" childLayout="vertical" visibleToMouse="true">
+                <image id="DownImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="DownText" text="Down: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                </image>
+            </panel>
+            <panel id="" width="35%" height="6%" x="15%" y="62%" childLayout="vertical" visibleToMouse="true">
+                <image id="AttackImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="AttackText" text="Attack: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                </image>
+            </panel>
+            
+            <!-- Column 2 -->
+            
+            <panel id="" width="35%" height="6%" x="55%" y="6%" childLayout="vertical" visibleToMouse="true">
+                <image id="SpecialImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="SpecialText" text="Special: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                </image>
+            </panel>
+            <panel id="" width="35%" height="6%" x="55%" y="14%" childLayout="vertical" visibleToMouse="true">
+                <image id="JumpImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="JumpText" text="Jump: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                </image>
+            </panel>
+            <panel id="" width="35%" height="6%" x="55%" y="22%" childLayout="vertical" visibleToMouse="true">
+                <image id="GrabImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="GrabText" text="Grab: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                </image>
+            </panel>
+            <panel id="" width="35%" height="6%" x="55%" y="30%" childLayout="vertical" visibleToMouse="true">
+                <image id="DodgeImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="DodgeText" text="Dodge: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                </image>
+            </panel>
+            <panel id="" width="35%" height="6%" x="55%" y="38%" childLayout="vertical" visibleToMouse="true">
+                <image id="ShieldImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="ShieldText" text="Shield: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                </image>
+            </panel>
+            <panel id="" width="35%" height="6%" x="55%" y="46%" childLayout="vertical" visibleToMouse="true">
+                <image id="Taunt1Image" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="Taunt1Text" text="Taunt 1: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                </image>
+            </panel>
+            <panel id="" width="35%" height="6%" x="55%" y="54%" childLayout="vertical" visibleToMouse="true">
+                <image id="Taunt2Image" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="Taunt2Text" text="Taunt 2: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                </image>
+            </panel>
+            <panel id="" width="35%" height="6%" x="55%" y="62%" childLayout="vertical" visibleToMouse="true">
+                <image id="Taunt3Image" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="Taunt3Text" text="Taunt 3: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                    <text id="Taunt3ControlText" text="" font="showdown-style/1942-report-16.fnt" width="60%" height="100%" x="35%" y="0%" textHAlign="left"/>
+                </image>
+            </panel>
+            
+        </layer>
+    
+    </screen>
+
+</nifty>
