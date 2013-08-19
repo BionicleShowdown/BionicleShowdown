@@ -833,6 +833,7 @@ public class CharacterSelectMenu implements ScreenController
     
     public void adjustMatchSettings()
     {
+        System.out.println("ADJUSTMENT IS NECESSARY");
         
         if (currentMatch == null)
         {
@@ -1213,7 +1214,6 @@ public class CharacterSelectMenu implements ScreenController
             player4Dropper.show();
             player4Dropper.enable();
         }
-        
         printPlayerSelections();
     }
     

@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mygame.Main;
 import Players.Player;
+import mygame.CompoundInputManager;
 
 
 /**
@@ -42,6 +43,7 @@ public class PlayerPhysics implements PhysicsCollisionListener
     private static final Logger logger = Logger.getLogger(Stage.class.getName());
     private Spatial model;
     private InputManager im;
+    private CompoundInputManager compman;
     private PlayerControl pc;
     private Node playerNode; 
     private Vector3f extent;
@@ -64,11 +66,12 @@ public class PlayerPhysics implements PhysicsCollisionListener
      * but online docs should help. Look at PlayerControl for
      * logic, this is merely setup
      */
-    PlayerPhysics(Node root, Player p, BulletAppState bas, InputManager ipm, Camera cm, InGameState ss, boolean exists) 
+    PlayerPhysics(Node root, Player p, BulletAppState bas, InputManager ipm, CompoundInputManager compound, Camera cm, InGameState ss, boolean exists) 
     {
 
         bulletAppState = bas;
         im = ipm;
+        compman = compound;
         cam = cm;
         menuPlayer = p;
         rootNode = root;
@@ -94,7 +97,7 @@ public class PlayerPhysics implements PhysicsCollisionListener
         
         //For dev purposes only (AI), make player 2 without controls
         if(!p.toString().equals("Player2")){
-            pc = new PlayerControl(p,model,im, player, cam, sourceState);
+            pc = new PlayerControl(p,model,im, compman, player, cam, sourceState);
             playerNode.addControl(pc);
             playerNode.setUserData("tag","target");
         }   else {

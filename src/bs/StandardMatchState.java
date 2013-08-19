@@ -41,6 +41,7 @@ import de.lessvoid.nifty.tools.SizeValue;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import menu.Match;
+import mygame.CompoundInputManager;
 import mygame.Main;
 
 /**
@@ -68,6 +69,7 @@ public class StandardMatchState extends InGameState implements ScreenController
     private Nifty nifty;
     private BulletAppState bulletAppState;
     private InputManager inputManager;
+    private CompoundInputManager compoundManager;
     private AudioRenderer audioRenderer;
     private ViewPort guiViewPort;
     private Camera cam;
@@ -119,6 +121,7 @@ public class StandardMatchState extends InGameState implements ScreenController
         this.settings = this.app.getContext().getSettings();
         this.viewPort = this.app.getViewPort();
         this.inputManager = this.app.getInputManager();
+        this.compoundManager = Main.getCompoundManager();
         this.audioRenderer = this.app.getAudioRenderer();
         this.guiViewPort = this.app.getViewPort();
         this.cam = this.app.getCamera();
@@ -181,7 +184,7 @@ public class StandardMatchState extends InGameState implements ScreenController
         players[3] = null;
         
         
-        players[0] = new PlayerPhysics(localRootNode,currentMatch.getPlayer1(), bulletAppState, inputManager, cam, this, false);
+        players[0] = new PlayerPhysics(localRootNode,currentMatch.getPlayer1(), bulletAppState, inputManager, compoundManager, cam, this, false);
         for(int i = 1; i < 4; i++)
         {
             switch(i){
@@ -189,9 +192,9 @@ public class StandardMatchState extends InGameState implements ScreenController
                     if(!currentMatch.getPlayer2().canPlay()){
                         break;
                     } else if(currentMatch.getPlayer2().sameCharacter(currentMatch.getPlayer1())){
-                        players[1]= new PlayerPhysics(localRootNode,currentMatch.getPlayer2(), bulletAppState, inputManager, cam, this, true);
+                        players[1]= new PlayerPhysics(localRootNode,currentMatch.getPlayer2(), bulletAppState, inputManager, compoundManager, cam, this, true);
                     } else {
-                        players[1]= new PlayerPhysics(localRootNode,currentMatch.getPlayer2(), bulletAppState, inputManager, cam, this, false);
+                        players[1]= new PlayerPhysics(localRootNode,currentMatch.getPlayer2(), bulletAppState, inputManager, compoundManager, cam, this, false);
                     }
                     break;
                 case 2:

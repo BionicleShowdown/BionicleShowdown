@@ -33,10 +33,13 @@ import java.util.List;
 import mygame.Main;
 import Players.Player;
 import com.jme3.audio.AudioNode;
+import menu.PlayerControlMenu;
+import mygame.CompoundInputManager;
 
 public class PlayerControl extends AbstractControl implements ActionListener, AnalogListener, AnimEventListener {
 
     private InputManager inputManager;
+    private CompoundInputManager compoundManager;
     private boolean left = false, right = false;
     private Vector3f walkDirection = new Vector3f(0, 0, 0);
     private CharacterControl character;
@@ -98,10 +101,11 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     
 
     /* PlayerControl will manage input and collision logic */
-    PlayerControl(Player p,Spatial s,InputManager input, CharacterControl cc, Camera cm, InGameState ss) 
+    PlayerControl(Player p,Spatial s,InputManager input, CompoundInputManager compound, CharacterControl cc, Camera cm, InGameState ss) 
     {
         model = s;
         character = cc;
+        compoundManager = compound;
         inputManager = input;
         initKeys();
         health = 0;
@@ -476,36 +480,43 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
 
     private void initKeys() {
 
-        inputManager.addMapping("Right", new KeyTrigger(Main.player1Mappings[2]));
-        inputManager.addMapping("Left", new KeyTrigger(Main.player1Mappings[1]));
-        inputManager.addMapping("Jump", new KeyTrigger(Main.player1Mappings[0]));
-        inputManager.addMapping("Down", new KeyTrigger(Main.player1Mappings[4]));
-        inputManager.addMapping("UpAction", new KeyTrigger(Main.player1Mappings[3]));
-        inputManager.addMapping("RightLeftAction", new KeyTrigger(Main.player1Mappings[6]));
-        inputManager.addMapping("Special", new KeyTrigger(Main.player1Mappings[7]));
-        inputManager.addMapping("Normal Attack",new KeyTrigger(Main.player1Mappings[5]));
-        inputManager.addMapping("Dodge",new KeyTrigger(Main.player1Mappings[8]));
-        inputManager.addListener(this, "Right","Left","Jump","Normal Attack", "UpAction", "Down","RightLeftAction","Special","Dodge");
+        compoundManager.addMapping("Right", PlayerControlMenu.player1Scheme.getRight());
+        compoundManager.addMapping("Left", PlayerControlMenu.player1Scheme.getLeft());
+        compoundManager.addMapping("UpAction", PlayerControlMenu.player1Scheme.getUp());
+        compoundManager.addMapping("Down", PlayerControlMenu.player1Scheme.getDown());
+        compoundManager.addMapping("Jump", PlayerControlMenu.player1Scheme.getJump());
+        compoundManager.addMapping("Normal Attack", PlayerControlMenu.player1Scheme.getAttack());
+        compoundManager.addMapping("Special", PlayerControlMenu.player1Scheme.getSpecial());
+//        inputManager.addMapping("Right", new KeyTrigger(Main.player1Mappings[2]));
+//        inputManager.addMapping("Left", new KeyTrigger(Main.player1Mappings[1]));
+//        inputManager.addMapping("Jump", new KeyTrigger(Main.player1Mappings[0]));
+//        inputManager.addMapping("Down", new KeyTrigger(Main.player1Mappings[4]));
+//        inputManager.addMapping("UpAction", new KeyTrigger(Main.player1Mappings[3]));
+//        inputManager.addMapping("RightLeftAction", new KeyTrigger(Main.player1Mappings[6]));
+//        inputManager.addMapping("Special", new KeyTrigger(Main.player1Mappings[7]));
+//        inputManager.addMapping("Normal Attack",new KeyTrigger(Main.player1Mappings[5]));
+//        inputManager.addMapping("Dodge",new KeyTrigger(Main.player1Mappings[8]));
+        compoundManager.addListener(this, "Right","Left","Jump","Normal Attack", "UpAction", "Down","RightLeftAction","Special","Dodge");
         
-        if ((Main.joysticks.length != 0) && (Main.joysticks[0].getName().equals("Controller (XBOX 360 For Windows)")))
-        {
-            Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
-            Main.joysticks[0].getXAxis().assignAxis("RightLeftAction", "RightLeftAction");
-            Main.joysticks[0].getYAxis().assignAxis("Down", "UpAction");
-            Main.joysticks[0].getButton("0").assignButton("Jump");
-            Main.joysticks[0].getButton("2").assignButton("Normal Attack");
-            Main.joysticks[0].getButton("3").assignButton("Special");
-        }
-        
-        if ((Main.joysticks.length != 0) && (Main.joysticks[0].getName().equals("Logitech Dual Action")))
-        {
-            Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
-            Main.joysticks[0].getXAxis().assignAxis("RightLeftAction", "RightLeftAction");
-            Main.joysticks[0].getYAxis().assignAxis("Down", "UpAction");
-            Main.joysticks[0].getButton("2").assignButton("Jump");
-            Main.joysticks[0].getButton("1").assignButton("Normal Attack");
-            Main.joysticks[0].getButton("4").assignButton("Special");
-        }
+//        if ((Main.joysticks.length != 0) && (Main.joysticks[0].getName().equals("Controller (XBOX 360 For Windows)")))
+//        {
+//            Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
+//            Main.joysticks[0].getXAxis().assignAxis("RightLeftAction", "RightLeftAction");
+//            Main.joysticks[0].getYAxis().assignAxis("Down", "UpAction");
+//            Main.joysticks[0].getButton("0").assignButton("Jump");
+//            Main.joysticks[0].getButton("2").assignButton("Normal Attack");
+//            Main.joysticks[0].getButton("3").assignButton("Special");
+//        }
+//        
+//        if ((Main.joysticks.length != 0) && (Main.joysticks[0].getName().equals("Logitech Dual Action")))
+//        {
+//            Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
+//            Main.joysticks[0].getXAxis().assignAxis("RightLeftAction", "RightLeftAction");
+//            Main.joysticks[0].getYAxis().assignAxis("Down", "UpAction");
+//            Main.joysticks[0].getButton("2").assignButton("Jump");
+//            Main.joysticks[0].getButton("1").assignButton("Normal Attack");
+//            Main.joysticks[0].getButton("4").assignButton("Special");
+//        }
         
         
         groundA = new ComboMove("First A");

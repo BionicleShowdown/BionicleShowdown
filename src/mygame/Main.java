@@ -7,17 +7,24 @@ import bs.StandardMatchState;
 import bs.StartMenu;
 import com.aurellem.capture.Capture;
 import com.aurellem.capture.IsoTimer;
+import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.StatsAppState;
 import com.jme3.app.state.VideoRecorderAppState;
+import com.jme3.input.FlyByCamera;
+import com.jme3.input.InputManager;
+import com.jme3.input.JoyInput;
 import com.jme3.input.Joystick;
 import com.jme3.input.KeyInput;
 import com.jme3.input.RawInputListener;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.Trigger;
+import com.jme3.input.lwjgl.LwjglMouseInput;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
 import com.jme3.system.AppSettings;
+import com.jme3.system.JmeContext.Type;
 import de.lessvoid.nifty.Nifty;
 import java.awt.AWTException;
 import java.awt.MouseInfo;
@@ -54,10 +61,14 @@ public class Main extends SimpleApplication
     private static float musicVolume = 1.0f;
     private static AppSettings settings = new AppSettings(true); // Made this outside of main method so it could be acquired with getSettings()
     
+    private ShowdownInputManager joyManager;
+    private static CompoundInputManager compoundManager;
+    
     public static Joystick[] joysticks;
     
     private KeyMapListener keymapListener = new KeyMapListener();
     
+    private AppActionListener actionListener = new AppActionListener();
     
     public static int xCursor, yCursor;
     
@@ -102,8 +113,18 @@ public class Main extends SimpleApplication
     @Override
     public void simpleInitApp () 
     {
-        
+//        if (inputEnabled)
+//        {
+//            rebuildInputManager();
+//        }
 //        stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
+        joyManager = new ShowdownInputManager(this.mouseInput, this.keyInput, new ShowdownJoyInput(), this.touchInput);
+        inputManager = new InputManager(this.mouseInput, this.keyInput, null, this.touchInput);
+        defaultMapInputManager();
+        
+        compoundManager = new CompoundInputManager(inputManager, joyManager);
+        
+        
         startState = new StartMenu();
         setDisplayStatView(false);
         music = new MusicAudioNode(assetManager, "Sounds/Music/Fire and Ice.wav", true);
@@ -114,7 +135,6 @@ public class Main extends SimpleApplication
         niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
         nifty = niftyDisplay.getNifty();
         guiViewPort.addProcessor(niftyDisplay);
-        
         stateManager.attach(startState);               //Attach the first state
         
         initJoy();
@@ -222,6 +242,7 @@ public class Main extends SimpleApplication
     @Override
     public void simpleUpdate(float tpf) 
     {
+        joyManager.update(tpf);
 //        inputManager.setCursorVisible(false);
 //        PointerInfo a = MouseInfo.getPointerInfo();
 //        Point b = a.getLocation();
@@ -277,7 +298,8 @@ public class Main extends SimpleApplication
 
     private void initJoy() 
     {
-        joysticks = inputManager.getJoysticks();
+        joysticks = joyManager.getJoysticks();
+//        joysticks = checkJoysticks();
         System.out.println(joysticks);
         System.out.println(joysticks.length);
         if (joysticks.length == 0)
@@ -294,12 +316,71 @@ public class Main extends SimpleApplication
                 System.out.println(joysticks);
                 System.out.println(joysticks[i].getButtons());
                 System.out.println(joysticks[i].getAxes());
-                joysticks[i].getButton("0").assignButton("Start Game");
+//                joysticks[i].getButton("0").assignButton("Start Game");
 //                joysticks[i].getAxis("x").assignAxis("", "Start Game");
-                inputManager.setAxisDeadZone(0.5f);
+                compoundManager.setAxisDeadZone(0.5f);
+//                joysticks[i].rumble(0.1f);
                 System.out.println(joysticks[i].getAxis("x").getDeadZone());
             }
         }
+    }
+    
+//    public Joystick[] checkJoysticks()
+//    {
+//        if (AdaptedControllerEnvironment.defaultEnvironment != null)
+//        {
+//            AdaptedControllerEnvironment.resetEnvironment();
+//        }
+//        JoyInput jput = new ShowdownJoyInput();
+//        jput.setInputListener(inputManager);
+//        Joystick[] jsticks = jput.loadJoysticks(inputManager);
+//        return jsticks;
+//    }
+    
+    public void defaultMapInputManager()
+    {
+        if (inputManager != null) 
+        {
+        
+            if (context.getType() == Type.Display) {
+                inputManager.addMapping(INPUT_MAPPING_EXIT, new KeyTrigger(KeyInput.KEY_ESCAPE));
+            }
+
+            if (stateManager.getState(StatsAppState.class) != null) {
+                inputManager.addMapping(INPUT_MAPPING_HIDE_STATS, new KeyTrigger(KeyInput.KEY_F5));
+                inputManager.addListener(actionListener, INPUT_MAPPING_HIDE_STATS);            
+            }
+            
+            inputManager.addListener(actionListener, INPUT_MAPPING_EXIT);            
+        }
+    }
+
+    
+    private class AppActionListener implements ActionListener {
+
+        public void onAction(String name, boolean value, float tpf) {
+            if (!value) {
+                return;
+            }
+
+            if (name.equals(INPUT_MAPPING_EXIT)) {
+                stop();
+            }else if (name.equals(INPUT_MAPPING_HIDE_STATS)){
+                if (stateManager.getState(StatsAppState.class) != null) {
+                    stateManager.getState(StatsAppState.class).toggleStats();
+                }
+            }
+        }
+    };
+    
+    public InputManager getJoyManager()
+    {
+        return joyManager;
+    }
+    
+    public static CompoundInputManager getCompoundManager()
+    {
+        return compoundManager;
     }
 }
 
