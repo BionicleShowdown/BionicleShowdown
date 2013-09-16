@@ -245,16 +245,16 @@ public class CompoundInputManager
         inputManager.onTouchEventQueued(evt);
     }
 
-    /*public void simulateEvent(InputEvent evt) 
+    public void simulateEvent(InputEvent evt) 
     {
         if (evt instanceof MouseButtonEvent || evt instanceof MouseMotionEvent || evt instanceof KeyInputEvent)
         {
-            inputManager.simulateEvent(evt);
+            //inputManager.simulateEvent(evt);
         }
         else if (evt instanceof JoyAxisEvent || evt instanceof JoyButtonEvent)
         {
-            joyManager.simulateEvent(evt);
+            //joyManager.simulateEvent(evt);
         }
-    */
+    }
     
 }

@@ -1,9 +1,10 @@
 package AdaptedControls;
 
+import de.lessvoid.nifty.controls.NiftyControl;
 import de.lessvoid.nifty.controls.TextField;
 
-public interface CenteredTextField extends TextField {
-
+public interface CenteredTextField extends NiftyControl {
+    
   /**
    * Get the current TextField text.
    * @return text

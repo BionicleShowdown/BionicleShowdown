@@ -32,7 +32,7 @@ public class CenteredTextFieldControl extends AbstractController implements Cent
   private Element textElement;
   private Element fieldElement;
   private Element cursorElement;
-  private TextFieldLogic textField;
+  private CenteredTextFieldLogic textField;
   private int firstVisibleCharacterIndex;
   private int lastVisibleCharacterIndex;
   private int fieldWidth;
@@ -54,7 +54,7 @@ public class CenteredTextFieldControl extends AbstractController implements Cent
     this.fromClickCursorPos = -1;
     this.toClickCursorPos = -1;
 
-    this.textField = new TextFieldLogic(properties.getProperty("text", ""), new ClipboardAWT(), this);
+    this.textField = new CenteredTextFieldLogic(properties.getProperty("text", ""), new ClipboardAWT(), this);
     this.textField.toFirstPosition();
 
     this.textElement = getElement().findElementByName("#text");
