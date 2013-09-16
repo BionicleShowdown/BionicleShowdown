@@ -117,7 +117,7 @@ public class Main extends SimpleApplication
 //        {
 //            rebuildInputManager();
 //        }
-        stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
+//      stateManager.attach(new VideoRecorderAppState()); //starts recording(remove when not needed)
         joyManager = new ShowdownInputManager(this.mouseInput, this.keyInput, new ShowdownJoyInput(), this.touchInput);
         inputManager = new InputManager(this.mouseInput, this.keyInput, null, this.touchInput);
         defaultMapInputManager();
