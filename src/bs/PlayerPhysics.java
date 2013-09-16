@@ -32,6 +32,8 @@ import mygame.Main;
 import Players.Player;
 import com.jme3.animation.AnimControl;
 import com.jme3.bullet.control.GhostControl;
+import mygame.CompoundInputManager;
+
 
 
 /**
@@ -42,6 +44,7 @@ public class PlayerPhysics extends GhostControl implements PhysicsCollisionListe
 {
 
     private static final Logger logger = Logger.getLogger(Stage.class.getName());
+    private CompoundInputManager compman;
     private Spatial model;
     private InputManager im;
     private PlayerControl pc;
@@ -69,11 +72,12 @@ public class PlayerPhysics extends GhostControl implements PhysicsCollisionListe
      * but online docs should help. Look at PlayerControl for
      * logic, this is merely setup
      */
-    PlayerPhysics(Node root, Player p, BulletAppState bas, InputManager ipm, Camera cm, InGameState ss, boolean exists) 
+    PlayerPhysics(Node root, Player p, BulletAppState bas, InputManager ipm, CompoundInputManager compound, Camera cm, InGameState ss, boolean exists) 
     {
 
         bulletAppState = bas;
         im = ipm;
+        compman = compound;
         cam = cm;
         menuPlayer = p;
         rootNode = root;
@@ -99,13 +103,13 @@ public class PlayerPhysics extends GhostControl implements PhysicsCollisionListe
         
         //For dev purposes only (AI), make player 2 without controls
         if(!p.toString().equals("Player2")){
-            pc = new PlayerControl(rootNode,p,model,im, player, cam, sourceState);
+            pc = new PlayerControl(rootNode,p,model,im, compman, player, cam, sourceState);
             playerNode.addControl(pc);
             playerNode.setUserData("tag","target");
         }   else {
             idling = new IdleMovement(model); 
             aicontroller = new AIController(p, model, shootables, rootNode,bulletAppState, sourceState);
-            attacking = new EnemyMoveAttack(model,rootNode, aicontroller);
+            attacking = new EnemyMoveAttack(model,rootNode, aicontroller, bulletAppState);
             playerNode.addControl(idling);
             playerNode.addControl(attacking);
             playerNode.addControl(aicontroller);
@@ -183,7 +187,7 @@ public class PlayerPhysics extends GhostControl implements PhysicsCollisionListe
 
     @Override
     public void collision(PhysicsCollisionEvent event) {
-       
+       //Will be changed in the future for hitbox detection.
        if(event.getNodeA().getControl(AIController.class)!=null && event.getNodeB().getControl(PlayerControl.class)!=null){
            thisanim = event.getNodeB().getControl(PlayerControl.class).getAnim();
            
@@ -215,6 +219,12 @@ public class PlayerPhysics extends GhostControl implements PhysicsCollisionListe
                 percentage = percentage+8;
             } else if (thisanim.equals("Up Tilt") && !gettingHit){
                 percentage = percentage+9;
+            } else if(thisanim.equals("First A") && !gettingHit){
+                percentage = percentage+2;
+            } else if (thisanim.equals("Second A") && !gettingHit){
+                percentage = percentage+3;
+            } else if (thisanim.equals("Third A") && !gettingHit){
+                percentage = percentage+5;
             }
             
             if(event.getNodeA().getControl(PlayerControl.class).isFighting()){

@@ -33,12 +33,16 @@ import Players.Player;
 import com.jme3.asset.AssetManager;
 import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.system.lwjgl.LwjglTimer;
+import menu.PlayerControlMenu;
+import mygame.CompoundInputManager;
+
 
 public class PlayerControl extends AbstractControl implements ActionListener, AnalogListener, AnimEventListener {
 
     
     //MOST LIKELY TAHU SPECIFIC
     private InputManager inputManager;
+    private CompoundInputManager compoundManager;
     private boolean left = false, right = false;
     private Vector3f walkDirection = new Vector3f(0, 0, 0);
     private CharacterControl character;
@@ -106,11 +110,12 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     
 
     /* PlayerControl will manage input and collision logic */
-    PlayerControl(Node r,Player p,Spatial s,InputManager input, CharacterControl cc, Camera cm, InGameState ss) 
+    PlayerControl(Node r,Player p,Spatial s,InputManager input,CompoundInputManager compound, CharacterControl cc, Camera cm, InGameState ss) 
     {
         root = r;
         model = s;
         character = cc;
+        compoundManager = compound;
         inputManager = input;
         initKeys();
         health = 0;
@@ -175,13 +180,13 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
             airTime = 0;
         }
         
-        if(isFighting()){
+        if(isIdling()){
+            IdleState();
+        } else if(isFighting()){
             FightingState(tpf,camLeft);
         } else if (isActing()) {
             ActingState(camLeft);
-        } else if(isIdling()){
-            IdleState();
-        }
+        } 
         checkMoveActions();
         character.setWalkDirection(walkDirection); // THIS IS WHERE THE WALKING HAPPENS
         
@@ -206,6 +211,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
                 left = false;
             }
         }
+        
         if(name.equals("Right")){
             if(pressed && currentMove == null){
                 facingRight = true;
@@ -338,12 +344,9 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         character.setFallSpeed(startFallSpeed);
         character.setJumpSpeed(startJumpSpeed);
         grabbingLedge = false;
-        System.out.println("settings are: " + startGravity + " " + startFallSpeed + " " + startJumpSpeed);
     }
     
     public void grabLedge(Spatial event){
-        System.out.println("Character " + character.getPhysicsLocation().y);
-        System.out.println("Ledge " + event.getWorldTranslation().y);
         if(character.getPhysicsLocation().y < event.getWorldTranslation().y && !grabbingLedge){
             
             
@@ -395,9 +398,9 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     
     public void IdleState(){
         //onAnimCycleDone(animationControl,animationChannel,getAnim());
-        /*if(!"Idle".equals(animationChannel.getAnimationName())){
+        if("Run".equals(animationChannel.getAnimationName())){
             animationChannel.setAnim("Idle", .2f);
-        }*/
+        }
         //fireballShot = false;
 
     }
@@ -450,7 +453,6 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     }
     
     public void FightingState(float tpf, Vector3f camLeft){
-        System.out.println(time + " time");
         
         
         if (currentMove != null){
@@ -515,18 +517,26 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
 
     private void initKeys() {
 
-        inputManager.addMapping("Right", new KeyTrigger(Main.player1Mappings[2]));
-        inputManager.addMapping("Left", new KeyTrigger(Main.player1Mappings[1]));
-        inputManager.addMapping("Jump", new KeyTrigger(Main.player1Mappings[0]));
-        inputManager.addMapping("Down", new KeyTrigger(Main.player1Mappings[4]));
-        inputManager.addMapping("UpAction", new KeyTrigger(Main.player1Mappings[3]));
-        inputManager.addMapping("RightLeftAction", new KeyTrigger(Main.player1Mappings[6]));
-        inputManager.addMapping("Special", new KeyTrigger(Main.player1Mappings[7]));
-        inputManager.addMapping("Normal Attack",new KeyTrigger(Main.player1Mappings[5]));
-        inputManager.addMapping("Dodge",new KeyTrigger(Main.player1Mappings[8]));
-        inputManager.addListener(this, "Right","Left","Jump","Normal Attack", "UpAction", "Down","RightLeftAction","Special","Dodge");
+        compoundManager.addMapping("Right", PlayerControlMenu.player1Scheme.getRight());
+        compoundManager.addMapping("Left", PlayerControlMenu.player1Scheme.getLeft());
+        compoundManager.addMapping("UpAction", PlayerControlMenu.player1Scheme.getUp());
+        compoundManager.addMapping("Down", PlayerControlMenu.player1Scheme.getDown());
+        compoundManager.addMapping("Jump", PlayerControlMenu.player1Scheme.getJump());
+        compoundManager.addMapping("Normal Attack", PlayerControlMenu.player1Scheme.getAttack());
+        compoundManager.addMapping("Special", PlayerControlMenu.player1Scheme.getSpecial());
+        compoundManager.addMapping("RightLeftAction", PlayerControlMenu.player1Scheme.getLeftRight());
+//        inputManager.addMapping("Right", new KeyTrigger(Main.player1Mappings[2]));
+//        inputManager.addMapping("Left", new KeyTrigger(Main.player1Mappings[1]));
+//        inputManager.addMapping("Jump", new KeyTrigger(Main.player1Mappings[0]));
+//        inputManager.addMapping("Down", new KeyTrigger(Main.player1Mappings[4]));
+//        inputManager.addMapping("UpAction", new KeyTrigger(Main.player1Mappings[3]));
+//        inputManager.addMapping("RightLeftAction", new KeyTrigger(Main.player1Mappings[6]));
+//        inputManager.addMapping("Special", new KeyTrigger(Main.player1Mappings[7]));
+//        inputManager.addMapping("Normal Attack",new KeyTrigger(Main.player1Mappings[5]));
+//        inputManager.addMapping("Dodge",new KeyTrigger(Main.player1Mappings[8]));
+        compoundManager.addListener(this, "Right","Left","Jump","Normal Attack", "UpAction", "Down","RightLeftAction","Special","Dodge");
         
-        if ((Main.joysticks.length != 0) && (Main.joysticks[0].getName().equals("Controller (XBOX 360 For Windows)")))
+        /*if ((Main.joysticks.length != 0) && (Main.joysticks[0].getName().equals("Controller (XBOX 360 For Windows)")))
         {
             Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
             Main.joysticks[0].getXAxis().assignAxis("RightLeftAction", "RightLeftAction");
@@ -544,7 +554,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
             Main.joysticks[0].getButton("2").assignButton("Jump");
             Main.joysticks[0].getButton("1").assignButton("Normal Attack");
             Main.joysticks[0].getButton("4").assignButton("Special");
-        }
+        }*/
         
         
         groundA = new ComboMove("First A");

@@ -61,7 +61,6 @@ public class ControlsHub implements ScreenController
         nifty.registerScreenController(this);
         nifty.addXml("Interface/GUIS/ControlsHub.xml");
         nifty.gotoScreen("ControlsHub");          //Just for the first one, go to the start screen
-        
         nifty.setDebugOptionPanelColors(true); // Leave it on true for now
     }
 
@@ -89,9 +88,16 @@ public class ControlsHub implements ScreenController
     
     
     
-    public void player1Controls()
+//    public void player1Controls()
+//    {
+//        PlayerControlMenu playerControlMenu = new PlayerControlMenu(this, "Player 1");
+//        playerControlMenu.initiate(app);
+//    }
+    
+    public void playerControls(String player)
     {
-        PlayerControlMenu playerControlMenu = new PlayerControlMenu(this, "Player 1");
+        System.out.println("The Player Coming in is... " + player);
+        PlayerControlMenu playerControlMenu = new PlayerControlMenu(this, player);
         playerControlMenu.initiate(app);
     }
     

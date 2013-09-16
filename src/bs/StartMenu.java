@@ -23,6 +23,7 @@ import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.util.logging.Logger;
 import menu.MainMenu;
+import mygame.CompoundInputManager;
 import mygame.Main;
 
 /**
@@ -34,7 +35,7 @@ public class StartMenu extends AbstractAppState implements ScreenController, Key
 
     private static final Logger logger = Logger.getLogger(StartMenu.class.getName());
     private AssetManager assetManager;
-    private SimpleApplication app;
+    private Main app;
     private NiftyJmeDisplay niftyDisplay;
     private Nifty nifty;
     private InputManager inputManager;
@@ -42,6 +43,9 @@ public class StartMenu extends AbstractAppState implements ScreenController, Key
     private ViewPort guiViewPort;
     private Screen screen;
     private AppStateManager stateManager;
+    
+//    private InputManager joyManager;
+    private CompoundInputManager compoundManager;
 
     public StartMenu() 
     {
@@ -53,9 +57,11 @@ public class StartMenu extends AbstractAppState implements ScreenController, Key
     public void initialize(AppStateManager stateManager, Application app) 
     {
         super.initialize(stateManager, app);
-        this.app = (SimpleApplication) app;
+        this.app = (Main) app;
         this.assetManager = this.app.getAssetManager();
         this.inputManager = this.app.getInputManager();
+//        this.joyManager = this.app.getJoyManager();
+        this.compoundManager = Main.getCompoundManager();
         this.audioRenderer = this.app.getAudioRenderer();
         this.guiViewPort = this.app.getViewPort();
         this.stateManager = this.app.getStateManager();
@@ -103,10 +109,11 @@ public class StartMenu extends AbstractAppState implements ScreenController, Key
 
     public void onEndScreen() 
     {
-        if (Main.joysticks.length != 0)
-        {
-            inputManager.deleteMapping("Accept");
-        }
+        compoundManager.deleteMapping("Accept");
+//        if (Main.joysticks.length != 0)
+//        {
+//            compoundManager.deleteMapping("Accept");
+//        }
     }
     
     
@@ -129,16 +136,17 @@ public class StartMenu extends AbstractAppState implements ScreenController, Key
     
     private void initJoy() 
     {
+        System.out.println("INITJOY: " + Main.joysticks);
         if (Main.joysticks.length != 0)
         {
             Main.joysticks[0].getButton("6").assignButton("Accept");
             
             if (Main.joysticks[0].getName().equals("Logitech Dual Action"))
             {
-                inputManager.deleteMapping("Accept");
+                compoundManager.deleteMapping("Accept");
                 Main.joysticks[0].getButton("9").assignButton("Accept");
             }
-            inputManager.addListener(this, "Accept");
+            compoundManager.addListener(this, "Accept");
         }
     }
 

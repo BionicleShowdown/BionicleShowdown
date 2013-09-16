@@ -38,6 +38,7 @@ import de.lessvoid.nifty.screen.KeyInputHandler;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import de.lessvoid.nifty.tools.Color;
+import mygame.CompoundInputManager;
 import mygame.Main;
 
 /**
@@ -53,6 +54,7 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
     private NiftyJmeDisplay niftyDisplay;
     private Screen screen;
     private InputManager inputManager;
+    private CompoundInputManager compoundManager;
     private AudioRenderer audioRenderer;
     private ViewPort guiViewPort;
     private AppStateManager stateManager;
@@ -139,6 +141,7 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
         this.app = (SimpleApplication) app;
         this.assetManager = this.app.getAssetManager();
         this.inputManager = this.app.getInputManager();
+        this.compoundManager = Main.getCompoundManager();
         this.audioRenderer = this.app.getAudioRenderer();
         this.guiViewPort = this.app.getViewPort();
         this.stateManager = this.app.getStateManager();
@@ -192,14 +195,11 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
     @Override
     public void onEndScreen()
     {
-        if (Main.joysticks.length != 0)
-        {
-            inputManager.deleteMapping("Accept");
-            inputManager.deleteMapping("Right");
-            inputManager.deleteMapping("Left");
-            inputManager.deleteMapping("Up");
-            inputManager.deleteMapping("Down");
-        }
+            compoundManager.deleteMapping("Accept");
+            compoundManager.deleteMapping("Right");
+            compoundManager.deleteMapping("Left");
+            compoundManager.deleteMapping("Up");
+            compoundManager.deleteMapping("Down");
     }
 
     public void bind(Nifty nifty, Screen screen) 
@@ -799,10 +799,12 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
             case 0: 
             {
                 goBack();
+                break;
             }
             case 10:
             {
                 controlsScreen();
+                break;
             }
             default:
             {
@@ -894,13 +896,13 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
             
             if (Main.joysticks[0].getName().equals("Logitech Dual Action"))
             {
-                inputManager.deleteMapping("Accept");
+                compoundManager.deleteMapping("Accept");
                 Main.joysticks[0].getButton("2").assignButton("Accept");
             }
             
             Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
             Main.joysticks[0].getYAxis().assignAxis("Down", "Up");
-            inputManager.addListener(this, "Accept", "Right", "Left", "Down", "Up");
+            compoundManager.addListener(this, "Accept", "Right", "Left", "Down", "Up");
         }
     }
     
@@ -919,6 +921,7 @@ public class OptionsMenu implements ScreenController, KeyInputHandler, ActionLis
         else if (isPressed && name.equals("Down"))
         {
             System.out.println("Down");
+            System.out.println("Going Down Now");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_S, 'S', true, false));
         }
         

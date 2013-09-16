@@ -62,6 +62,7 @@ public class AIController extends AbstractControl implements AnimEventListener {
     private String number;
 
     private InGameState sourceState;
+    private float targetDistMax = 25f;
 
     /*function Awake () {
     //On Awake collects position, rotation, and scale relative to executer of the script
@@ -171,7 +172,7 @@ public class AIController extends AbstractControl implements AnimEventListener {
     
     public void collision() {
         if(CanSeeTarget()){
-            if(target_spatial != null && distance < 12f ){
+            if(target_spatial != null && distance < targetDistMax){
                 //Triggers OnSpotted
                 OnEnterInterestArea();
                 //System.out.println(ghost);

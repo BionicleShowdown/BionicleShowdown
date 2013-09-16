@@ -23,19 +23,39 @@ and open the template in the editor.
             </panel>
             
             <panel id="Player1ControlsPanel" width="35%" height="35%" x="10%" y="10%" childLayout="vertical" visibleToMouse="true">
-                <interact onClick="player1Controls()" />
+                <image id="Player1ControlsImage" filename="Interface/Options/ControlsPlayer1.png" width="100%" height="100%" visibleToMouse="true">
+                    <effect>
+                        <onHover name="changeImage" active="Interface/Options/ControlsPlayer1Hover.png" inactive="Interface/Options/ControlsPlayer1.png"/>
+                    </effect>
+                    <interact onClick="playerControls(Player 1)" />
+                </image>
             </panel>
             
             <panel id="Player2ControlsPanel" width="35%" height="35%" x="55%" y="10%" childLayout="vertical" visibleToMouse="true">
-                
+                <image id="Player2ControlsImage" filename="Interface/Options/ControlsPlayer2.png" width="100%" height="100%" visibleToMouse="true">
+                    <effect>
+                        <onHover name="changeImage" active="Interface/Options/ControlsPlayer2Hover.png" inactive="Interface/Options/ControlsPlayer2.png"/>
+                    </effect>
+                    <interact onClick="playerControls(Player 2)" />
+                </image>
             </panel>
             
             <panel id="Player3ControlsPanel" width="35%" height="35%" x="10%" y="55%" childLayout="vertical" visibleToMouse="true">
-                
+                <image id="Player3ControlsImage" filename="Interface/Options/ControlsPlayer3.png" width="100%" height="100%" visibleToMouse="true">
+                    <effect>
+                        <onHover name="changeImage" active="Interface/Options/ControlsPlayer3Hover.png" inactive="Interface/Options/ControlsPlayer3.png"/>
+                    </effect>
+                    <!--<interact onClick="playerControls(Player 3)" />-->
+                </image>
             </panel>
             
             <panel id="Player4ControlsPanel" width="35%" height="35%" x="55%" y="55%" childLayout="vertical" visibleToMouse="true">
-                
+                <image id="Player4ControlsImage" filename="Interface/Options/ControlsPlayer4.png" width="100%" height="100%" visibleToMouse="true">
+                    <effect>
+                        <onHover name="changeImage" active="Interface/Options/ControlsPlayer4Hover.png" inactive="Interface/Options/ControlsPlayer4.png"/>
+                    </effect>
+                    <!--<interact onClick="playerControls(Player 4)" />-->
+                </image>
             </panel>
             
         </layer>

@@ -62,6 +62,7 @@ import java.util.Calendar;
 import java.util.List;
 import javax.imageio.ImageIO;
 import jme3tools.converters.ImageToAwt;
+import mygame.CompoundInputManager;
 import mygame.Main; 
 
 
@@ -78,6 +79,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
     private NiftyJmeDisplay niftyDisplay;
     private Screen screen;
     private InputManager inputManager;
+    private CompoundInputManager compoundManager;
     private AudioRenderer audioRenderer;
     private ViewPort guiViewPort;
     private AppStateManager stateManager;
@@ -192,6 +194,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
         this.app = (SimpleApplication) app;
         this.assetManager = this.app.getAssetManager();
         this.inputManager = this.app.getInputManager();
+        this.compoundManager = Main.getCompoundManager();
         this.audioRenderer = this.app.getAudioRenderer();
         this.guiViewPort = this.app.getViewPort();
         this.stateManager = this.app.getStateManager();
@@ -317,14 +320,13 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
     {
         /* Make sure to delete mappings so they don't seep through to the next menu.
            Do NOT clear Mappings, as that will also remove the Escape to exit. */
-        if (Main.joysticks.length != 0)
-        {
-            inputManager.deleteMapping("Accept");
-            inputManager.deleteMapping("Right");
-            inputManager.deleteMapping("Left");
-            inputManager.deleteMapping("Up");
-            inputManager.deleteMapping("Down");
-        }
+        
+            compoundManager.deleteMapping("Accept");
+            compoundManager.deleteMapping("Right");
+            compoundManager.deleteMapping("Left");
+            compoundManager.deleteMapping("Up");
+            compoundManager.deleteMapping("Down");
+        
     }
     
     @NiftyEventSubscriber(id="MouseCatcher")
@@ -1126,13 +1128,13 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
             
             if (Main.joysticks[0].getName().equals("Logitech Dual Action"))
             {
-                inputManager.deleteMapping("Accept");
+                compoundManager.deleteMapping("Accept");
                 Main.joysticks[0].getButton("2").assignButton("Accept");
             }
             
             Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
             Main.joysticks[0].getYAxis().assignAxis("Down", "Up");
-            inputManager.addListener(this, "Accept", "Right", "Left", "Up", "Down");
+            compoundManager.addListener(this, "Accept", "Right", "Left", "Up", "Down");
         }
     }
 
@@ -1161,6 +1163,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
         else if (isPressed && name.equals("Down"))
         {
             System.out.println("Down");
+            System.out.println("Woah woah");
             niftyDisplay.simulateKeyEvent(new KeyInputEvent(KeyInput.KEY_S, 'S', true, false));
         }
     }

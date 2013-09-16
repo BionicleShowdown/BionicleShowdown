@@ -68,90 +68,154 @@ and open the template in the editor.
                 
             </panel>-->
             
+            
+            
+            <!--Control Selection-->
+            
             <!-- Column 1 -->
             
             <panel id="AcceptPanel" width="35%" height="6%" x="15%" y="6%" childLayout="vertical" visibleToMouse="true">
                 <image id="AcceptImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
                     <text id="AcceptText" text="Accept: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                    <text id="AcceptControlText" text="" font="showdown-style/1942-report-16.fnt" width="60%" height="100%" x="35%" y="0%" textHAlign="left"/>
+                    <interact onClick="changeControl(Accept)"/>
                 </image>
             </panel>
-            <panel id="" width="35%" height="6%" x="15%" y="14%" childLayout="vertical" visibleToMouse="true">
+            <panel id="BackPanel" width="35%" height="6%" x="15%" y="14%" childLayout="vertical" visibleToMouse="true">
                 <image id="BackImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
                     <text id="BackText" text="Back: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                    <text id="BackControlText" text="" font="showdown-style/1942-report-16.fnt" width="60%" height="100%" x="35%" y="0%" textHAlign="left"/>
+                    <interact onClick="changeControl(Back)"/>
                 </image>
             </panel>
-            <panel id="" width="35%" height="6%" x="15%" y="22%" childLayout="vertical" visibleToMouse="true">
+            <panel id="PausePanel" width="35%" height="6%" x="15%" y="22%" childLayout="vertical" visibleToMouse="true">
                 <image id="PauseImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
                     <text id="PauseText" text="Pause: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                    <text id="PauseControlText" text="" font="showdown-style/1942-report-16.fnt" width="60%" height="100%" x="35%" y="0%" textHAlign="left"/>
+                    <interact onClick="changeControl(Pause)"/>
                 </image>
             </panel>
-            <panel id="" width="35%" height="6%" x="15%" y="30%" childLayout="vertical" visibleToMouse="true">
+            <panel id="LeftPanel" width="35%" height="6%" x="15%" y="30%" childLayout="vertical" visibleToMouse="true">
                 <image id="LeftImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
                     <text id="LeftText" text="Left: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                    <text id="LeftControlText" text="" font="showdown-style/1942-report-16.fnt" width="60%" height="100%" x="35%" y="0%" textHAlign="left"/>
+                    <interact onClick="changeControl(Left)"/>
                 </image>
             </panel>
-            <panel id="" width="35%" height="6%" x="15%" y="38%" childLayout="vertical" visibleToMouse="true">
+            <panel id="RightPanel" width="35%" height="6%" x="15%" y="38%" childLayout="vertical" visibleToMouse="true">
                 <image id="RightImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
                     <text id="RightText" text="Right: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                    <text id="RightControlText" text="" font="showdown-style/1942-report-16.fnt" width="60%" height="100%" x="35%" y="0%" textHAlign="left"/>
+                    <interact onClick="changeControl(Right)"/>
                 </image>
             </panel>
-            <panel id="" width="35%" height="6%" x="15%" y="46%" childLayout="vertical" visibleToMouse="true">
+            <panel id="UpPanel" width="35%" height="6%" x="15%" y="46%" childLayout="vertical" visibleToMouse="true">
                 <image id="UpImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
                     <text id="UpText" text="Up: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                    <text id="UpControlText" text="" font="showdown-style/1942-report-16.fnt" width="60%" height="100%" x="35%" y="0%" textHAlign="left"/>
+                    <interact onClick="changeControl(Up)"/>
                 </image>
             </panel>
-            <panel id="" width="35%" height="6%" x="15%" y="54%" childLayout="vertical" visibleToMouse="true">
+            <panel id="DownPanel" width="35%" height="6%" x="15%" y="54%" childLayout="vertical" visibleToMouse="true">
                 <image id="DownImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
                     <text id="DownText" text="Down: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                    <text id="DownControlText" text="" font="showdown-style/1942-report-16.fnt" width="60%" height="100%" x="35%" y="0%" textHAlign="left"/>
+                    <interact onClick="changeControl(Down)"/>
                 </image>
             </panel>
-            <panel id="" width="35%" height="6%" x="15%" y="62%" childLayout="vertical" visibleToMouse="true">
-                <image id="AttackImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
-                    <text id="AttackText" text="Attack: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+            <panel id="JumpPanel" width="35%" height="6%" x="15%" y="62%" childLayout="vertical" visibleToMouse="true">
+                <image id="JumpImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="JumpText" text="Jump: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                    <text id="JumpControlText" text="" font="showdown-style/1942-report-16.fnt" width="60%" height="100%" x="35%" y="0%" textHAlign="left"/>
+                    <interact onClick="changeControl(Jump)"/>
                 </image>
             </panel>
             
             <!-- Column 2 -->
             
-            <panel id="" width="35%" height="6%" x="55%" y="6%" childLayout="vertical" visibleToMouse="true">
+            <panel id="AttackPanel" width="35%" height="6%" x="55%" y="6%" childLayout="vertical" visibleToMouse="true">
+                <image id="AttackImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
+                    <text id="AttackText" text="Attack: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                    <text id="AttackControlText" text="" font="showdown-style/1942-report-16.fnt" width="60%" height="100%" x="35%" y="0%" textHAlign="left"/>
+                    <interact onClick="changeControl(Attack)"/>
+                </image>
+            </panel>
+            <panel id="SpecialPanel" width="35%" height="6%" x="55%" y="14%" childLayout="vertical" visibleToMouse="true">
                 <image id="SpecialImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
                     <text id="SpecialText" text="Special: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                    <text id="SpecialControlText" text="" font="showdown-style/1942-report-16.fnt" width="60%" height="100%" x="35%" y="0%" textHAlign="left"/>
+                    <interact onClick="changeControl(Special)"/>
                 </image>
             </panel>
-            <panel id="" width="35%" height="6%" x="55%" y="14%" childLayout="vertical" visibleToMouse="true">
-                <image id="JumpImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
-                    <text id="JumpText" text="Jump: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
-                </image>
-            </panel>
-            <panel id="" width="35%" height="6%" x="55%" y="22%" childLayout="vertical" visibleToMouse="true">
+            <panel id="GrabPanel:" width="35%" height="6%" x="55%" y="22%" childLayout="vertical" visibleToMouse="true">
                 <image id="GrabImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
                     <text id="GrabText" text="Grab: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                    <text id="GrabControlText" text="" font="showdown-style/1942-report-16.fnt" width="60%" height="100%" x="35%" y="0%" textHAlign="left"/>
+                    <interact onClick="changeControl(Grab)"/>
                 </image>
             </panel>
-            <panel id="" width="35%" height="6%" x="55%" y="30%" childLayout="vertical" visibleToMouse="true">
-                <image id="DodgeImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
-                    <text id="DodgeText" text="Dodge: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
-                </image>
-            </panel>
-            <panel id="" width="35%" height="6%" x="55%" y="38%" childLayout="vertical" visibleToMouse="true">
+            <panel id="ShieldPanel" width="35%" height="6%" x="55%" y="30%" childLayout="vertical" visibleToMouse="true">
                 <image id="ShieldImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
                     <text id="ShieldText" text="Shield: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                    <text id="ShieldControlText" text="" font="showdown-style/1942-report-16.fnt" width="60%" height="100%" x="35%" y="0%" textHAlign="left"/>
+                    <interact onClick="changeControl(Shield)"/>
                 </image>
             </panel>
-            <panel id="" width="35%" height="6%" x="55%" y="46%" childLayout="vertical" visibleToMouse="true">
+            <panel id="Taunt1Panel" width="35%" height="6%" x="55%" y="38%" childLayout="vertical" visibleToMouse="true">
                 <image id="Taunt1Image" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
                     <text id="Taunt1Text" text="Taunt 1: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                    <text id="Taunt1ControlText" text="" font="showdown-style/1942-report-16.fnt" width="60%" height="100%" x="35%" y="0%" textHAlign="left"/>
+                    <interact onClick="changeControl(Taunt 1)"/>
                 </image>
             </panel>
-            <panel id="" width="35%" height="6%" x="55%" y="54%" childLayout="vertical" visibleToMouse="true">
+            <panel id="Taunt2Panel" width="35%" height="6%" x="55%" y="46%" childLayout="vertical" visibleToMouse="true">
                 <image id="Taunt2Image" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
                     <text id="Taunt2Text" text="Taunt 2: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
+                    <text id="Taunt2ControlText" text="" font="showdown-style/1942-report-16.fnt" width="60%" height="100%" x="35%" y="0%" textHAlign="left"/>
+                    <interact onClick="changeControl(Taunt 2)"/>
                 </image>
             </panel>
-            <panel id="" width="35%" height="6%" x="55%" y="62%" childLayout="vertical" visibleToMouse="true">
+            <panel id="Taunt3Panel" width="35%" height="6%" x="55%" y="54%" childLayout="vertical" visibleToMouse="true">
                 <image id="Taunt3Image" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="absolute">
                     <text id="Taunt3Text" text="Taunt 3: " font="showdown-style/1942-report-16.fnt" width="30%" height="100%" x="5%" y="0%" textHAlign="left"/>
                     <text id="Taunt3ControlText" text="" font="showdown-style/1942-report-16.fnt" width="60%" height="100%" x="35%" y="0%" textHAlign="left"/>
+                    <interact onClick="changeControl(Taunt 3)"/>
+                </image>
+            </panel>
+<!--            <panel id="" width="35%" height="6%" x="55%" y="62%" childLayout="vertical" visibleToMouse="true">
+                
+            </panel>-->
+            
+            
+            <!--Additional Settings-->
+            
+            <!--Column 1-->
+            
+            <panel id="RestorePanel" width="35%" height="6%" x="15%" y="76%" childLayout="vertical" visibleToMouse="true">
+                <image id="RestoreImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="vertical">
+                    <text id="RestoreText" text="Restore Defaults" font="showdown-style/1942-report-16.fnt" width="100%" height="100%">
+                        <interact onClick="restoreDefaults()"/>
+                    </text>
+                </image>
+            </panel>
+            <panel id="JoystickPanel" width="35%" height="6%" x="15%" y="84%" childLayout="vertical" visibleToMouse="true">
+                <image id="JoystickImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="vertical">
+                    <text id="JoystickText" text="Use Joystick" font="showdown-style/1942-report-16.fnt" width="100%" height="100%">
+                        <interact onClick="useJoystick()"/>
+                    </text>
+                </image>
+            </panel>
+            
+            <!--Column 2-->
+            
+            <panel id="SavePanel" width="35%" height="6%" x="55%" y="76%" childLayout="vertical" visibleToMouse="true">
+                <image id="SaveImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="vertical">
+                    <text id="SaveText" text="Save Control Scheme" font="showdown-style/1942-report-16.fnt" width="100%" height="100%"/>
+                </image>
+            </panel>
+            <panel id="LoadPanel" width="35%" height="6%" x="55%" y="84%" childLayout="vertical" visibleToMouse="true">
+                <image id="LoadImage" filename="Interface/General/ButtonEdgeStandard.png" width="100%" height="100%" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14" childLayout="vertical">
+                    <text id="LoadText" text="Load Control Scheme" font="showdown-style/1942-report-16.fnt" width="100%" height="100%"/>
                 </image>
             </panel>
             

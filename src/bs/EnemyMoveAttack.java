@@ -9,8 +9,10 @@ import MoveControls.Tahu.FireballControl;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.math.Quaternion;
@@ -25,6 +27,7 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import com.jme3.system.lwjgl.LwjglTimer;
 import java.sql.Time;
+import java.util.List;
 
 
 /**
@@ -39,7 +42,7 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
 
 
     public float targetDistanceMin = 3.0f; //This sets the max and min view range
-    public float targetDistanceMax = 12.0f;
+    public float targetDistanceMax = 25.0f;
 
 
     public Control weaponBehaviours[] = {}; //This takes the location of the weapons the executer of the code has and sets them in an array
@@ -55,7 +58,7 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
 
     private Transform target;
 
-
+    private float delayFight = 0;
     private boolean inRange = false;
     private float nextRaycastTime = 0; //This takes the time at which a Raycast wave was fired
     private float lastRaycastSuccessfulTime = 0; //This tallys the amount of times the Raycast wave collided with the target
@@ -70,7 +73,7 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
     private float nextMelee;
     private float nextReaction;
     private float nextDodge;
-    
+    private boolean fighting = false;
     private AIController ai;
     //public var meleeClip : AnimationClip;
     //public var dodgeClip : AnimationClip;
@@ -92,12 +95,15 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
     private AnimControl animationControl;
     private AnimChannel animationChannel;
     private Spatial model;
+    private GhostControl meleeBox;
+    private BulletAppState bas;
     
-    public EnemyMoveAttack(Spatial m,Node root,AIController AI){
+    public EnemyMoveAttack(Spatial m,Node root,AIController AI, BulletAppState bulletAppState){
         this.root = root;
         model=m;
         time = new LwjglTimer();
         ai = AI;
+        bas = bulletAppState;
     }
     
     
@@ -116,7 +122,13 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
         motor = spatial;
         character = motor.getWorldTransform();
         
-        ghost = ai.getGhostControl();
+        meleeBox = new GhostControl(new BoxCollisionShape(new Vector3f(8,4,1)));
+        Node meleeBoxPos = new Node("melee box position");
+        meleeBoxPos.addControl(meleeBox);
+        ((Node)spatial).attachChild(meleeBoxPos);
+        meleeBoxPos.setLocalTranslation(0f,.5f,5f);
+        bas.getPhysicsSpace().add(meleeBox);
+        //ghost = ai.getGhostControl();
         container = spatial.getControl(CharacterControl.class);
         animationControl = model.getControl(AnimControl.class);
         animationControl.addListener(this);
@@ -170,14 +182,11 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
     }*/
     
     public void Fire(){
-        System.out.println("I do this all day");
         if(nextWeaponToFire < weaponBehaviours.length){
             //weaponBehaviours[nextWeaponToFire].Fire();
             nextWeaponToFire = (nextWeaponToFire + 1) % weaponBehaviours.length;
             lastFireTime = time.getTimeInSeconds();
         }
-
-        
     }
     
     
@@ -185,7 +194,7 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
     protected void controlUpdate(float tpf) {
         //System.out.println("oh my god");
         // Calculate the direction from the target to the executer of the code
-        if(!"Walk".equals(animationChannel.getAnimationName())){
+        if(!"Walk".equals(animationChannel.getAnimationName()) && !fighting){
                 animationChannel.setAnim("Walk",.3f);
         }
        Vector3f targetDirection = new Vector3f(0,0,0);
@@ -216,10 +225,12 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
            inRange = true;
        }
        //Begins to walk towards target if inRange
-       if (!inRange){
+       if (!inRange || fighting){
            
            container.setWalkDirection(Vector3f.ZERO);
-           ai.OnExitInterestArea();
+           if(!inRange) {
+               ai.OnExitInterestArea();
+           }
           // motor.getLocalRotation().lookAt(targetDirection,Vector3f.UNIT_Y);
        } else {
            
@@ -248,7 +259,31 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
            }
        }
        
+       melee(tpf);
        
+    }
+    
+    private void melee(float tpf){
+        if(animationChannel.getAnimationName().equals("Walk") || animationChannel.getAnimationName().equals("Idle")) {
+            List objects = meleeBox.getOverlappingObjects();
+            System.out.println(objects);
+            for(int i = 0; i < objects.size(); i++){
+                if(objects.get(i).getClass().equals(CharacterControl.class)){
+                    if(Math.random()<.3 || fighting){
+                        if(!fighting){
+                            float x = (int)(Math.random()*10);
+                            delayFight = x + System.currentTimeMillis()/1000;
+                        }
+                        System.out.println(delayFight + " delayed " + System.currentTimeMillis()/1000 + " time");
+                        if(System.currentTimeMillis() > delayFight){
+                            delayFight = 0;
+                            animationChannel.setAnim("First A");
+                        }
+                        fighting = true;
+                    }
+                }
+            }
+        }
     }
     
     private boolean chanceDodge(){
@@ -300,6 +335,9 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
 
 
     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
+        if(!animName.equals("Walk")){
+            fighting = false;
+        }
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
