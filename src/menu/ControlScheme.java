@@ -34,6 +34,8 @@ public class ControlScheme
     private Trigger taunt1Trigger;
     private Trigger taunt2Trigger;
     private Trigger taunt3Trigger;
+    private Trigger leftrightTrigger;
+
     
 //    private String acceptName;
 //    private String backName;
@@ -66,13 +68,14 @@ public class ControlScheme
         upTrigger = ta[5];
         downTrigger = ta[6];
         jumpTrigger = ta[7];
-        attackTrigger = ta[8];
-        specialTrigger = ta[9];
-        grabTrigger = ta[10];
-        shieldTrigger = ta[11];
-        taunt1Trigger = ta[12];
-        taunt2Trigger = ta[13];
-        taunt3Trigger = ta[14];
+        leftrightTrigger = ta[8];
+        attackTrigger = ta[9];
+        specialTrigger = ta[10];
+        grabTrigger = ta[11];
+        shieldTrigger = ta[12];
+        taunt1Trigger = ta[13];
+        taunt2Trigger = ta[14];
+        taunt3Trigger = ta[15];
     }
     
 //    public ControlScheme(Trigger[] ta, String[] sa)
@@ -160,6 +163,9 @@ public class ControlScheme
     {
         return taunt3Trigger;
     }
+    public Trigger getLeftRight(){
+        return leftrightTrigger;
+    }
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Trigger Setters">
@@ -222,6 +228,9 @@ public class ControlScheme
     public void setTaunt3(Trigger taunt3)
     {
         this.taunt3Trigger = taunt3;
+    }
+    public void setLeftRight(Trigger leftright){
+        this.leftrightTrigger = leftright;
     }
     // </editor-fold>
     
@@ -356,14 +365,14 @@ public class ControlScheme
         HashMap<String, ControlScheme> tempMap = new HashMap();
         Trigger[] p1 = {new KeyTrigger(KeyInput.KEY_RETURN), new KeyTrigger(KeyInput.KEY_BACK), new KeyTrigger(KeyInput.KEY_RBRACKET), 
                         new KeyTrigger(KeyInput.KEY_A), new KeyTrigger(KeyInput.KEY_D), new KeyTrigger(KeyInput.KEY_W), new KeyTrigger(KeyInput.KEY_S),
-                        new KeyTrigger(KeyInput.KEY_LSHIFT), new KeyTrigger(KeyInput.KEY_O), new KeyTrigger(KeyInput.KEY_P), new KeyTrigger(KeyInput.KEY_I),
+                        new KeyTrigger(KeyInput.KEY_LSHIFT), new KeyTrigger(KeyInput.KEY_Z), new KeyTrigger(KeyInput.KEY_O), new KeyTrigger(KeyInput.KEY_P), new KeyTrigger(KeyInput.KEY_I),
                         new KeyTrigger(KeyInput.KEY_LBRACKET), new KeyTrigger(KeyInput.KEY_1), new KeyTrigger(KeyInput.KEY_2), new KeyTrigger(KeyInput.KEY_3)};
 //        String[] p1s = {"Return", "Backspace", "Right Bracket", "A", "D", "W", "S", "Left Shift", "O", "P", "I", "Left Bracket", "1", "2", "3"};
         tempMap.put("Player 1 Defaults", new ControlScheme(p1));
         
         Trigger[] p2 = {new KeyTrigger(KeyInput.KEY_END), new KeyTrigger(KeyInput.KEY_RSHIFT), new KeyTrigger(KeyInput.KEY_MINUS), 
                         new KeyTrigger(KeyInput.KEY_LEFT), new KeyTrigger(KeyInput.KEY_RIGHT), new KeyTrigger(KeyInput.KEY_UP), new KeyTrigger(KeyInput.KEY_DOWN),
-                        new KeyTrigger(KeyInput.KEY_RMETA), new KeyTrigger(KeyInput.KEY_NUMPAD5), new KeyTrigger(KeyInput.KEY_NUMPAD6), new KeyTrigger(KeyInput.KEY_NUMPAD4),
+                        new KeyTrigger(KeyInput.KEY_RMETA), new KeyTrigger(KeyInput.KEY_RSHIFT), new KeyTrigger(KeyInput.KEY_NUMPAD5), new KeyTrigger(KeyInput.KEY_NUMPAD6), new KeyTrigger(KeyInput.KEY_NUMPAD4),
                         new KeyTrigger(KeyInput.KEY_ADD), new KeyTrigger(KeyInput.KEY_NUMPAD7), new KeyTrigger(KeyInput.KEY_NUMPAD8), new KeyTrigger(KeyInput.KEY_NUMPAD9)};
         
 //        String[] p2s = {"End", "Right Shift", "Numpad Minus", "Left Arrow", "Right Arrow", "Up Arrow", "Down Arrow", "Right Meta", "Numpad 5", 
@@ -387,7 +396,7 @@ public class ControlScheme
     
     private ControlScheme duplicate()
     {
-        Trigger[] dt = {this.acceptTrigger, this.backTrigger, this.pauseTrigger, this.leftTrigger, this.rightTrigger, this.upTrigger, this.downTrigger, this.jumpTrigger,
+        Trigger[] dt = {this.acceptTrigger, this.backTrigger, this.pauseTrigger, this.leftTrigger, this.rightTrigger, this.upTrigger, this.downTrigger, this.jumpTrigger,this.leftrightTrigger,
                         this.attackTrigger, this.specialTrigger, this.grabTrigger, this.shieldTrigger, this.taunt1Trigger, this.taunt2Trigger, this.taunt3Trigger};
 //        String[] dn = {this.acceptName, this.backName, this.pauseName, this.leftName, this.rightName, this.upName, this.downName, this.jumpName,
 //                       this.attackName, this.specialName, this.grabName, this.shieldName, this.taunt1Name, this.taunt2Name, this.taunt3Name};

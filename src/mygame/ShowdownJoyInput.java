@@ -306,6 +306,3 @@ public class ShowdownJoyInput implements JoyInput {
         }
     }    
 }
-
-
-

@@ -383,5 +383,3 @@ public class Main extends SimpleApplication
         return compoundManager;
     }
 }
-
-

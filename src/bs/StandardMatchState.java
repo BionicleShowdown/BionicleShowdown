@@ -284,6 +284,8 @@ public class StandardMatchState extends InGameState implements ScreenController
         time.update();
         currentTime = calculateTime(time.getTimeInSeconds());
         screen.findElementByName("CurrentTime").getRenderer(TextRenderer.class).setText("" + currentTime + "");
+        screen.findElementByName("Player2Damage").getRenderer(TextRenderer.class).setText(Integer.toString(players[1].getPercent()) + "%");
+
         
     }
 
@@ -689,6 +691,12 @@ public class StandardMatchState extends InGameState implements ScreenController
         int speed = (int) (num * 100);
 //        float roundWeight = speed / 100f;
         return (speed / 100f);
+    }
+
+    @Override
+    public AssetManager getAssetManager() {
+        return assetManager;
+        //throw new UnsupportedOperationException("Not supported yet.");
     }
     
     

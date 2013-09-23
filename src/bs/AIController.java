@@ -31,7 +31,7 @@ import com.jme3.scene.control.Control;
 
 
 
-public class AIController extends AbstractControl implements PhysicsCollisionListener, AnimEventListener {
+public class AIController extends AbstractControl implements AnimEventListener {
     
     // Public member data
     //Sets other code to be launched
@@ -62,6 +62,7 @@ public class AIController extends AbstractControl implements PhysicsCollisionLis
     private String number;
 
     private InGameState sourceState;
+    private float targetDistMax = 25f;
 
     /*function Awake () {
     //On Awake collects position, rotation, and scale relative to executer of the script
@@ -89,7 +90,6 @@ public class AIController extends AbstractControl implements PhysicsCollisionLis
         rootNode = root;
         model = m;
         number = p.playerNumber;
-        bas.getPhysicsSpace().addCollisionListener(this);
         sourceState = ss;
 
     }
@@ -172,7 +172,7 @@ public class AIController extends AbstractControl implements PhysicsCollisionLis
     
     public void collision() {
         if(CanSeeTarget()){
-            if(target_spatial != null && distance < 12f ){
+            if(target_spatial != null && distance < targetDistMax){
                 //Triggers OnSpotted
                 OnEnterInterestArea();
                 //System.out.println(ghost);
@@ -272,9 +272,7 @@ public class AIController extends AbstractControl implements PhysicsCollisionLis
         return null;
         //throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    public void collision(PhysicsCollisionEvent event) {
-    }
+   
 
     public boolean isGrabbingLedge(){
         return grabbingLedge;

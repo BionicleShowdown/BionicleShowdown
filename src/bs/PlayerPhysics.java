@@ -30,20 +30,23 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mygame.Main;
 import Players.Player;
+import com.jme3.animation.AnimControl;
+import com.jme3.bullet.control.GhostControl;
 import mygame.CompoundInputManager;
+
 
 
 /**
  *
  * @author JSC
  */
-public class PlayerPhysics implements PhysicsCollisionListener 
+public class PlayerPhysics extends GhostControl implements PhysicsCollisionListener 
 {
 
     private static final Logger logger = Logger.getLogger(Stage.class.getName());
+    private CompoundInputManager compman;
     private Spatial model;
     private InputManager im;
-    private CompoundInputManager compman;
     private PlayerControl pc;
     private Node playerNode; 
     private Vector3f extent;
@@ -57,8 +60,11 @@ public class PlayerPhysics implements PhysicsCollisionListener
     private EnemyMoveAttack attacking;
     private Node rootNode;
     private Node shootables;
-    
+    private int percentage = 0;
+    private boolean gettingHit = false;
     private InGameState sourceState;
+    private String lastanim = "anim";
+    private String thisanim;
 
 
     /* Player class builds player with proper inputs, name, etc.
@@ -97,17 +103,21 @@ public class PlayerPhysics implements PhysicsCollisionListener
         
         //For dev purposes only (AI), make player 2 without controls
         if(!p.toString().equals("Player2")){
-            pc = new PlayerControl(p,model,im, compman, player, cam, sourceState);
+            pc = new PlayerControl(rootNode,p,model,im, compman, player, cam, sourceState);
             playerNode.addControl(pc);
             playerNode.setUserData("tag","target");
         }   else {
             idling = new IdleMovement(model); 
             aicontroller = new AIController(p, model, shootables, rootNode,bulletAppState, sourceState);
-            attacking = new EnemyMoveAttack(model,rootNode, aicontroller);
+            attacking = new EnemyMoveAttack(model,rootNode, aicontroller, bulletAppState);
             playerNode.addControl(idling);
             playerNode.addControl(attacking);
             playerNode.addControl(aicontroller);
         }
+        GhostControl capsule = new GhostControl(new CapsuleCollisionShape(extent.getZ() + 0.7f, extent.getY(), 1));
+        playerNode.addControl(capsule);
+        bulletAppState.getPhysicsSpace().addCollisionListener(this);
+        bulletAppState.getPhysicsSpace().add(capsule);
         bulletAppState.getPhysicsSpace().add(playerNode);
         rootNode.attachChild(playerNode);
         
@@ -175,6 +185,59 @@ public class PlayerPhysics implements PhysicsCollisionListener
         pc.setStock(newStock);
     }
 
+    @Override
     public void collision(PhysicsCollisionEvent event) {
+       //Will be changed in the future for hitbox detection.
+       if(event.getNodeA().getControl(AIController.class)!=null && event.getNodeB().getControl(PlayerControl.class)!=null){
+           thisanim = event.getNodeB().getControl(PlayerControl.class).getAnim();
+           
+           if (!event.getNodeB().getControl(PlayerControl.class).isFighting()){
+                gettingHit = false;
+                return;
+            } 
+           
+           if(thisanim.equals("First A") && !gettingHit){
+                percentage = percentage+2;
+                gettingHit = true;
+            } else if (thisanim.equals("Second A") && !gettingHit){
+                percentage = percentage+3;
+                gettingHit = true;
+            } else if (thisanim.equals("Third A") && !gettingHit){
+                percentage = percentage+5;
+                gettingHit = true;
+            }
+       }
+       if(event.getNodeB().getControl(AIController.class)!=null && event.getNodeA().getControl(PlayerControl.class)!=null){
+           thisanim = event.getNodeA().getControl(PlayerControl.class).getAnim();
+            if (!event.getNodeA().getControl(PlayerControl.class).isFighting()){
+                gettingHit = false;
+                return;
+            }
+            if(thisanim.equals("DTilt") && !gettingHit){
+                percentage = percentage+6;
+            } else if (thisanim.equals("F Tilt") && !gettingHit){
+                percentage = percentage+8;
+            } else if (thisanim.equals("Up Tilt") && !gettingHit){
+                percentage = percentage+9;
+            } else if(thisanim.equals("First A") && !gettingHit){
+                percentage = percentage+2;
+            } else if (thisanim.equals("Second A") && !gettingHit){
+                percentage = percentage+3;
+            } else if (thisanim.equals("Third A") && !gettingHit){
+                percentage = percentage+5;
+            }
+            
+            if(event.getNodeA().getControl(PlayerControl.class).isFighting()){
+                gettingHit = true;   
+            }
+       }
     }
+    
+    public int getPercent(){
+        return percentage;
+    }
+    
+    
+
 }
+

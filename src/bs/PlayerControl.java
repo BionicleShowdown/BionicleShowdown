@@ -6,6 +6,7 @@ package bs;
 
 
 import Characters.PlayableCharacter;
+import MoveControls.Tahu.FireballControl;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
@@ -13,12 +14,9 @@ import com.jme3.animation.LoopMode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.input.InputManager;
-import com.jme3.input.KeyInput;
-import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
@@ -32,12 +30,17 @@ import java.util.HashSet;
 import java.util.List;
 import mygame.Main;
 import Players.Player;
-import com.jme3.audio.AudioNode;
+import com.jme3.asset.AssetManager;
+import com.jme3.scene.SceneGraphVisitorAdapter;
+import com.jme3.system.lwjgl.LwjglTimer;
 import menu.PlayerControlMenu;
 import mygame.CompoundInputManager;
 
+
 public class PlayerControl extends AbstractControl implements ActionListener, AnalogListener, AnimEventListener {
 
+    
+    //MOST LIKELY TAHU SPECIFIC
     private InputManager inputManager;
     private CompoundInputManager compoundManager;
     private boolean left = false, right = false;
@@ -47,8 +50,13 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private int stock = 3;
     private Spatial model;
     private Camera cam;
+    private AssetManager assetManager;
     private AnimChannel animationChannel;
     private AnimControl animationControl;
+    private Vector3f fireballPos;
+    private Node root;
+    private LwjglTimer startTime = new LwjglTimer();
+    private Spatial fireball;
     
     //ComboMoves
     private ComboMove upTilt;
@@ -86,6 +94,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private boolean facingLeft = false;
     private boolean facingRight = false;
     private boolean ducking = false;
+    private boolean fireballShot = false;
     
     private boolean grabbingLedge = false;
     private float startGravity;
@@ -101,8 +110,9 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     
 
     /* PlayerControl will manage input and collision logic */
-    PlayerControl(Player p,Spatial s,InputManager input, CompoundInputManager compound, CharacterControl cc, Camera cm, InGameState ss) 
+    PlayerControl(Node r,Player p,Spatial s,InputManager input,CompoundInputManager compound, CharacterControl cc, Camera cm, InGameState ss) 
     {
+        root = r;
         model = s;
         character = cc;
         compoundManager = compound;
@@ -112,6 +122,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         cam = cm;
         playerCharacter = p.currentCharacter;
         sourceState = ss;
+        assetManager = ss.getAssetManager();
         number = p.playerNumber;
         startGravity = character.getGravity();
         startFallSpeed = character.getFallSpeed();
@@ -122,9 +133,25 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         animationControl.addListener(this);
         animationChannel = animationControl.createChannel();
         animationChannel.setAnim("Idle");
+        model.depthFirstTraversal(getFireball);
         
     }
 
+    SceneGraphVisitorAdapter getFireball = new SceneGraphVisitorAdapter() {
+
+        @Override
+        public void visit(Node node) {
+            super.visit(node);
+            findFireball(node);
+        }
+
+        private void findFireball(Node node) {
+            if (node.getName().equals("Fireball")) {
+                fireballPos = node.getWorldTranslation();
+            }
+        }
+    };
+    
     @Override
     protected void controlUpdate(float tpf) {
         Vector3f camDir = cam.getDirection().clone().multLocal(0.25f);
@@ -153,13 +180,14 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
             airTime = 0;
         }
         
-        if(isFighting()){
+        if(isIdling()){
+            IdleState();
+        } else if(isFighting()){
             FightingState(tpf,camLeft);
         } else if (isActing()) {
             ActingState(camLeft);
-        } else if(isIdling()){
-            IdleState();
-        }
+        } 
+        checkMoveActions();
         character.setWalkDirection(walkDirection); // THIS IS WHERE THE WALKING HAPPENS
         
         
@@ -183,6 +211,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
                 left = false;
             }
         }
+        
         if(name.equals("Right")){
             if(pressed && currentMove == null){
                 facingRight = true;
@@ -315,12 +344,9 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         character.setFallSpeed(startFallSpeed);
         character.setJumpSpeed(startJumpSpeed);
         grabbingLedge = false;
-        System.out.println("settings are: " + startGravity + " " + startFallSpeed + " " + startJumpSpeed);
     }
     
     public void grabLedge(Spatial event){
-        System.out.println("Character " + character.getPhysicsLocation().y);
-        System.out.println("Ledge " + event.getWorldTranslation().y);
         if(character.getPhysicsLocation().y < event.getWorldTranslation().y && !grabbingLedge){
             
             
@@ -371,10 +397,12 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     }
     
     public void IdleState(){
-        
-        if(!"Idle".equals(animationChannel.getAnimationName())){
+        //onAnimCycleDone(animationControl,animationChannel,getAnim());
+        if("Run".equals(animationChannel.getAnimationName())){
             animationChannel.setAnim("Idle", .2f);
         }
+        //fireballShot = false;
+
     }
     public boolean isIdling(){
         return(character.onGround() && !isActing() && !isFighting());
@@ -425,7 +453,6 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     }
     
     public void FightingState(float tpf, Vector3f camLeft){
-        System.out.println(time + " time");
         
         
         if (currentMove != null){
@@ -454,7 +481,17 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
                 }
             } else if("Up B".equals(currentMove.getMoveName())){
                 walkDirection = new Vector3f(0,1.2f,0);
-            } else {
+            } else if("Neutral B".equals(currentMove.getMoveName()) && !fireballShot){
+                if(startTime.getTimeInSeconds() >= .5){
+                    fireball = assetManager.loadModel("Scenes/Fireball.j3o");
+                    fireball.setLocalTranslation(fireballPos);
+                    FireballControl fireballControl = new FireballControl(10,facingRight);
+                    fireball.addControl(fireballControl);
+                    root.attachChild(fireball);
+                    fireballShot = true;
+                }
+                
+            }else {
                 walkDirection = new Vector3f(0,0,0);
             }
             
@@ -487,6 +524,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         compoundManager.addMapping("Jump", PlayerControlMenu.player1Scheme.getJump());
         compoundManager.addMapping("Normal Attack", PlayerControlMenu.player1Scheme.getAttack());
         compoundManager.addMapping("Special", PlayerControlMenu.player1Scheme.getSpecial());
+        compoundManager.addMapping("RightLeftAction", PlayerControlMenu.player1Scheme.getLeftRight());
 //        inputManager.addMapping("Right", new KeyTrigger(Main.player1Mappings[2]));
 //        inputManager.addMapping("Left", new KeyTrigger(Main.player1Mappings[1]));
 //        inputManager.addMapping("Jump", new KeyTrigger(Main.player1Mappings[0]));
@@ -498,25 +536,25 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
 //        inputManager.addMapping("Dodge",new KeyTrigger(Main.player1Mappings[8]));
         compoundManager.addListener(this, "Right","Left","Jump","Normal Attack", "UpAction", "Down","RightLeftAction","Special","Dodge");
         
-//        if ((Main.joysticks.length != 0) && (Main.joysticks[0].getName().equals("Controller (XBOX 360 For Windows)")))
-//        {
-//            Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
-//            Main.joysticks[0].getXAxis().assignAxis("RightLeftAction", "RightLeftAction");
-//            Main.joysticks[0].getYAxis().assignAxis("Down", "UpAction");
-//            Main.joysticks[0].getButton("0").assignButton("Jump");
-//            Main.joysticks[0].getButton("2").assignButton("Normal Attack");
-//            Main.joysticks[0].getButton("3").assignButton("Special");
-//        }
-//        
-//        if ((Main.joysticks.length != 0) && (Main.joysticks[0].getName().equals("Logitech Dual Action")))
-//        {
-//            Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
-//            Main.joysticks[0].getXAxis().assignAxis("RightLeftAction", "RightLeftAction");
-//            Main.joysticks[0].getYAxis().assignAxis("Down", "UpAction");
-//            Main.joysticks[0].getButton("2").assignButton("Jump");
-//            Main.joysticks[0].getButton("1").assignButton("Normal Attack");
-//            Main.joysticks[0].getButton("4").assignButton("Special");
-//        }
+        /*if ((Main.joysticks.length != 0) && (Main.joysticks[0].getName().equals("Controller (XBOX 360 For Windows)")))
+        {
+            Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
+            Main.joysticks[0].getXAxis().assignAxis("RightLeftAction", "RightLeftAction");
+            Main.joysticks[0].getYAxis().assignAxis("Down", "UpAction");
+            Main.joysticks[0].getButton("0").assignButton("Jump");
+            Main.joysticks[0].getButton("2").assignButton("Normal Attack");
+            Main.joysticks[0].getButton("3").assignButton("Special");
+        }
+        
+        if ((Main.joysticks.length != 0) && (Main.joysticks[0].getName().equals("Logitech Dual Action")))
+        {
+            Main.joysticks[0].getXAxis().assignAxis("Right", "Left");
+            Main.joysticks[0].getXAxis().assignAxis("RightLeftAction", "RightLeftAction");
+            Main.joysticks[0].getYAxis().assignAxis("Down", "UpAction");
+            Main.joysticks[0].getButton("2").assignButton("Jump");
+            Main.joysticks[0].getButton("1").assignButton("Normal Attack");
+            Main.joysticks[0].getButton("4").assignButton("Special");
+        }*/
         
         
         groundA = new ComboMove("First A");
@@ -588,11 +626,22 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     }
 
     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
+        if(isIdling()){
+            if(!"Idle".equals(animationChannel.getAnimationName())){
+                animationChannel.setAnim("Idle", .2f);
+            }
+        } 
+        
+    
     }
 
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
+        if (animName.equals("Neutral B")){
+            startTime.reset();
+        }
     }
 
+    @Override
     public Control cloneForSpatial(Spatial spatial) {
         return null;
 //        throw new UnsupportedOperationException("Not supported yet.");
@@ -630,7 +679,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     {
         startJumpSpeed = newSpeed;
     }
-    
+   
     public void setFallSpeed(float newSpeed)
     {
         startFallSpeed = newSpeed;
@@ -640,4 +689,18 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     {
         startGravity = newWeight;
     }
+    
+    public String getAnim(){
+        return animationChannel.getAnimationName();
+    }
+    
+    private void checkMoveActions(){
+        if(startTime.getTimeInSeconds() > 2 && fireballShot){
+            root.detachChild(fireball);
+            fireballShot = false;
+        }
+    }
+    
+    
 }
+

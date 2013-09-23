@@ -1294,4 +1294,3 @@ public class CharacterSelectMenu implements ScreenController
     }
       
 }
-
