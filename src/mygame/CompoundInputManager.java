@@ -136,6 +136,10 @@ public class CompoundInputManager
 
     public void deleteTrigger(String mappingName, Trigger trigger) 
     {
+        if (hasMapping(mappingName) == false)
+        {
+            return;
+        }
         if (trigger instanceof MouseButtonTrigger || trigger instanceof MouseAxisTrigger || trigger instanceof KeyTrigger)
         {
             inputManager.deleteTrigger(mappingName, trigger);
@@ -243,18 +247,6 @@ public class CompoundInputManager
     public void onTouchEventQueued(TouchEvent evt) 
     {
         inputManager.onTouchEventQueued(evt);
-    }
-
-    public void simulateEvent(InputEvent evt) 
-    {
-        if (evt instanceof MouseButtonEvent || evt instanceof MouseMotionEvent || evt instanceof KeyInputEvent)
-        {
-            //inputManager.simulateEvent(evt);
-        }
-        else if (evt instanceof JoyAxisEvent || evt instanceof JoyButtonEvent)
-        {
-            //joyManager.simulateEvent(evt);
-        }
     }
     
 }

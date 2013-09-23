@@ -4,6 +4,7 @@
   <useStyles filename="showdown-style/panel/nifty-panel.xml" />
   <useStyles filename="showdown-style/button/nifty-button.xml" />
   <useStyles filename="showdown-style/label/nifty-label.xml" />
+  <useStyles filename="showdown-style/adjustable-textfield/adjustable-textfield.xml" />
   <useStyles filename="showdown-style/centered-textfield/centered-textfield.xml" />
   <useStyles filename="showdown-style/headless-slider/headless-slider-style.xml" />
   <useStyles filename="showdown-style/textfield/nifty-textfield.xml" />
@@ -22,4 +23,5 @@
   <useStyles filename="showdown-style/hint/nifty-hint.xml" />
   <useStyles filename="showdown-style/tabs/nifty-tabs.xml" />
   <useStyles filename="showdown-style/messagebox/nifty-messagebox.xml" />
+  <useStyles filename="showdown-style/showdown-dropdown/showdown-dropdown.xml" />
 </nifty-styles>

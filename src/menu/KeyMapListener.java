@@ -30,9 +30,11 @@ public class KeyMapListener implements RawInputListener
 //    private InputManager joyManager = PlayerControlMenu.joyManager;
     private CompoundInputManager compoundManager = PlayerControlMenu.compoundManager;
     private Trigger lastTrigger;
-    private int lastKeyValue = -1;
-    private KeyNames keynames = new KeyNames(); // This is the menu.KeyNames, not the JME one
-    private String lastKeyName = "";
+//    private int lastKeyValue = -1;
+//    private KeyNames keynames = new KeyNames(); // This is the menu.KeyNames, not the JME one
+//    private String lastKeyName = "";
+    
+    private boolean justActivated = false;
 
     public KeyMapListener()
     {
@@ -52,19 +54,19 @@ public class KeyMapListener implements RawInputListener
     public void onJoyAxisEvent(JoyAxisEvent evt) 
     {
 //        System.out.println("Joy");
-        if (compoundManager != null)
-        {
-            if (compoundManager.hasMapping("Change"))
-            {
-                if (lastTrigger != null)
-                {
-                    compoundManager.deleteTrigger("Change", lastTrigger);
-                }
-            }
-        }
+//        if (compoundManager != null)
+//        {
+//            if (compoundManager.hasMapping("Change"))
+//            {
+//                if (lastTrigger != null)
+//                {
+//                    compoundManager.deleteTrigger("Change", lastTrigger);
+//                }
+//            }
+//        }
         float deadzone = compoundManager.getAxisDeadZone();
 //        System.out.println("DEADZONE: " + deadzone);
-        if ((evt.getValue() < deadzone) && (evt.getValue() > -deadzone))
+        if ((evt.getValue() < 1) && (evt.getValue() > -1))
         {
             return;
         }
@@ -88,33 +90,47 @@ public class KeyMapListener implements RawInputListener
         }
         
         lastTrigger = new JoyAxisTrigger(evt.getJoyIndex(), evt.getAxisIndex(), isNegative);
-        lastKeyName = orientation + " " + evt.getAxis().getName();
+//        lastKeyName = orientation + " " + evt.getAxis().getName();
         
-        if (compoundManager != null)
-        {
-           compoundManager.addMapping("Change", lastTrigger);
-        }
+//        System.out.println("Last Key Name: " + lastKeyName);
+        System.out.println("Last Trigger Name: " + lastTrigger.getName());
+        
+        PlayerControlMenu.changeControlTrigger(PlayerControlMenu.currentControl, lastTrigger);
+        
+//        if (compoundManager != null)
+//        {
+//           compoundManager.addMapping("Change", lastTrigger);
+//        }
     }
 
     public void onJoyButtonEvent(JoyButtonEvent evt) 
     {
-        if (compoundManager != null)
+        if (!evt.isPressed())
         {
-            if (compoundManager.hasMapping("Change"))
+            if (justActivated)
             {
-                if (lastTrigger != null)
+                justActivated = false;
+                return;
+            }
+            if (compoundManager != null)
+            {
+                if (compoundManager.hasMapping("Change"))
                 {
-                    compoundManager.deleteTrigger("Change", lastTrigger);
+                    if (lastTrigger != null)
+                    {
+                        compoundManager.deleteTrigger("Change", lastTrigger);
+                    }
                 }
             }
-        }
-        
-        lastTrigger = new JoyButtonTrigger(evt.getJoyIndex(), evt.getButtonIndex());
-        lastKeyName = evt.getButton().getName();
-        
-        if (compoundManager != null)
-        {
-           compoundManager.addMapping("Change", lastTrigger);
+            
+            lastTrigger = new JoyButtonTrigger(evt.getJoyIndex(), evt.getButtonIndex());
+//            lastKeyName = JoystickRegistry.getJoySettings(evt.getButton().getJoystick().getName()).getButtonName(evt.getButtonIndex());
+//            System.out.println("Button Made: " + lastKeyName);
+            
+            if (compoundManager != null)
+            {
+            compoundManager.addMapping("Change", lastTrigger);
+            }
         }
     }
 
@@ -131,6 +147,13 @@ public class KeyMapListener implements RawInputListener
     public void onKeyEvent(KeyInputEvent evt) 
     {
 //        System.out.println("ON KEY INPUT MANAGE: " + compoundManager);
+        
+        if (justActivated)
+        {
+            justActivated = false;
+            return;
+        }
+        
         if (compoundManager != null)
         {
             if (compoundManager.hasMapping("Change"))
@@ -143,11 +166,11 @@ public class KeyMapListener implements RawInputListener
         }
         
         lastTrigger = new KeyTrigger(evt.getKeyCode());
-        lastKeyValue = evt.getKeyCode();
+//        lastKeyValue = evt.getKeyCode();
 //        System.out.println(lastKeyValue);
 //        System.out.println(keynames.getName(lastKeyValue));
-        lastKeyName = keynames.getName(lastKeyValue);
-        System.out.println("Key Made");
+//        lastKeyName = keynames.getName(lastKeyValue);
+//        System.out.println("Key Made: " + lastKeyName);
 //        PlayerControlMenu.isWaiting = false;
         
         if (compoundManager != null)
@@ -166,14 +189,26 @@ public class KeyMapListener implements RawInputListener
         return lastTrigger;
     }
     
-    public int getLastKeyValue()
+//    public int getLastKeyValue()
+//    {
+//        return lastKeyValue;
+//    }
+//    
+//    public String getLastKeyName()
+//    {
+//        return lastKeyName;
+//    }
+    
+    public void justActivated()
     {
-        return lastKeyValue;
+        justActivated = true;
     }
     
-    public String getLastKeyName()
+    public void reset()
     {
-        return lastKeyName;
+        lastTrigger = null;
+//        lastKeyValue = -1;
+//        lastKeyName = "";
     }
 
 }

@@ -1,3 +1,4 @@
+
 package menu;
 
 import AudioNodes.SFXAudioNode;
@@ -174,6 +175,7 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
         this.app = (SimpleApplication) app;
         this.assetManager = this.app.getAssetManager();
         this.inputManager = this.app.getInputManager();
+        this.compoundManager = Main.getCompoundManager();
         this.audioRenderer = this.app.getAudioRenderer();
         this.guiViewPort = this.app.getViewPort();
         this.stateManager = this.app.getStateManager();
@@ -277,10 +279,10 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
         extrasButton = new Button(app, "Interface/MainMenu/Extras.png", .1, .55, .35, .25, false);
         optionsButton = new Button(app, "Interface/MainMenu/Options.png", .55, .55, .35, .25, false);
         
-        fightButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Tahu.wav");
-        trainingButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Kopaka.wav");
-        extrasButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Kopaka.wav");
-        optionsButtonSound = new SFXAudioNode(assetManager, "Sounds/Announcements/CharacterSelected/Tahu.wav");
+        fightButtonSound = new SFXAudioNode(assetManager, "Sounds/hover2.wav");
+        trainingButtonSound = new SFXAudioNode(assetManager, "Sounds/hover2.wav");
+        extrasButtonSound = new SFXAudioNode(assetManager, "Sounds/hover2.wav");
+        optionsButtonSound = new SFXAudioNode(assetManager, "Sounds/hover2.wav");
         
         fightPanel = screen.findElementByName("FightPanel");
         trainingPanel = screen.findElementByName("TrainingPanel");
