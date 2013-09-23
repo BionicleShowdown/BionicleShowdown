@@ -81,6 +81,8 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private ComboMoveExecution upBExec;
     private ComboMove sideDodge;
     private ComboMoveExecution sideDodgeExec;
+    private ComboMove dodgeRoll;
+    private ComboMoveExecution dodgeRollExec;
     
     
     
@@ -172,7 +174,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         sideBExec.updateExpiration(time);
         upBExec.updateExpiration(time);
         sideDodgeExec.updateExpiration(time);
-
+        dodgeRollExec.updateExpiration(time);
 
         if (!character.onGround()) {
             airTime = airTime + tpf;
@@ -260,6 +262,9 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
             }
             else if(sideDodgeExec.updateState(pressedMappings, time)) {
                 invokedMoves.add(sideDodge);
+            }
+            else if(dodgeRollExec.updateState(pressedMappings, time)) {
+                invokedMoves.add(dodgeRoll);
             }
             else if(groundAExec.updateState(pressedMappings, time) && character.onGround()) {
                 invokedMoves.add(groundA);
@@ -424,8 +429,8 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         if(jumping){
             if(!"Jump".equals(animationChannel.getAnimationName())){
                 animationChannel.setSpeed(2f);
-                animationChannel.setAnim("Jump",.3f);
-                //animationChannel.setTime(.3f);
+                animationChannel.setAnim("Jump",.5f);
+                animationChannel.setTime(.8f);
                 animationChannel.setLoopMode(LoopMode.DontLoop);
             }
             character.jump();
@@ -524,6 +529,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         compoundManager.addMapping("Jump", PlayerControlMenu.player1Scheme.getJump());
         compoundManager.addMapping("Normal Attack", PlayerControlMenu.player1Scheme.getAttack());
         compoundManager.addMapping("Special", PlayerControlMenu.player1Scheme.getSpecial());
+        compoundManager.addMapping("Dodge", PlayerControlMenu.player1Scheme.getDodge());
         compoundManager.addMapping("RightLeftAction", PlayerControlMenu.player1Scheme.getLeftRight());
 //        inputManager.addMapping("Right", new KeyTrigger(Main.player1Mappings[2]));
 //        inputManager.addMapping("Left", new KeyTrigger(Main.player1Mappings[1]));
@@ -622,6 +628,12 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         sideDodge.setUseFinalState(true);
         sideDodge.setPriority(0.1f);
         sideDodgeExec = new ComboMoveExecution(sideDodge);
+        
+        dodgeRoll = new ComboMove("Roll Dodge Forward");
+        dodgeRoll.press("RightLeftAction","Dodge").done();
+        dodgeRoll.setUseFinalState(true);
+        dodgeRoll.setPriority(0.1f);
+        dodgeRollExec = new ComboMoveExecution(dodgeRoll);
         
     }
 

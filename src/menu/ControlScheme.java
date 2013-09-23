@@ -35,6 +35,7 @@ public class ControlScheme
     private Trigger taunt2Trigger;
     private Trigger taunt3Trigger;
     private Trigger leftrightTrigger;
+    private Trigger dodgeTrigger;
 
     
     private String acceptName;
@@ -53,6 +54,7 @@ public class ControlScheme
     private String taunt2Name;
     private String taunt3Name;
     private String leftrightName;
+    private String dodgeName;
     
     public ControlScheme()
     {
@@ -77,6 +79,7 @@ public class ControlScheme
         taunt1Trigger = ta[13];
         taunt2Trigger = ta[14];
         taunt3Trigger = ta[15];
+        dodgeTrigger = ta[16];
     }
     
     public ControlScheme(Trigger[] ta, String[] sa)
@@ -98,6 +101,7 @@ public class ControlScheme
         taunt1Name = sa[13];
         taunt2Name = sa[14];
         taunt3Name = sa[15];
+        dodgeName = sa[16];
     }
     
     // A Trigger for all Controls
@@ -168,6 +172,9 @@ public class ControlScheme
     public Trigger getLeftRight(){
         return leftrightTrigger;
     }
+    public Trigger getDodge(){
+        return dodgeTrigger;
+    }
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Trigger Setters">
@@ -233,6 +240,9 @@ public class ControlScheme
     }
     public void setLeftRight(Trigger leftright){
         this.leftrightTrigger = leftright;
+    }
+    public void setDodge(Trigger dodge){
+        this.dodgeTrigger = dodge;
     }
     // </editor-fold>
     
@@ -301,6 +311,10 @@ public class ControlScheme
     {
         return taunt3Name;
     }
+     public String getDodgeName()
+    {
+        return dodgeName;
+    }
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Name Setters">
@@ -368,6 +382,10 @@ public class ControlScheme
     {
         this.taunt3Name = taunt3;
     }
+    public void setDodge(String dodge)
+    {
+        this.dodgeName = dodge;
+    }
     // </editor-fold>
 
     private static HashMap<String, ControlScheme> createDefaults() 
@@ -376,17 +394,17 @@ public class ControlScheme
         Trigger[] p1 = {new KeyTrigger(KeyInput.KEY_RETURN), new KeyTrigger(KeyInput.KEY_BACK), new KeyTrigger(KeyInput.KEY_RBRACKET), 
                         new KeyTrigger(KeyInput.KEY_A), new KeyTrigger(KeyInput.KEY_D), new KeyTrigger(KeyInput.KEY_W), new KeyTrigger(KeyInput.KEY_S),
                         new KeyTrigger(KeyInput.KEY_LSHIFT), new KeyTrigger(KeyInput.KEY_Z), new KeyTrigger(KeyInput.KEY_O), new KeyTrigger(KeyInput.KEY_P), new KeyTrigger(KeyInput.KEY_I),
-                        new KeyTrigger(KeyInput.KEY_LBRACKET), new KeyTrigger(KeyInput.KEY_1), new KeyTrigger(KeyInput.KEY_2), new KeyTrigger(KeyInput.KEY_3)};
-        String[] p1s = {"Return", "Backspace", "Right Bracket", "A", "D", "W", "S", "Left Shift", "Z","O", "P", "I", "Left Bracket", "1", "2", "3"};
+                        new KeyTrigger(KeyInput.KEY_LBRACKET), new KeyTrigger(KeyInput.KEY_1), new KeyTrigger(KeyInput.KEY_2), new KeyTrigger(KeyInput.KEY_3),new KeyTrigger(KeyInput.KEY_SPACE)};
+        String[] p1s = {"Return", "Backspace", "Right Bracket", "A", "D", "W", "S", "Left Shift", "Z","O", "P", "I", "Left Bracket", "1", "2", "3","Space"};
         tempMap.put("Player 1 Defaults", new ControlScheme(p1, p1s));
         
         Trigger[] p2 = {new KeyTrigger(KeyInput.KEY_END), new KeyTrigger(KeyInput.KEY_RSHIFT), new KeyTrigger(KeyInput.KEY_MINUS), 
                         new KeyTrigger(KeyInput.KEY_LEFT), new KeyTrigger(KeyInput.KEY_RIGHT), new KeyTrigger(KeyInput.KEY_UP), new KeyTrigger(KeyInput.KEY_DOWN),
                         new KeyTrigger(KeyInput.KEY_RMETA), new KeyTrigger(KeyInput.KEY_RSHIFT), new KeyTrigger(KeyInput.KEY_NUMPAD5), new KeyTrigger(KeyInput.KEY_NUMPAD6), new KeyTrigger(KeyInput.KEY_NUMPAD4),
-                        new KeyTrigger(KeyInput.KEY_ADD), new KeyTrigger(KeyInput.KEY_NUMPAD7), new KeyTrigger(KeyInput.KEY_NUMPAD8), new KeyTrigger(KeyInput.KEY_NUMPAD9)};
+                        new KeyTrigger(KeyInput.KEY_ADD), new KeyTrigger(KeyInput.KEY_NUMPAD7), new KeyTrigger(KeyInput.KEY_NUMPAD8), new KeyTrigger(KeyInput.KEY_NUMPAD9),new KeyTrigger(KeyInput.KEY_ADD)};
         
         String[] p2s = {"End", "Right Shift", "Numpad Minus", "Left Arrow", "Right Arrow", "Up Arrow", "Down Arrow", "Right Meta", "Right Shift","Numpad 5", 
-                        "Numpad 6", "Numpad 4", "Numpad Plus", "Numpad 7", "Numpad 8", "Numpad 9"}; 
+                        "Numpad 6", "Numpad 4", "Numpad Plus", "Numpad 7", "Numpad 8", "Numpad 9", "Add"}; 
         
         tempMap.put("Player 2 Defaults", new ControlScheme(p2, p2s));
         
@@ -407,9 +425,9 @@ public class ControlScheme
     private ControlScheme duplicate()
     {
         Trigger[] dt = {this.acceptTrigger, this.backTrigger, this.pauseTrigger, this.leftTrigger, this.rightTrigger, this.upTrigger, this.downTrigger, this.jumpTrigger,this.leftrightTrigger,
-                        this.attackTrigger, this.specialTrigger, this.grabTrigger, this.shieldTrigger, this.taunt1Trigger, this.taunt2Trigger, this.taunt3Trigger};
+                        this.attackTrigger, this.specialTrigger, this.grabTrigger, this.shieldTrigger, this.taunt1Trigger, this.taunt2Trigger, this.taunt3Trigger,this.dodgeTrigger};
         String[] dn = {this.acceptName, this.backName, this.pauseName, this.leftName, this.rightName, this.upName, this.downName, this.jumpName,this.leftrightName,
-                       this.attackName, this.specialName, this.grabName, this.shieldName, this.taunt1Name, this.taunt2Name, this.taunt3Name};
+                       this.attackName, this.specialName, this.grabName, this.shieldName, this.taunt1Name, this.taunt2Name, this.taunt3Name,this.dodgeName};
         
         return new ControlScheme(dt, dn);
     }

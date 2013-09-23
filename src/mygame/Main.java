@@ -3,42 +3,24 @@ package mygame;
 
 import AudioNodes.MusicAudioNode;
 import bs.Characters;
-import bs.StandardMatchState;
 import bs.StartMenu;
-import com.aurellem.capture.Capture;
-import com.aurellem.capture.IsoTimer;
-import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.StatsAppState;
-import com.jme3.app.state.VideoRecorderAppState;
-import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
-import com.jme3.input.JoyInput;
 import com.jme3.input.Joystick;
 import com.jme3.input.KeyInput;
-import com.jme3.input.RawInputListener;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.Trigger;
-import com.jme3.input.lwjgl.LwjglMouseInput;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeContext.Type;
 import de.lessvoid.nifty.Nifty;
-import java.awt.AWTException;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.PointerInfo;
-import java.awt.Robot;
-import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import menu.KeyMapListener;
 //import com.aurellem.capture.Capture;
 //import com.aurellem.capture.IsoTimer;
-import menu.MainMenu;
 
 
 /**
@@ -126,7 +108,7 @@ public class Main extends SimpleApplication
         
         
         startState = new StartMenu();
-        setDisplayStatView(false);
+        setDisplayStatView(true);       //Change to false for release
         music = new MusicAudioNode(assetManager, "Sounds/Music/Fire and Ice.wav", true);
         music.play();
 

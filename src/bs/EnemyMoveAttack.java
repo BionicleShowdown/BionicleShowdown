@@ -52,7 +52,7 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
     // Private memeber data
    // private AI ai; //This is the code that launched this code
 
-
+ 
     private Transform character;
 
 
@@ -269,16 +269,16 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
             System.out.println(objects);
             for(int i = 0; i < objects.size(); i++){
                 if(objects.get(i).getClass().equals(CharacterControl.class)){
-                    if(Math.random()<.3 || fighting){
-                        if(!fighting){
+                    if(Math.random()<.15 ) {//|| fighting){
+                        /*if(!fighting){
                             float x = (int)(Math.random()*10);
                             delayFight = x + System.currentTimeMillis()/1000;
                         }
                         System.out.println(delayFight + " delayed " + System.currentTimeMillis()/1000 + " time");
-                        if(System.currentTimeMillis() > delayFight){
-                            delayFight = 0;
-                            animationChannel.setAnim("First A");
-                        }
+                        if(System.currentTimeMillis() > delayFight){*/
+                        //    delayFight = 0;
+                        animationChannel.setAnim("First A");
+                        //}
                         fighting = true;
                     }
                 }
