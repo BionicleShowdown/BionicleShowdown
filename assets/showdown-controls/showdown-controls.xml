@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nifty-controls>
+  <useControls filename="showdown-controls/showdown-controls/adjustable-textfield.xml" />
   <useControls filename="showdown-controls/showdown-controls/nifty-button.xml" />
   <useControls filename="showdown-controls/showdown-controls/centered-textfield.xml" />
   <useControls filename="showdown-controls/showdown-controls/headless-slider.xml" />
@@ -22,4 +23,5 @@
   <useControls filename="showdown-controls/showdown-controls/nifty-window.xml" />
   <useControls filename="showdown-controls/showdown-controls/nifty-radiobutton.xml" />
   <useControls filename="showdown-controls/showdown-controls/nifty-hint.xml" />
+  <useControls filename="showdown-controls/showdown-controls/showdown-drop-down.xml" />
 </nifty-controls>
