@@ -126,7 +126,6 @@ public class PlayerPhysics extends GhostControl implements PhysicsCollisionListe
         }
         //GhostControl capsule = new GhostControl(new CapsuleCollisionShape(extent.getZ() + 0.7f, extent.getY(), 1));
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
-        bulletAppState.getPhysicsSpace().add(player);
         //model.move(0f,-extent.getY(),0f);
         //rootNode.attachChild(model);
         
@@ -183,6 +182,8 @@ public class PlayerPhysics extends GhostControl implements PhysicsCollisionListe
         model.attachChild(adjust);     
         adjust.move(0,extent.getY()/2f,0);*/
         playerNode.addControl(player);
+        bulletAppState.getPhysicsSpace().add(player);
+
         player.setGravity(menuPlayer.getCharacter().getWeight());
         player.setJumpSpeed(menuPlayer.getCharacter().getJumpSpeed());
         player.setFallSpeed(menuPlayer.getCharacter().getFallSpeed());
