@@ -639,10 +639,13 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
 
     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
         if(isIdling()){
-            if(!"Idle".equals(animationChannel.getAnimationName())){
+            if(!"Idle".equals(animName)){
                 animationChannel.setAnim("Idle", .2f);
             }
-        } 
+        }
+        if("Forward Roll".equals(animName)){
+            System.out.println("Rolled");
+        }
         
     
     }
@@ -652,6 +655,8 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
             startTime.reset();
         }
     }
+    
+    
 
     @Override
     public Control cloneForSpatial(Spatial spatial) {

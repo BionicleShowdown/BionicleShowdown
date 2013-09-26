@@ -228,7 +228,9 @@ public class StandardMatchState extends InGameState implements ScreenController
                 case 0:
                     if(players[0] != null){
                         loadStage.getp1Spawn().attachChild(players[i].getPlayer());
-                        players[i].getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp1Spawn()).getWorldTranslation()));
+                        //players[i].getModelRoot().move(0,-5f,0);
+                        Vector3f pos = ((Spatial) loadStage.getp1Spawn()).getWorldTranslation();
+                        players[i].getCharacterControl().setPhysicsLocation(pos);
                     }
                     break;
                 case 1:
@@ -239,13 +241,13 @@ public class StandardMatchState extends InGameState implements ScreenController
                     break;
                 case 2:
                     if(players[2] != null){
-                        loadStage.getp3Spawn().attachChild(players[i].getPlayer());
+                        loadStage.getp3Spawn().attachChild(players[i].getModelRoot());
                         players[i].getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp1Spawn()).getWorldTranslation()));
                     }
                     break;
                 case 3:
                     if(players[3] != null){
-                        loadStage.getp4Spawn().attachChild(players[i].getPlayer());
+                        loadStage.getp4Spawn().attachChild(players[i].getModelRoot());
                         players[i].getCharacterControl().setPhysicsLocation((((Spatial) loadStage.getp1Spawn()).getWorldTranslation()));
                     }
                     break;
