@@ -7,6 +7,7 @@ import bs.StartMenu;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.VideoRecorderAppState;
+import com.jme3.audio.AudioSource;
 import com.jme3.input.InputManager;
 import com.jme3.input.Joystick;
 import com.jme3.input.KeyInput;
@@ -264,7 +265,7 @@ public class Main extends SimpleApplication
 //            music.stop();
 //        }
         
-        if(music.getStatus() == MusicAudioNode.Status.Stopped)
+        if(music.getStatus() == AudioSource.Status.Stopped)
         {
             music = new MusicAudioNode(assetManager, musicSelection, true);
             music.setVolume(musicVolume);
