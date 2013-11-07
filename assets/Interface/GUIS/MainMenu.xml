@@ -4,9 +4,7 @@
 
     
     <screen id="MainMenu" controller="menu.MainMenu" inputMapping="menu.MenuMapping">
-        <layer id="background"  childLayout="vertical" >
-            <panel id="MouseCatcher" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true"/>
-        </layer>
+        
         <layer id="foreground" childLayout="absolute">
             <panel id="FightPanel" width="40%" height="31.25%" x="7.5%" y="16.875%"  childLayout="absolute" visibleToMouse = "true">
                 <image id="FightImage" filename= "Interface/MainMenu/Fight.png" width="87.5%" height="80%" x="6.25%" y="10%" visibleToMouse = "true"> <!-- width="${CALL.getWidthPx()}" height="${CALL.getHeightPx()}" -->
@@ -45,7 +43,9 @@
                 <image filename="Interface/General/TempCursor.png" />
             </panel>
         </layer>
-        
+        <layer id="background"  childLayout="vertical" >
+            <panel id="MouseCatcher" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true"/>
+        </layer>
     </screen>
 
 </nifty>

@@ -11,9 +11,7 @@ and open the template in the editor.
 
 
     <screen id="ControlsHub" controller="menu.ControlsHub" inputMapping="menu.MenuMapping">
-        <layer id="background"  childLayout="vertical" >
-            <panel id="MouseCatcher" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true" />
-        </layer>
+        
         
         <layer id="foreground" childLayout="absolute">
             <panel id="BackButtonPanel" width="10%" height="7%" x="1%" y="1%" childLayout="vertical" visibleToMouse="true" focusable="true">
@@ -58,6 +56,9 @@ and open the template in the editor.
                 </image>
             </panel>
             
+        </layer>
+        <layer id="background"  childLayout="vertical" >
+            <panel id="MouseCatcher" width="100%" height="100%" x="0%" y="0%" visibleToMouse="true" />
         </layer>
     
     </screen>

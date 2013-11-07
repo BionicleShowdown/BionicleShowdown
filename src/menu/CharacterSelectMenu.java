@@ -150,6 +150,7 @@ public class CharacterSelectMenu implements ScreenController
     {
         this.nifty = nifty;
         this.screen = screen;
+        System.out.println("Charselect screen " + screen);
     }
 
     
@@ -321,7 +322,7 @@ public class CharacterSelectMenu implements ScreenController
            {
                currentPlayer.costume.owner = currentPlayer.currentCharacter.name;
                currentPlayer.costume = cyclePlayerTeamCostume(currentPlayer, 0);
-               NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/" + currentPlayer.costume + ".png", false);
+               NiftyImage image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/" + currentPlayer.costume + ".png", false);
                nifty.getCurrentScreen().findElementByName(currentPlayerSelection + "Select").findElementByName(currentPlayerSelection + "Select").getRenderer(ImageRenderer.class).setImage(image);
                matchReady();
                return;
@@ -365,7 +366,7 @@ public class CharacterSelectMenu implements ScreenController
 //        currentPlayer.currentCharacter = character;
 //        System.out.println("After: " + currentPlayer.currentCharacter);
         printPlayerSelections();
-        NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/" + currentPlayer.costume + ".png", false);
+        NiftyImage image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/" + currentPlayer.costume + ".png", false);
         nifty.getCurrentScreen().findElementByName(currentPlayerSelection + "Select").getRenderer(ImageRenderer.class).setImage(image);
         matchReady();
     }
@@ -438,7 +439,7 @@ public class CharacterSelectMenu implements ScreenController
         currentPlayer = temp;
         currentPlayerSelection = currentPlayer.playerNumber;
 //        System.out.println(" to " + temp.playerType);
-        NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/PlayerType" + temp.playerType + ".png", false);
+        NiftyImage image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/PlayerSelect/PlayerType" + temp.playerType + ".png", false);
         nifty.getCurrentScreen().findElementByName(temp.playerNumber + "Type").getRenderer(ImageRenderer.class).setImage(image);
         matchReady();
     }
@@ -453,7 +454,7 @@ public class CharacterSelectMenu implements ScreenController
             dropper.show();
             dropper.enable();
             System.out.println("Element is currently enabled: " + dropper.isEnabled());
-            NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/" + player.playerNumber + "Select.png", false);
+            NiftyImage image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/PlayerSelect/" + player.playerNumber + "Select.png", false);
             nifty.getCurrentScreen().findElementByName(player.playerNumber + "Select").getRenderer(ImageRenderer.class).setImage(image);
             System.out.println(player.currentCharacter);
             return new CPUPlayer(player.playerNumber, player.currentCharacter, player.costume, player.team);
@@ -473,7 +474,7 @@ public class CharacterSelectMenu implements ScreenController
             System.out.println(player.playerNumber + "'s team was " + player.team);
             Team.removeMember(player.team, player);
             player.team = "";
-            NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/PlayerNullSelect.png", false);
+            NiftyImage image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/PlayerSelect/PlayerNullSelect.png", false);
             nifty.getCurrentScreen().findElementByName(player.playerNumber + "Select").getRenderer(ImageRenderer.class).setImage(image);
             System.out.println(player.currentCharacter);
             return new NullPlayer(player.playerNumber);
@@ -585,7 +586,7 @@ public class CharacterSelectMenu implements ScreenController
         }
         System.out.println("New Costume is: " + temp.costume.name);
         
-        NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/" + temp.currentCharacter.name + "/" + temp.costume.name + ".png", false);
+        NiftyImage image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/" + temp.currentCharacter.name + "/" + temp.costume.name + ".png", false);
         nifty.getCurrentScreen().findElementByName(player + "Select").getRenderer(ImageRenderer.class).setImage(image);
 //        System.out.println(" to " + temp.playerType);
 //        NiftyImage image = nifty.getRenderEngine().createImage("Interface/PlayerSelect/PlayerType" + temp.playerType + ".png", false);
@@ -647,7 +648,7 @@ public class CharacterSelectMenu implements ScreenController
         }
         System.out.println("New Costume is: " + temp.costume.name);
         
-        NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/" + temp.currentCharacter.name + "/" + temp.costume.name + ".png", false);
+        NiftyImage image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/" + temp.currentCharacter.name + "/" + temp.costume.name + ".png", false);
         nifty.getCurrentScreen().findElementByName(player + "Select").getRenderer(ImageRenderer.class).setImage(image);
     }
     
@@ -954,14 +955,14 @@ public class CharacterSelectMenu implements ScreenController
         {
             if (numberOfTeams > 1)
             {
-                NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/MatchReady.png", false);
+                NiftyImage image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/Buttons/MatchReady.png", false);
                 nifty.getCurrentScreen().findElementByName("StartMatch").getRenderer(ImageRenderer.class).setImage(image);
                 startMatchButton.enable();
                 return true;
             }
             else
             {
-                NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/MatchNotReady.png", false);
+                NiftyImage image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/Buttons/MatchNotReady.png", false);
                 nifty.getCurrentScreen().findElementByName("StartMatch").getRenderer(ImageRenderer.class).setImage(image);
                 startMatchButton.disable();
                 return false;  
@@ -970,14 +971,14 @@ public class CharacterSelectMenu implements ScreenController
         
         if (numberOfPlayers > 1)
         {
-            NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/MatchReady.png", false);
+            NiftyImage image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/Buttons/MatchReady.png", false);
             nifty.getCurrentScreen().findElementByName("StartMatch").getRenderer(ImageRenderer.class).setImage(image);
             startMatchButton.enable();
             return true;
         }
         else 
         {
-           NiftyImage image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/Buttons/MatchNotReady.png", false);
+           NiftyImage image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/Buttons/MatchNotReady.png", false);
            nifty.getCurrentScreen().findElementByName("StartMatch").getRenderer(ImageRenderer.class).setImage(image);
            startMatchButton.disable();
            return false; 
@@ -1137,15 +1138,15 @@ public class CharacterSelectMenu implements ScreenController
             if (player1.currentCharacter != null)
             {
                 Team.addMember(player1.team, player1);
-                image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/" + player1.getCostume() + ".png", false);
+                image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/" + player1.getCostume() + ".png", false);
                 screen.findElementByName("Player1Select").getRenderer(ImageRenderer.class).setImage(image);
             }
             else
             {
-                image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/Player1Select.png", false);
+                image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/PlayerSelect/Player1Select.png", false);
                 screen.findElementByName("Player1Select").getRenderer(ImageRenderer.class).setImage(image);
             }
-            image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/PlayerType" + player1.playerType + ".png", false);
+            image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/PlayerSelect/PlayerType" + player1.playerType + ".png", false);
             screen.findElementByName("Player1Type").getRenderer(ImageRenderer.class).setImage(image);
             Element player1Dropper = screen.findElementByName("Player1");
             player1Dropper.markForMove(screen.findElementByName("Player1Placehold"));
@@ -1158,15 +1159,15 @@ public class CharacterSelectMenu implements ScreenController
             if (player2.currentCharacter != null)
             {
                 Team.addMember(player2.team, player2);
-                image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/" + player2.getCostume() + ".png", false);
+                image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/" + player2.getCostume() + ".png", false);
                 screen.findElementByName("Player2Select").getRenderer(ImageRenderer.class).setImage(image);
             }
             else
             {
-                image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/Player2Select.png", false);
+                image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/PlayerSelect/Player2Select.png", false);
                 screen.findElementByName("Player2Select").getRenderer(ImageRenderer.class).setImage(image);
             }
-            image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/PlayerType" + player2.playerType + ".png", false);
+            image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/PlayerSelect/PlayerType" + player2.playerType + ".png", false);
             screen.findElementByName("Player2Type").getRenderer(ImageRenderer.class).setImage(image);
             Element player2Dropper = screen.findElementByName("Player2");
             player2Dropper.markForMove(screen.findElementByName("Player2Placehold"));
@@ -1178,15 +1179,15 @@ public class CharacterSelectMenu implements ScreenController
             if (player3.currentCharacter != null)
             {
                 Team.addMember(player3.team, player3);
-                image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/" + player3.getCostume() + ".png", false);
+                image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/" + player3.getCostume() + ".png", false);
                 screen.findElementByName("Player3Select").getRenderer(ImageRenderer.class).setImage(image);
             }
             else
             {
-                image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/Player3Select.png", false);
+                image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/PlayerSelect/Player3Select.png", false);
                 screen.findElementByName("Player3Select").getRenderer(ImageRenderer.class).setImage(image);
             }
-            image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/PlayerType" + player3.playerType + ".png", false);
+            image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/PlayerSelect/PlayerType" + player3.playerType + ".png", false);
             screen.findElementByName("Player3Type").getRenderer(ImageRenderer.class).setImage(image);
             Element player3Dropper = screen.findElementByName("Player3");
             player3Dropper.markForMove(screen.findElementByName("Player3Placehold"));
@@ -1198,16 +1199,16 @@ public class CharacterSelectMenu implements ScreenController
             if (player4.currentCharacter != null)
             {
                 Team.addMember(player4.team, player4);
-                image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/" + player4.getCostume() + ".png", false);
+                image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/" + player4.getCostume() + ".png", false);
                 screen.findElementByName("Player4Select").getRenderer(ImageRenderer.class).setImage(image);
             }
             else
             {
-                image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/Player4Select.png", false);
+                image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/PlayerSelect/Player4Select.png", false);
                 screen.findElementByName("Player4Select").getRenderer(ImageRenderer.class).setImage(image);
             }
              
-            image = nifty.getRenderEngine().createImage("Interface/CharacterSelect/PlayerSelect/PlayerType" + player4.playerType + ".png", false);
+            image = nifty.getRenderEngine().createImage(screen,"Interface/CharacterSelect/PlayerSelect/PlayerType" + player4.playerType + ".png", false);
             screen.findElementByName("Player4Type").getRenderer(ImageRenderer.class).setImage(image);
             Element player4Dropper = screen.findElementByName("Player4");
             player4Dropper.markForMove(screen.findElementByName("Player4Placehold"));

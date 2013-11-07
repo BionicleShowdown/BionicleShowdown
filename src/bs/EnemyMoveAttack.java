@@ -122,11 +122,11 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
         motor = spatial;
         character = motor.getWorldTransform();
         
-        meleeBox = new GhostControl(new BoxCollisionShape(new Vector3f(8,4,1)));
+        meleeBox = new GhostControl(new BoxCollisionShape(new Vector3f(1,4,5)));
         Node meleeBoxPos = new Node("melee box position");
         meleeBoxPos.addControl(meleeBox);
         ((Node)spatial).attachChild(meleeBoxPos);
-        meleeBoxPos.setLocalTranslation(0f,.5f,5f);
+        meleeBoxPos.setLocalTranslation(0f,.55f,8f);
         bas.getPhysicsSpace().add(meleeBox);
         //ghost = ai.getGhostControl();
         container = spatial.getControl(CharacterControl.class);

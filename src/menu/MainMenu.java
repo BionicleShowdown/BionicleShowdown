@@ -279,10 +279,10 @@ public class MainMenu extends AbstractAppState implements ScreenController, KeyI
         extrasButton = new Button(app, "Interface/MainMenu/Extras.png", .1, .55, .35, .25, false);
         optionsButton = new Button(app, "Interface/MainMenu/Options.png", .55, .55, .35, .25, false);
         
-        fightButtonSound = new SFXAudioNode(assetManager, "Sounds/hover2.wav");
-        trainingButtonSound = new SFXAudioNode(assetManager, "Sounds/hover2.wav");
-        extrasButtonSound = new SFXAudioNode(assetManager, "Sounds/hover2.wav");
-        optionsButtonSound = new SFXAudioNode(assetManager, "Sounds/hover2.wav");
+        fightButtonSound = new SFXAudioNode(assetManager, "Sounds/hover2mono.wav");
+        trainingButtonSound = new SFXAudioNode(assetManager, "Sounds/hover2mono.wav");
+        extrasButtonSound = new SFXAudioNode(assetManager, "Sounds/hover2mono.wav");
+        optionsButtonSound = new SFXAudioNode(assetManager, "Sounds/hover2mono.wav");
         
         fightPanel = screen.findElementByName("FightPanel");
         trainingPanel = screen.findElementByName("TrainingPanel");

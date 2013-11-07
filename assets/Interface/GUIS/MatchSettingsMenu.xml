@@ -27,8 +27,9 @@
                         <effect>
                             <onHover name="changeImage" active="Interface/General/LeftButtonHover.png" inactive="Interface/General/LeftButton.png"/>
                         </effect>
+                        <interact onClick="adjustStock(-1)" />
                     </image>
-                    <interact onClick="adjustStock(-1)" />
+                    
                 </panel>
                 <panel id="StockEnterPanel" width="75%" height="100%" x="12.5%" y="0%" childLayout="vertical">
                     <control id="StockValue" name="centeredtextfield" maxLength="3" font="showdown-style/1942-report-32.fnt"/>
@@ -63,8 +64,8 @@
                         <effect>
                             <onHover name="changeImage" active="Interface/General/LeftButtonHover.png" inactive="Interface/General/LeftButton.png"/>
                         </effect>
+                        <interact onClick="adjustTime(-1)" />
                     </image>
-                    <interact onClick="adjustTime(-1)" />
                 </panel>
                 <panel id="TimeEnterPanel" width="75%" height="100%" x="12.5%" y="0%" childLayout="absolute">
                     <panel id="HourEnterPanel" width="30%" height="100%" x="0%" y="0%" childLayout="vertical">
@@ -82,8 +83,9 @@
                         <effect>
                             <onHover name="changeImage" active="Interface/General/RightButtonHover.png" inactive="Interface/General/RightButton.png"/>
                         </effect>
+                        <interact onClick="adjustTime(1)" />
                     </image>
-                    <interact onClick="adjustTime(1)" />
+                    
                 </panel>
             </panel>
             
@@ -96,8 +98,9 @@
                         <effect>
                             <onHover name="changeImage" active="Interface/General/LeftButtonHover.png" inactive="Interface/General/LeftButton.png"/>
                         </effect>
+                        <interact onClick="adjustWidgets(-1)" />
                     </image>
-                    <interact onClick="adjustWidgets(-1)" />
+                    
                 </panel>
                 <panel id="WidgetEnterPanel" width="75%" height="100%" x="12.5%" y="0%" childLayout="vertical">
                     <control id="WidgetValue" name="centeredtextfield" font="showdown-style/1942-report-32.fnt"/>

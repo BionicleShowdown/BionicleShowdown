@@ -496,7 +496,13 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
                     fireballShot = true;
                 }
                 
-            }else {
+            }else if("Roll Dodge Forward".equals(currentMove.getMoveName())){
+                if(facingLeft){
+                    walkDirection.addLocal(camLeft.multLocal(0.82f));
+                } else {
+                    walkDirection.addLocal(camLeft.negate().multLocal(0.82f));
+                }
+            } else {
                 walkDirection = new Vector3f(0,0,0);
             }
             

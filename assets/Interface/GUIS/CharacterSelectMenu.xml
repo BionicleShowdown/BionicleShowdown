@@ -41,8 +41,9 @@
                         <onHover name="changeImage" active="Interface/General/ButtonEdgeHover.png" inactive="Interface/General/ButtonEdgeStandard.png" imageMode="resize:14,2,14,14,14,2,14,2,14,2,14,14"/>
                     </effect>
                     <text id="MatchSettingsText" text="Match Settings" font="showdown-style/1942-report-16.fnt" width="100%" height="100%" />
+                    <interact onClick="adjustMatchSettings()" />
                 </image>
-                <interact onClick="adjustMatchSettings()" />
+                
 <!--                <image filename="Interface/CharacterSelect/Buttons/Rules.png" width="100%" height="100%" visibleToMouse="true">
                     
                 </image>-->

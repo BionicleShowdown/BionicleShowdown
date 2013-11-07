@@ -243,8 +243,8 @@ public class JoystickSettingsMenu implements ScreenController, KeyInputHandler, 
         edgeImageNormal = nifty.createImage("Interface/General/ButtonEdgeStandard.png", false);
         edgeImageHover = nifty.createImage("Interface/General/ButtonEdgeHover.png", false);
         
-        String areaProviderProperty = new ImageModeHelper().getAreaProviderProperty("resize:14,2,14,14,14,2,14,2,14,2,14,14");
-        String renderStrategyProperty = new ImageModeHelper().getRenderStrategyProperty("resize:14,2,14,14,14,2,14,2,14,2,14,14");
+        String areaProviderProperty = ImageModeHelper.getAreaProviderProperty("resize:14,2,14,14,14,2,14,2,14,2,14,14");
+        String renderStrategyProperty = ImageModeHelper.getRenderStrategyProperty("resize:14,2,14,14,14,2,14,2,14,2,14,14");
         
         edgeImageNormal.setImageMode(ImageModeFactory.getSharedInstance().createImageMode(areaProviderProperty, renderStrategyProperty));
         edgeImageHover.setImageMode(ImageModeFactory.getSharedInstance().createImageMode(areaProviderProperty, renderStrategyProperty));

@@ -151,11 +151,13 @@ public class StandardMatchState extends InGameState implements ScreenController
         nifty.registerScreenController(this);
         nifty.addXml("Interface/GUIS/StandardMatchHUD.xml");
         nifty.gotoScreen("standardMatchHud");
+        screen = nifty.getScreen("standardMatchHud");
         
         //Add the InGameHUD xml file, and go this screen
         nifty.setDebugOptionPanelColors(false); // Added this so the true on the Menu won't make the screen look weird.
 
         //Initialize GUI
+        System.out.println(nifty + " Nifty and Screen " + screen);
         guiInitiate();
         playerStockInitialize();
         balanceSetup();
@@ -312,8 +314,10 @@ public class StandardMatchState extends InGameState implements ScreenController
 
     }
 
+    @Override
     public void bind(Nifty nifty, Screen screen) 
     {
+        System.out.println("Bind called");
         this.nifty = nifty;
         this.screen = screen;
     }
@@ -353,7 +357,7 @@ public class StandardMatchState extends InGameState implements ScreenController
                 
                 if (players[i - 1] != null)
                 {
-                    NiftyImage icon = nifty.getRenderEngine().createImage("Interface/CharacterInGame/StockIcon/" + players[i - 1].getMenuPlayer().costume + ".png", false);
+                    NiftyImage icon = nifty.getRenderEngine().createImage(screen,"Interface/CharacterInGame/StockIcon/" + players[i - 1].getMenuPlayer().costume + ".png", false);
                     screen.findElementByName(image).getRenderer(ImageRenderer.class).setImage(icon);
                 }
                 
@@ -372,7 +376,7 @@ public class StandardMatchState extends InGameState implements ScreenController
             
             if (players[i - 1] != null)
             {
-                NiftyImage emblem = nifty.getRenderEngine().createImage("Interface/CharacterInGame/Avatar/" + players[i - 1].getMenuPlayer().costume + ".png", false);
+                NiftyImage emblem = nifty.getRenderEngine().createImage(screen,"Interface/CharacterInGame/Avatar/" + players[i - 1].getMenuPlayer().costume + ".png", false);
                 screen.findElementByName(image).getRenderer(ImageRenderer.class).setImage(emblem);
             }
             
@@ -389,7 +393,7 @@ public class StandardMatchState extends InGameState implements ScreenController
             
             if (players[i - 1] != null)
             {
-                NiftyImage emblem = nifty.getRenderEngine().createImage("Interface/CharacterInGame/Emblem/" + players[i - 1].getMenuPlayer().costume + ".png", false);
+                NiftyImage emblem = nifty.getRenderEngine().createImage(screen,"Interface/CharacterInGame/Emblem/" + players[i - 1].getMenuPlayer().costume + ".png", false);
                 screen.findElementByName(image).getRenderer(ImageRenderer.class).setImage(emblem);
             }
             
