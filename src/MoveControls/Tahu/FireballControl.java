@@ -9,6 +9,7 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
+import com.jme3.system.lwjgl.LwjglTimer;
 
 /**
  *
@@ -17,7 +18,8 @@ import com.jme3.scene.control.Control;
 public class FireballControl extends AbstractControl{
     private float speed = 1;
     private float direction = 1;
-    
+    private LwjglTimer startTime = new LwjglTimer();
+
     public FireballControl(){
         speed = 1;
     }
@@ -28,6 +30,7 @@ public class FireballControl extends AbstractControl{
         } else {
             direction = -1;
         }
+        startTime.reset();
     }
 
     
@@ -35,6 +38,7 @@ public class FireballControl extends AbstractControl{
     protected void controlUpdate(float tpf) {
         //throw new UnsupportedOperationException("Not supported yet.");
         spatial.move(tpf*speed*direction, 0, 0);
+        shouldDisappear();
     }
 
     @Override
@@ -64,4 +68,11 @@ public class FireballControl extends AbstractControl{
         this.speed = speed;
     }
     
+    private void shouldDisappear(){
+        
+        if (startTime.getTimeInSeconds() > 4f){
+            spatial.getParent().detachChild(spatial);
+        }
+        
+    }
 }

@@ -55,7 +55,6 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private AnimControl animationControl;
     private Vector3f fireballPos;
     private Node root;
-    private LwjglTimer startTime = new LwjglTimer();
     private Spatial fireball;
     
     //ComboMoves
@@ -97,6 +96,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
     private boolean facingRight = false;
     private boolean ducking = false;
     private boolean fireballShot = false;
+    private Spatial fireballO;
     
     private boolean grabbingLedge = false;
     private float startGravity;
@@ -135,7 +135,10 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         animationControl.addListener(this);
         animationChannel = animationControl.createChannel();
         animationChannel.setAnim("Idle");
+        fireballO = assetManager.loadModel("Scenes/Fireball.j3o");
+        fireball = fireballO.clone();
         model.depthFirstTraversal(getFireball);
+        
         
     }
 
@@ -179,6 +182,9 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         if (!character.onGround()) {
             airTime = airTime + tpf;
         } else {
+            if(animationChannel.getAnimationName().equals("Jump")){
+                animationChannel.setAnim("Walk",.3f);
+            }
             airTime = 0;
         }
         
@@ -189,7 +195,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         } else if (isActing()) {
             ActingState(camLeft);
         } 
-        checkMoveActions();
+        //checkMoveActions();
         character.setWalkDirection(walkDirection); // THIS IS WHERE THE WALKING HAPPENS
         
         
@@ -487,8 +493,8 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
             } else if("Up B".equals(currentMove.getMoveName())){
                 walkDirection = new Vector3f(0,1.2f,0);
             } else if("Neutral B".equals(currentMove.getMoveName()) && !fireballShot){
-                if(startTime.getTimeInSeconds() >= .5){
-                    fireball = assetManager.loadModel("Scenes/Fireball.j3o");
+                if(animationChannel.getTime() > 0.6f && animationChannel.getTime() < .7f){
+                    fireball = fireballO.clone();
                     fireball.setLocalTranslation(fireballPos);
                     FireballControl fireballControl = new FireballControl(10,facingRight);
                     fireball.addControl(fireballControl);
@@ -658,7 +664,8 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
 
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
         if (animName.equals("Neutral B")){
-            startTime.reset();
+            fireballShot = false;
+            System.out.println(channel.getAnimMaxTime() + " MAX TIME");
         }
     }
     
@@ -717,12 +724,7 @@ public class PlayerControl extends AbstractControl implements ActionListener, An
         return animationChannel.getAnimationName();
     }
     
-    private void checkMoveActions(){
-        if(startTime.getTimeInSeconds() > 2 && fireballShot){
-            root.detachChild(fireball);
-            fireballShot = false;
-        }
-    }
+    
     
     
 }

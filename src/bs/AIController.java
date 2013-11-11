@@ -9,6 +9,7 @@ import Players.Player;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
+import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
@@ -40,6 +41,7 @@ public class AIController extends AbstractControl implements AnimEventListener {
     
     // Private memeber data
     private CharacterControl container;
+    private AssetManager assetManager;
     private Transform character;
     private Spatial target_spatial;
     private boolean insideInterestArea = true;
@@ -62,7 +64,7 @@ public class AIController extends AbstractControl implements AnimEventListener {
     private String number;
 
     private InGameState sourceState;
-    private float targetDistMax = 25f;
+    private float targetDistMax = 35f;
 
     /*function Awake () {
     //On Awake collects position, rotation, and scale relative to executer of the script
@@ -91,7 +93,11 @@ public class AIController extends AbstractControl implements AnimEventListener {
         model = m;
         number = p.playerNumber;
         sourceState = ss;
-
+        assetManager = ss.getAssetManager();
+    }
+    
+    public AssetManager getAssetManager(){
+        return assetManager;
     }
     
     public int getNumber(){

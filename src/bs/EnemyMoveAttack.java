@@ -9,6 +9,7 @@ import MoveControls.Tahu.FireballControl;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
+import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
@@ -22,6 +23,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitor;
+import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
@@ -42,11 +44,15 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
 
 
     public float targetDistanceMin = 3.0f; //This sets the max and min view range
-    public float targetDistanceMax = 25.0f;
+    public float targetDistanceMax = 35.0f;
+   
+    private AssetManager assetManager;
 
 
     public Control weaponBehaviours[] = {}; //This takes the location of the weapons the executer of the code has and sets them in an array
     public float fireFrequency = 2f;
+    
+    private Vector3f targetDirection;
 
 
     // Private memeber data
@@ -74,6 +80,12 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
     private float nextReaction;
     private float nextDodge;
     private boolean fighting = false;
+    private Vector3f fireballPos;
+    private boolean fireballShot = false;
+    private Spatial fireballO;
+    private Spatial fireball;
+
+
     private AIController ai;
     //public var meleeClip : AnimationClip;
     //public var dodgeClip : AnimationClip;
@@ -96,7 +108,9 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
     private AnimChannel animationChannel;
     private Spatial model;
     private GhostControl meleeBox;
+    private GhostControl projBox;
     private BulletAppState bas;
+    
     
     public EnemyMoveAttack(Spatial m,Node root,AIController AI, BulletAppState bulletAppState){
         this.root = root;
@@ -104,7 +118,25 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
         time = new LwjglTimer();
         ai = AI;
         bas = bulletAppState;
+        assetManager = ai.getAssetManager();
+        fireballO = assetManager.loadModel("Scenes/Fireball.j3o");
+        fireball = fireballO.clone();
     }
+    
+    SceneGraphVisitorAdapter getFireball = new SceneGraphVisitorAdapter() {
+
+        @Override
+        public void visit(Node node) {
+            super.visit(node);
+            findFireball(node);
+        }
+
+        private void findFireball(Node node) {
+            if (node.getName().equals("Fireball")) {
+                fireballPos = node.getWorldTranslation();
+            }
+        }
+    };
     
     
     SceneGraphVisitor setTarget = new SceneGraphVisitor() {
@@ -123,11 +155,17 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
         character = motor.getWorldTransform();
         
         meleeBox = new GhostControl(new BoxCollisionShape(new Vector3f(1,4,5)));
+        projBox = new GhostControl(new BoxCollisionShape(new Vector3f(1,4,5)));
+        Node projBoxPos = new Node("projectile box position");
         Node meleeBoxPos = new Node("melee box position");
+        projBoxPos.addControl(projBox);
         meleeBoxPos.addControl(meleeBox);
+        ((Node)spatial).attachChild(projBoxPos);
         ((Node)spatial).attachChild(meleeBoxPos);
-        meleeBoxPos.setLocalTranslation(0f,.55f,8f);
+        meleeBoxPos.setLocalTranslation(0f,.6f,9f);
+        projBoxPos.setLocalTranslation(0f,.6f,20f);
         bas.getPhysicsSpace().add(meleeBox);
+        bas.getPhysicsSpace().add(projBox);
         //ghost = ai.getGhostControl();
         container = spatial.getControl(CharacterControl.class);
         animationControl = model.getControl(AnimControl.class);
@@ -135,6 +173,8 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
         System.out.println(animationControl.getNumChannels() + " Channels");
         animationChannel = animationControl.getChannel(0);
         //animationChannel.setAnim("Idle");
+        model.depthFirstTraversal(getFireball);
+
         
     }
     
@@ -197,7 +237,7 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
         if(!"Walk".equals(animationChannel.getAnimationName()) && !fighting){
                 animationChannel.setAnim("Walk",.3f);
         }
-       Vector3f targetDirection = new Vector3f(0,0,0);
+       targetDirection = new Vector3f(0,0,0);
        target.getTranslation().subtract(character.getTranslation(),targetDirection);
        targetDirection.y = 0;
        targetDirection.z = 0;
@@ -259,17 +299,19 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
            }
        }
        
+       projectile(tpf);
        melee(tpf);
        
+       checkMoveActions();
     }
     
     private void melee(float tpf){
-        if(animationChannel.getAnimationName().equals("Walk") || animationChannel.getAnimationName().equals("Idle")) {
+        if(animationChannel.getAnimationName().equals("Walk") || animationChannel.getAnimationName().equals("Idle") || fighting) {
             List objects = meleeBox.getOverlappingObjects();
             System.out.println(objects);
             for(int i = 0; i < objects.size(); i++){
                 if(objects.get(i).getClass().equals(CharacterControl.class)){
-                    if(Math.random()<.15 ) {//|| fighting){
+                    if(Math.random()<.05 ) {//|| fighting){
                         /*if(!fighting){
                             float x = (int)(Math.random()*10);
                             delayFight = x + System.currentTimeMillis()/1000;
@@ -277,13 +319,56 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
                         System.out.println(delayFight + " delayed " + System.currentTimeMillis()/1000 + " time");
                         if(System.currentTimeMillis() > delayFight){*/
                         //    delayFight = 0;
-                        animationChannel.setAnim("First A");
+                        if(!fighting){
+                            animationChannel.setAnim("First A", 0.3f);
+                        }
+                        //}
+                        fighting = true;
+                    } 
+                }
+            }
+        }
+    }
+    
+    private void projectile(float tpf){
+        if(animationChannel.getAnimationName().equals("Walk") || animationChannel.getAnimationName().equals("Idle") || fighting) {
+            List objects = projBox.getOverlappingObjects();
+            System.out.println(objects);
+            for(int i = 0; i < objects.size(); i++){
+                if(objects.get(i).getClass().equals(CharacterControl.class)){
+                    if(Math.random()<.2 && !fireballShot) {//|| fighting){
+                        /*if(!fighting){
+                            float x = (int)(Math.random()*10);
+                            delayFight = x + System.currentTimeMillis()/1000;
+                        }
+                        System.out.println(delayFight + " delayed " + System.currentTimeMillis()/1000 + " time");
+                        if(System.currentTimeMillis() > delayFight){*/
+                        //    delayFight = 0;
+                        if(!fighting){
+                            animationChannel.setAnim("Neutral B", .3f);
+                        }
                         //}
                         fighting = true;
                     }
                 }
             }
         }
+    }
+    
+    private void checkMoveActions(){
+        if( "Neutral B".equals(animationChannel.getAnimationName()) &&
+            animationChannel.getTime() > 0.6f && animationChannel.getTime() < 0.7f && !fireballShot){
+            fireball = fireballO.clone();
+            fireball.setLocalTranslation(fireballPos);
+            FireballControl fireballControl = new FireballControl(10,targetDirection.x>0);
+            fireball.addControl(fireballControl);
+            root.attachChild(fireball);
+            fireballShot = true;
+            System.out.println("FIRED A SPEEDING BULLET");
+        }
+        
+        System.out.println(fireballShot + " fireball");
+
     }
     
     private boolean chanceDodge(){
@@ -335,15 +420,22 @@ public class EnemyMoveAttack extends AbstractControl implements AnimEventListene
 
 
     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
-        if(!animName.equals("Walk")){
+        if(!animName.equals("Walk") || !animName.equals("Idle")){
             fighting = false;
+            fireballShot = false;
+        }
+        if(animName.equals("Neutral B")){
+            fireballShot = false;
         }
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
 
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
-        //throw new UnsupportedOperationException("Not supported yet.");
+        if (animName.equals("Neutral B")){
+            fireballShot = false;
+            System.out.println(channel.getAnimMaxTime() + " MAX TIME");
+        }
     }
 
     public Control cloneForSpatial(Spatial spatial) {
